@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "C:\\Users\\Lee\\.gradle\\daemon\\8.2\\com.example.luminae.app-mergeDebugResources-35:\\layout\\activity_login.xml",
+        "source": "C:\\Users\\Lee\\.gradle\\daemon\\8.2\\com.example.luminae.app-main-38:\\layout\\activity_login.xml"
+    },
+    {
+        "merged": "C:\\Users\\Lee\\.gradle\\daemon\\8.2\\com.example.luminae.app-mergeDebugResources-35:\\layout\\activity_register.xml",
+        "source": "C:\\Users\\Lee\\.gradle\\daemon\\8.2\\com.example.luminae.app-main-38:\\layout\\activity_register.xml"
+    },
+    {
+        "merged": "C:\\Users\\Lee\\.gradle\\daemon\\8.2\\com.example.luminae.app-mergeDebugResources-35:\\layout\\activity_splash.xml",
+        "source": "C:\\Users\\Lee\\.gradle\\daemon\\8.2\\com.example.luminae.app-main-38:\\layout\\activity_splash.xml"
+    },
+    {
+        "merged": "C:\\Users\\Lee\\.gradle\\daemon\\8.2\\com.example.luminae.app-mergeDebugResources-35:\\layout\\activity_main.xml",
+        "source": "C:\\Users\\Lee\\.gradle\\daemon\\8.2\\com.example.luminae.app-main-38:\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\Lee\\.gradle\\daemon\\8.2\\com.example.luminae.app-mergeDebugResources-35:\\layout\\activity_forgot_password.xml",
+        "source": "C:\\Users\\Lee\\.gradle\\daemon\\8.2\\com.example.luminae.app-main-38:\\layout\\activity_forgot_password.xml"
+    },
+    {
+        "merged": "com.example.luminae.app-mergeDebugResources-35:/layout/activity_login.xml",
+        "source": "com.example.luminae.app-main-38:/layout/activity_login.xml"
+    }
+]

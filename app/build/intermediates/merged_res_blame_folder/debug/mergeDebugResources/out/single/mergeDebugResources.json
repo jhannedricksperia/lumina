@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "com.example.luminae.app-debug-36:/layout_activity_main.xml.flat",
+        "source": "com.example.luminae.app-main-38:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.example.luminae.app-debug-36:/layout_activity_login.xml.flat",
+        "source": "com.example.luminae.app-main-38:/layout/activity_login.xml"
+    },
+    {
+        "merged": "com.example.luminae.app-debug-36:/layout_activity_splash.xml.flat",
+        "source": "com.example.luminae.app-main-38:/layout/activity_splash.xml"
+    },
+    {
+        "merged": "com.example.luminae.app-debug-36:/layout_activity_register.xml.flat",
+        "source": "com.example.luminae.app-main-38:/layout/activity_register.xml"
+    }
+]

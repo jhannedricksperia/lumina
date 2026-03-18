@@ -1,0 +1,46 @@
+plugins {
+    id 'com.android.application'
+    id 'com.google.gms.google-services'
+}
+
+android {
+    namespace 'com.example.luminae'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.example.luminae"
+        minSdk 24
+        targetSdk 34
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+
+    // Firebase BOM — manages all versions
+    implementation platform('com.google.firebase:firebase-bom:32.7.0')
+
+    // Firebase Auth — handles login, register, password reset emails
+    implementation 'com.google.firebase:firebase-auth'
+
+    // Firestore — stores fullName, username, role, status
+    implementation 'com.google.firebase:firebase-firestore'
+}

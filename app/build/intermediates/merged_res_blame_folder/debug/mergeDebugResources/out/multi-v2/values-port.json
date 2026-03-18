@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.example.luminae.app-mergeDebugResources-34:/values-port/values-port.xml",
+            "map": [
+                {
+                    "source": "C:\\Users\\Lee\\.gradle\\caches\\9.0-milestone-1\\transforms\\62f627724450ae5802c6c81ab48548de\\transformed\\appcompat-1.6.1\\res\\values-port\\values-port.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "55",
+                        "endOffsets": "106"
+                    }
+                }
+            ]
+        }
+    ]
+}

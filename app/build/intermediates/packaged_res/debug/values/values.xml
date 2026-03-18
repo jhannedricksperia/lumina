@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bgBlack">#121212</color>
+    <color name="card">#2A2A2A</color>
+    <color name="colorAccent">@color/yellow</color>
+    <color name="colorPrimary">@color/maroon</color>
+    <color name="colorPrimaryDark">@color/maroonDark</color>
+    <color name="fieldBg">#2C2C2C</color>
+    <color name="maroon">#6B0F1A</color>
+    <color name="maroonDark">#4A0A12</color>
+    <color name="maroonDeep">#2D0508</color>
+    <color name="surface">#1E1E1E</color>
+    <color name="textHint">#666666</color>
+    <color name="textMuted">#888888</color>
+    <color name="textPrimary">#FFFFFF</color>
+    <color name="textSecondary">#CCCCCC</color>
+    <color name="white">#FFFFFF</color>
+    <color name="yellow">#F2C94C</color>
+    <color name="yellowDark">#D4A017</color>
+    <string name="app_name">LUMINA</string>
+    <string name="gcm_defaultSenderId" translatable="false">315779043822</string>
+    <string name="google_api_key" translatable="false">AIzaSyCVMm13ybXODVPRbJCnk8CiDGgOxXqd46U</string>
+    <string name="google_app_id" translatable="false">1:315779043822:android:aa26fda41183dc28dabeff</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyCVMm13ybXODVPRbJCnk8CiDGgOxXqd46U</string>
+    <string name="google_storage_bucket" translatable="false">lumina-befd3.firebasestorage.app</string>
+    <string name="project_id" translatable="false">lumina-befd3</string>
+    <style name="LuminaField" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxCornerRadiusTopStart">10dp</item>
+        <item name="boxCornerRadiusTopEnd">10dp</item>
+        <item name="boxCornerRadiusBottomStart">10dp</item>
+        <item name="boxCornerRadiusBottomEnd">10dp</item>
+        <item name="boxBackgroundColor">@color/fieldBg</item>
+        <item name="boxStrokeColor">@color/textMuted</item>
+        <item name="boxStrokeWidth">1.5dp</item>
+        <item name="hintTextColor">@color/yellow</item>
+    </style>
+    <style name="Theme.Luminae" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/maroon</item>
+        <item name="colorPrimaryVariant">@color/maroonDark</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/yellow</item>
+        <item name="colorOnSecondary">@color/bgBlack</item>
+        <item name="android:windowBackground">@color/bgBlack</item>
+        <item name="android:statusBarColor">@color/maroonDeep</item>
+        <item name="colorControlNormal">@color/textMuted</item>
+        <item name="colorControlActivated">@color/yellow</item>
+        <item name="android:textColorHint">@color/textHint</item>
+    </style>
+</resources>

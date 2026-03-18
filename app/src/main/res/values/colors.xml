@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary palette -->
+    <color name="maroon">#6B0F1A</color>
+    <color name="maroonDark">#4A0A12</color>
+    <color name="maroonDeep">#2D0508</color>
+    <color name="yellow">#F2C94C</color>
+    <color name="yellowDark">#D4A017</color>
+
+    <!-- Backgrounds -->
+    <color name="bgBlack">#121212</color>
+    <color name="surface">#1E1E1E</color>
+    <color name="card">#2A2A2A</color>
+    <color name="fieldBg">#2C2C2C</color>
+
+    <!-- Text -->
+    <color name="textPrimary">#FFFFFF</color>
+    <color name="textSecondary">#CCCCCC</color>
+    <color name="textMuted">#888888</color>
+    <color name="textHint">#666666</color>
+
+    <!-- Aliases used in code -->
+    <color name="colorPrimary">@color/maroon</color>
+    <color name="colorPrimaryDark">@color/maroonDark</color>
+    <color name="colorAccent">@color/yellow</color>
+    <color name="white">#FFFFFF</color>
+</resources>

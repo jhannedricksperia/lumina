@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Luminae" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/maroon</item>
+        <item name="colorPrimaryVariant">@color/maroonDark</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSecondary">@color/yellow</item>
+        <item name="colorOnSecondary">@color/bgBlack</item>
+        <item name="android:windowBackground">@color/bgBlack</item>
+        <item name="android:statusBarColor">@color/maroonDeep</item>
+        <item name="colorControlNormal">@color/textMuted</item>
+        <item name="colorControlActivated">@color/yellow</item>
+        <item name="android:textColorHint">@color/textHint</item>
+    </style>
+
+    <!-- Reusable style for all text input fields with rounded corners -->
+    <style name="LuminaField" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxCornerRadiusTopStart">10dp</item>
+        <item name="boxCornerRadiusTopEnd">10dp</item>
+        <item name="boxCornerRadiusBottomStart">10dp</item>
+        <item name="boxCornerRadiusBottomEnd">10dp</item>
+        <item name="boxBackgroundColor">@color/fieldBg</item>
+        <item name="boxStrokeColor">@color/textMuted</item>
+        <item name="boxStrokeWidth">1.5dp</item>
+        <item name="hintTextColor">@color/yellow</item>
+    </style>
+</resources>
