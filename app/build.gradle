@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace 'com.example.luminae'
-    compileSdk 34
+    compileSdk 36
 
     defaultConfig {
         applicationId "com.example.luminae"
         minSdk 24
-        targetSdk 34
+        targetSdk 36
         versionCode 1
         versionName "1.0"
     }
@@ -43,4 +43,7 @@ dependencies {
 
     // Firestore — stores fullName, username, role, status
     implementation 'com.google.firebase:firebase-firestore'
+
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    implementation 'androidx.activity:activity:1.12.3'
 }

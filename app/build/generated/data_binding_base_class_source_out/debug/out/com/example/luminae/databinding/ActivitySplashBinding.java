@@ -4,25 +4,40 @@ package com.example.luminae.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewbinding.ViewBinding;
+import androidx.viewbinding.ViewBindings;
 import com.example.luminae.R;
 import java.lang.NullPointerException;
 import java.lang.Override;
+import java.lang.String;
 
 public final class ActivitySplashBinding implements ViewBinding {
   @NonNull
-  private final LinearLayout rootView;
+  private final FrameLayout rootView;
 
-  private ActivitySplashBinding(@NonNull LinearLayout rootView) {
+  @NonNull
+  public final View dot1;
+
+  @NonNull
+  public final View dot2;
+
+  @NonNull
+  public final View dot3;
+
+  private ActivitySplashBinding(@NonNull FrameLayout rootView, @NonNull View dot1,
+      @NonNull View dot2, @NonNull View dot3) {
     this.rootView = rootView;
+    this.dot1 = dot1;
+    this.dot2 = dot2;
+    this.dot3 = dot3;
   }
 
   @Override
   @NonNull
-  public LinearLayout getRoot() {
+  public FrameLayout getRoot() {
     return rootView;
   }
 
@@ -43,10 +58,31 @@ public final class ActivitySplashBinding implements ViewBinding {
 
   @NonNull
   public static ActivitySplashBinding bind(@NonNull View rootView) {
-    if (rootView == null) {
-      throw new NullPointerException("rootView");
-    }
+    // The body of this method is generated in a way you would not otherwise write.
+    // This is done to optimize the compiled bytecode for size and performance.
+    int id;
+    missingId: {
+      id = R.id.dot1;
+      View dot1 = ViewBindings.findChildViewById(rootView, id);
+      if (dot1 == null) {
+        break missingId;
+      }
 
-    return new ActivitySplashBinding((LinearLayout) rootView);
+      id = R.id.dot2;
+      View dot2 = ViewBindings.findChildViewById(rootView, id);
+      if (dot2 == null) {
+        break missingId;
+      }
+
+      id = R.id.dot3;
+      View dot3 = ViewBindings.findChildViewById(rootView, id);
+      if (dot3 == null) {
+        break missingId;
+      }
+
+      return new ActivitySplashBinding((FrameLayout) rootView, dot1, dot2, dot3);
+    }
+    String missingId = rootView.getResources().getResourceName(id);
+    throw new NullPointerException("Missing required view with ID: ".concat(missingId));
   }
 }

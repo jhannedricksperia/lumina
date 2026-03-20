@@ -4,7 +4,7 @@ package com.example.luminae.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -13,7 +13,6 @@ import androidx.annotation.Nullable;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
 import com.example.luminae.R;
-import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -23,22 +22,37 @@ import java.lang.String;
 
 public final class ActivityRegisterBinding implements ViewBinding {
   @NonNull
-  private final LinearLayout rootView;
+  private final FrameLayout rootView;
 
   @NonNull
-  public final MaterialButton btnBackToLogin;
+  public final MaterialButton btnBack;
+
+  @NonNull
+  public final MaterialButton btnNext;
 
   @NonNull
   public final MaterialButton btnRegister;
 
   @NonNull
+  public final TextInputEditText etCampus;
+
+  @NonNull
+  public final TextInputEditText etCollege;
+
+  @NonNull
   public final TextInputEditText etConfirmPassword;
+
+  @NonNull
+  public final TextInputEditText etCourse;
 
   @NonNull
   public final TextInputEditText etEmail;
 
   @NonNull
-  public final TextInputEditText etFullName;
+  public final TextInputEditText etFirstName;
+
+  @NonNull
+  public final TextInputEditText etLastName;
 
   @NonNull
   public final TextInputEditText etPassword;
@@ -47,22 +61,37 @@ public final class ActivityRegisterBinding implements ViewBinding {
   public final TextInputEditText etUsername;
 
   @NonNull
-  public final LinearLayout layoutPending;
+  public final ProgressBar progressBar;
 
   @NonNull
-  public final ProgressBar progressBar;
+  public final ProgressBar progressBarReview;
+
+  @NonNull
+  public final ScrollView scrollReview;
 
   @NonNull
   public final ScrollView scrollView;
 
   @NonNull
+  public final TextInputLayout tilCampus;
+
+  @NonNull
+  public final TextInputLayout tilCollege;
+
+  @NonNull
   public final TextInputLayout tilConfirmPassword;
+
+  @NonNull
+  public final TextInputLayout tilCourse;
 
   @NonNull
   public final TextInputLayout tilEmail;
 
   @NonNull
-  public final TextInputLayout tilFullName;
+  public final TextInputLayout tilFirstName;
+
+  @NonNull
+  public final TextInputLayout tilLastName;
 
   @NonNull
   public final TextInputLayout tilPassword;
@@ -71,44 +100,89 @@ public final class ActivityRegisterBinding implements ViewBinding {
   public final TextInputLayout tilUsername;
 
   @NonNull
-  public final MaterialToolbar toolbar;
-
-  @NonNull
   public final TextView tvError;
 
-  private ActivityRegisterBinding(@NonNull LinearLayout rootView,
-      @NonNull MaterialButton btnBackToLogin, @NonNull MaterialButton btnRegister,
-      @NonNull TextInputEditText etConfirmPassword, @NonNull TextInputEditText etEmail,
-      @NonNull TextInputEditText etFullName, @NonNull TextInputEditText etPassword,
-      @NonNull TextInputEditText etUsername, @NonNull LinearLayout layoutPending,
-      @NonNull ProgressBar progressBar, @NonNull ScrollView scrollView,
-      @NonNull TextInputLayout tilConfirmPassword, @NonNull TextInputLayout tilEmail,
-      @NonNull TextInputLayout tilFullName, @NonNull TextInputLayout tilPassword,
-      @NonNull TextInputLayout tilUsername, @NonNull MaterialToolbar toolbar,
-      @NonNull TextView tvError) {
+  @NonNull
+  public final TextView tvErrorReview;
+
+  @NonNull
+  public final TextView tvGoToLogin;
+
+  @NonNull
+  public final TextView tvReviewCampus;
+
+  @NonNull
+  public final TextView tvReviewCollege;
+
+  @NonNull
+  public final TextView tvReviewCourse;
+
+  @NonNull
+  public final TextView tvReviewEmail;
+
+  @NonNull
+  public final TextView tvReviewName;
+
+  @NonNull
+  public final TextView tvReviewUsername;
+
+  private ActivityRegisterBinding(@NonNull FrameLayout rootView, @NonNull MaterialButton btnBack,
+      @NonNull MaterialButton btnNext, @NonNull MaterialButton btnRegister,
+      @NonNull TextInputEditText etCampus, @NonNull TextInputEditText etCollege,
+      @NonNull TextInputEditText etConfirmPassword, @NonNull TextInputEditText etCourse,
+      @NonNull TextInputEditText etEmail, @NonNull TextInputEditText etFirstName,
+      @NonNull TextInputEditText etLastName, @NonNull TextInputEditText etPassword,
+      @NonNull TextInputEditText etUsername, @NonNull ProgressBar progressBar,
+      @NonNull ProgressBar progressBarReview, @NonNull ScrollView scrollReview,
+      @NonNull ScrollView scrollView, @NonNull TextInputLayout tilCampus,
+      @NonNull TextInputLayout tilCollege, @NonNull TextInputLayout tilConfirmPassword,
+      @NonNull TextInputLayout tilCourse, @NonNull TextInputLayout tilEmail,
+      @NonNull TextInputLayout tilFirstName, @NonNull TextInputLayout tilLastName,
+      @NonNull TextInputLayout tilPassword, @NonNull TextInputLayout tilUsername,
+      @NonNull TextView tvError, @NonNull TextView tvErrorReview, @NonNull TextView tvGoToLogin,
+      @NonNull TextView tvReviewCampus, @NonNull TextView tvReviewCollege,
+      @NonNull TextView tvReviewCourse, @NonNull TextView tvReviewEmail,
+      @NonNull TextView tvReviewName, @NonNull TextView tvReviewUsername) {
     this.rootView = rootView;
-    this.btnBackToLogin = btnBackToLogin;
+    this.btnBack = btnBack;
+    this.btnNext = btnNext;
     this.btnRegister = btnRegister;
+    this.etCampus = etCampus;
+    this.etCollege = etCollege;
     this.etConfirmPassword = etConfirmPassword;
+    this.etCourse = etCourse;
     this.etEmail = etEmail;
-    this.etFullName = etFullName;
+    this.etFirstName = etFirstName;
+    this.etLastName = etLastName;
     this.etPassword = etPassword;
     this.etUsername = etUsername;
-    this.layoutPending = layoutPending;
     this.progressBar = progressBar;
+    this.progressBarReview = progressBarReview;
+    this.scrollReview = scrollReview;
     this.scrollView = scrollView;
+    this.tilCampus = tilCampus;
+    this.tilCollege = tilCollege;
     this.tilConfirmPassword = tilConfirmPassword;
+    this.tilCourse = tilCourse;
     this.tilEmail = tilEmail;
-    this.tilFullName = tilFullName;
+    this.tilFirstName = tilFirstName;
+    this.tilLastName = tilLastName;
     this.tilPassword = tilPassword;
     this.tilUsername = tilUsername;
-    this.toolbar = toolbar;
     this.tvError = tvError;
+    this.tvErrorReview = tvErrorReview;
+    this.tvGoToLogin = tvGoToLogin;
+    this.tvReviewCampus = tvReviewCampus;
+    this.tvReviewCollege = tvReviewCollege;
+    this.tvReviewCourse = tvReviewCourse;
+    this.tvReviewEmail = tvReviewEmail;
+    this.tvReviewName = tvReviewName;
+    this.tvReviewUsername = tvReviewUsername;
   }
 
   @Override
   @NonNull
-  public LinearLayout getRoot() {
+  public FrameLayout getRoot() {
     return rootView;
   }
 
@@ -133,9 +207,15 @@ public final class ActivityRegisterBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
-      id = R.id.btn_back_to_login;
-      MaterialButton btnBackToLogin = ViewBindings.findChildViewById(rootView, id);
-      if (btnBackToLogin == null) {
+      id = R.id.btn_back;
+      MaterialButton btnBack = ViewBindings.findChildViewById(rootView, id);
+      if (btnBack == null) {
+        break missingId;
+      }
+
+      id = R.id.btn_next;
+      MaterialButton btnNext = ViewBindings.findChildViewById(rootView, id);
+      if (btnNext == null) {
         break missingId;
       }
 
@@ -145,9 +225,27 @@ public final class ActivityRegisterBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.et_campus;
+      TextInputEditText etCampus = ViewBindings.findChildViewById(rootView, id);
+      if (etCampus == null) {
+        break missingId;
+      }
+
+      id = R.id.et_college;
+      TextInputEditText etCollege = ViewBindings.findChildViewById(rootView, id);
+      if (etCollege == null) {
+        break missingId;
+      }
+
       id = R.id.et_confirm_password;
       TextInputEditText etConfirmPassword = ViewBindings.findChildViewById(rootView, id);
       if (etConfirmPassword == null) {
+        break missingId;
+      }
+
+      id = R.id.et_course;
+      TextInputEditText etCourse = ViewBindings.findChildViewById(rootView, id);
+      if (etCourse == null) {
         break missingId;
       }
 
@@ -157,9 +255,15 @@ public final class ActivityRegisterBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.et_full_name;
-      TextInputEditText etFullName = ViewBindings.findChildViewById(rootView, id);
-      if (etFullName == null) {
+      id = R.id.et_first_name;
+      TextInputEditText etFirstName = ViewBindings.findChildViewById(rootView, id);
+      if (etFirstName == null) {
+        break missingId;
+      }
+
+      id = R.id.et_last_name;
+      TextInputEditText etLastName = ViewBindings.findChildViewById(rootView, id);
+      if (etLastName == null) {
         break missingId;
       }
 
@@ -175,15 +279,21 @@ public final class ActivityRegisterBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.layout_pending;
-      LinearLayout layoutPending = ViewBindings.findChildViewById(rootView, id);
-      if (layoutPending == null) {
-        break missingId;
-      }
-
       id = R.id.progress_bar;
       ProgressBar progressBar = ViewBindings.findChildViewById(rootView, id);
       if (progressBar == null) {
+        break missingId;
+      }
+
+      id = R.id.progress_bar_review;
+      ProgressBar progressBarReview = ViewBindings.findChildViewById(rootView, id);
+      if (progressBarReview == null) {
+        break missingId;
+      }
+
+      id = R.id.scroll_review;
+      ScrollView scrollReview = ViewBindings.findChildViewById(rootView, id);
+      if (scrollReview == null) {
         break missingId;
       }
 
@@ -193,9 +303,27 @@ public final class ActivityRegisterBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.til_campus;
+      TextInputLayout tilCampus = ViewBindings.findChildViewById(rootView, id);
+      if (tilCampus == null) {
+        break missingId;
+      }
+
+      id = R.id.til_college;
+      TextInputLayout tilCollege = ViewBindings.findChildViewById(rootView, id);
+      if (tilCollege == null) {
+        break missingId;
+      }
+
       id = R.id.til_confirm_password;
       TextInputLayout tilConfirmPassword = ViewBindings.findChildViewById(rootView, id);
       if (tilConfirmPassword == null) {
+        break missingId;
+      }
+
+      id = R.id.til_course;
+      TextInputLayout tilCourse = ViewBindings.findChildViewById(rootView, id);
+      if (tilCourse == null) {
         break missingId;
       }
 
@@ -205,9 +333,15 @@ public final class ActivityRegisterBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.til_full_name;
-      TextInputLayout tilFullName = ViewBindings.findChildViewById(rootView, id);
-      if (tilFullName == null) {
+      id = R.id.til_first_name;
+      TextInputLayout tilFirstName = ViewBindings.findChildViewById(rootView, id);
+      if (tilFirstName == null) {
+        break missingId;
+      }
+
+      id = R.id.til_last_name;
+      TextInputLayout tilLastName = ViewBindings.findChildViewById(rootView, id);
+      if (tilLastName == null) {
         break missingId;
       }
 
@@ -223,22 +357,66 @@ public final class ActivityRegisterBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.toolbar;
-      MaterialToolbar toolbar = ViewBindings.findChildViewById(rootView, id);
-      if (toolbar == null) {
-        break missingId;
-      }
-
       id = R.id.tv_error;
       TextView tvError = ViewBindings.findChildViewById(rootView, id);
       if (tvError == null) {
         break missingId;
       }
 
-      return new ActivityRegisterBinding((LinearLayout) rootView, btnBackToLogin, btnRegister,
-          etConfirmPassword, etEmail, etFullName, etPassword, etUsername, layoutPending,
-          progressBar, scrollView, tilConfirmPassword, tilEmail, tilFullName, tilPassword,
-          tilUsername, toolbar, tvError);
+      id = R.id.tv_error_review;
+      TextView tvErrorReview = ViewBindings.findChildViewById(rootView, id);
+      if (tvErrorReview == null) {
+        break missingId;
+      }
+
+      id = R.id.tv_go_to_login;
+      TextView tvGoToLogin = ViewBindings.findChildViewById(rootView, id);
+      if (tvGoToLogin == null) {
+        break missingId;
+      }
+
+      id = R.id.tv_review_campus;
+      TextView tvReviewCampus = ViewBindings.findChildViewById(rootView, id);
+      if (tvReviewCampus == null) {
+        break missingId;
+      }
+
+      id = R.id.tv_review_college;
+      TextView tvReviewCollege = ViewBindings.findChildViewById(rootView, id);
+      if (tvReviewCollege == null) {
+        break missingId;
+      }
+
+      id = R.id.tv_review_course;
+      TextView tvReviewCourse = ViewBindings.findChildViewById(rootView, id);
+      if (tvReviewCourse == null) {
+        break missingId;
+      }
+
+      id = R.id.tv_review_email;
+      TextView tvReviewEmail = ViewBindings.findChildViewById(rootView, id);
+      if (tvReviewEmail == null) {
+        break missingId;
+      }
+
+      id = R.id.tv_review_name;
+      TextView tvReviewName = ViewBindings.findChildViewById(rootView, id);
+      if (tvReviewName == null) {
+        break missingId;
+      }
+
+      id = R.id.tv_review_username;
+      TextView tvReviewUsername = ViewBindings.findChildViewById(rootView, id);
+      if (tvReviewUsername == null) {
+        break missingId;
+      }
+
+      return new ActivityRegisterBinding((FrameLayout) rootView, btnBack, btnNext, btnRegister,
+          etCampus, etCollege, etConfirmPassword, etCourse, etEmail, etFirstName, etLastName,
+          etPassword, etUsername, progressBar, progressBarReview, scrollReview, scrollView,
+          tilCampus, tilCollege, tilConfirmPassword, tilCourse, tilEmail, tilFirstName, tilLastName,
+          tilPassword, tilUsername, tvError, tvErrorReview, tvGoToLogin, tvReviewCampus,
+          tvReviewCollege, tvReviewCourse, tvReviewEmail, tvReviewName, tvReviewUsername);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="gcm_defaultSenderId" translatable="false">315779043822</string>
-    <string name="google_api_key" translatable="false">AIzaSyCVMm13ybXODVPRbJCnk8CiDGgOxXqd46U</string>
-    <string name="google_app_id" translatable="false">1:315779043822:android:aa26fda41183dc28dabeff</string>
-    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyCVMm13ybXODVPRbJCnk8CiDGgOxXqd46U</string>
-    <string name="google_storage_bucket" translatable="false">lumina-befd3.firebasestorage.app</string>
-    <string name="project_id" translatable="false">lumina-befd3</string>
+    <string name="gcm_defaultSenderId" translatable="false">885636845696</string>
+    <string name="google_api_key" translatable="false">AIzaSyA0IbqY7QU__j2yelHb7xVxsNpD2ipyaKE</string>
+    <string name="google_app_id" translatable="false">1:885636845696:android:e274ddb58f3b4f4387d665</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyA0IbqY7QU__j2yelHb7xVxsNpD2ipyaKE</string>
+    <string name="google_storage_bucket" translatable="false">lumina-48d83.firebasestorage.app</string>
+    <string name="project_id" translatable="false">lumina-48d83</string>
 </resources>

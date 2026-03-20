@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.luminae.app-mergeDebugResources-34:/values-xlarge-v4/values-xlarge-v4.xml",
+            "outputFile": "com.example.luminae.app-mergeDebugResources-37:/values-xlarge-v4/values-xlarge-v4.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\Lee\\.gradle\\caches\\9.0-milestone-1\\transforms\\62f627724450ae5802c6c81ab48548de\\transformed\\appcompat-1.6.1\\res\\values-xlarge-v4\\values-xlarge-v4.xml",
+                    "source": "C:\\Users\\jhann\\.gradle\\caches\\8.13\\transforms\\a0b1e49ad9f56cf330596846df3661c1\\transformed\\appcompat-1.6.1\\res\\values-xlarge-v4\\values-xlarge-v4.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7",
                         "startColumns": "4,4,4,4,4,4",

@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.luminae.app-mergeDebugResources-34:/values-night-v8/values-night-v8.xml",
+            "outputFile": "com.example.luminae.app-mergeDebugResources-37:/values-night-v8/values-night-v8.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\Lee\\.gradle\\caches\\9.0-milestone-1\\transforms\\62f627724450ae5802c6c81ab48548de\\transformed\\appcompat-1.6.1\\res\\values-night-v8\\values-night-v8.xml",
+                    "source": "C:\\Users\\jhann\\.gradle\\caches\\8.13\\transforms\\a0b1e49ad9f56cf330596846df3661c1\\transformed\\appcompat-1.6.1\\res\\values-night-v8\\values-night-v8.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9",
                         "startColumns": "4,4,4,4,4,4,4,4",
@@ -21,7 +21,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\Lee\\.gradle\\caches\\9.0-milestone-1\\transforms\\9dc0de46384104c137d91407ef149450\\transformed\\material-1.11.0\\res\\values-night-v8\\values-night-v8.xml",
+                    "source": "C:\\Users\\jhann\\.gradle\\caches\\8.13\\transforms\\7876fca21c50c68d63bdc9346f1acc9b\\transformed\\material-1.11.0\\res\\values-night-v8\\values-night-v8.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",

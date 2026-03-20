@@ -1,7 +1,7 @@
 package com.example.luminae.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,12 +33,6 @@ public class RegisterActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         db   = FirebaseFirestore.getInstance();
 
-        setSupportActionBar(binding.toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Create Account");
-        }
-
         // Live email validation
         binding.etEmail.addTextChangedListener(new android.text.TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int a, int b, int c) {}
@@ -65,53 +59,84 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+        binding.btnNext.setOnClickListener(v -> showReview());
+        binding.btnBack.setOnClickListener(v -> {
+            binding.scrollReview.setVisibility(View.GONE);
+            binding.scrollView.setVisibility(View.VISIBLE);
+        });
         binding.btnRegister.setOnClickListener(v -> attemptRegister());
-        binding.btnBackToLogin.setOnClickListener(v -> finish());
+        binding.tvGoToLogin.setOnClickListener(v -> finish());
     }
 
     private boolean isValidEmail(String email) {
         return BULSU_EMAIL.matcher(email).matches();
     }
 
-    private void attemptRegister() {
-        String fullName = binding.etFullName.getText().toString().trim();
-        String username = binding.etUsername.getText().toString().trim();
-        String email    = binding.etEmail.getText().toString().trim();
-        String password = binding.etPassword.getText().toString().trim();
-        String confirm  = binding.etConfirmPassword.getText().toString().trim();
+    private void showReview() {
+        String firstName = binding.etFirstName.getText().toString().trim();
+        String lastName  = binding.etLastName.getText().toString().trim();
+        String username  = binding.etUsername.getText().toString().trim();
+        String email     = binding.etEmail.getText().toString().trim();
+        String campus    = binding.etCampus.getText().toString().trim();
+        String college   = binding.etCollege.getText().toString().trim();
+        String course    = binding.etCourse.getText().toString().trim();
+        String password  = binding.etPassword.getText().toString().trim();
+        String confirm   = binding.etConfirmPassword.getText().toString().trim();
 
-        if (fullName.isEmpty()) { binding.tilFullName.setError("Required"); return; }
-        if (username.isEmpty()) { binding.tilUsername.setError("Required"); return; }
-        if (email.isEmpty())    { binding.tilEmail.setError("Required"); return; }
-        if (!isValidEmail(email)) { binding.tilEmail.setError("Must be @ms.bulsu.edu.ph"); return; }
-        if (password.isEmpty())   { binding.tilPassword.setError("Required"); return; }
+        if (firstName.isEmpty()) { binding.tilFirstName.setError("Required"); return; }
+        if (lastName.isEmpty())  { binding.tilLastName.setError("Required"); return; }
+        if (username.isEmpty())  { binding.tilUsername.setError("Required"); return; }
+        if (email.isEmpty())     { binding.tilEmail.setError("Required"); return; }
+        if (!isValidEmail(email)){ binding.tilEmail.setError("Must be @ms.bulsu.edu.ph"); return; }
+        if (campus.isEmpty())    { binding.tilCampus.setError("Required"); return; }
+        if (college.isEmpty())   { binding.tilCollege.setError("Required"); return; }
+        if (course.isEmpty())    { binding.tilCourse.setError("Required"); return; }
+        if (password.isEmpty())  { binding.tilPassword.setError("Required"); return; }
         if (password.length() < 6){ binding.tilPassword.setError("Minimum 6 characters"); return; }
         if (!password.equals(confirm)) { binding.tilConfirmPassword.setError("Passwords do not match"); return; }
 
+        binding.tvReviewName.setText(firstName + " " + lastName);
+        binding.tvReviewUsername.setText(username);
+        binding.tvReviewEmail.setText(email);
+        binding.tvReviewCampus.setText(campus);
+        binding.tvReviewCollege.setText(college);
+        binding.tvReviewCourse.setText(course);
+
+        binding.scrollView.setVisibility(View.GONE);
+        binding.scrollReview.setVisibility(View.VISIBLE);
+    }
+
+    private void attemptRegister() {
+        String fName = binding.etFirstName.getText().toString().trim();
+        String lName  = binding.etLastName.getText().toString().trim();
+        String email     = binding.etEmail.getText().toString().trim();
+        String password  = binding.etPassword.getText().toString().trim();
+        String username  = binding.etUsername.getText().toString().trim();
+        String campus    = binding.etCampus.getText().toString().trim();
+        String college   = binding.etCollege.getText().toString().trim();
+        String course    = binding.etCourse.getText().toString().trim();
+
         setLoading(true);
 
-        // Step 1 — Create account in Firebase Auth
-        // Firebase Auth stores the email + password securely
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
-                    // Step 2 — Save extra info to Firestore
-                    // Document ID = Firebase Auth UID (links Auth and Firestore together)
                     String uid = authResult.getUser().getUid();
-                    saveToFirestore(uid, fullName, username, email);
+                    saveToFirestore(uid, fName, lName, username, email, campus, college, course);
+                    setLoading(false);
+                    startActivity(new Intent(this, LoginActivity.class));
                 })
                 .addOnFailureListener(e -> {
                     setLoading(false);
-                    // Firebase gives useful messages like "email already in use"
                     showError(e.getMessage());
                 });
     }
 
-    private void saveToFirestore(String uid, String fullName, String username, String email) {
-        // No password stored here — Firebase Auth handles that
-        User newUser = new User(fullName, username, email, "student", "pending");
+    private void saveToFirestore(String uid, String fName, String lName, String username,
+                                 String email, String campus, String college, String course) {
+        User newUser = new User(fName, lName, username, email, campus, college, course, "student", "Active");
 
         db.collection("users")
-                .document(uid) // use Auth UID as document ID
+                .document(uid)
                 .set(newUser)
                 .addOnSuccessListener(v -> {
                     setLoading(false);
@@ -124,24 +149,18 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void showPendingScreen() {
-        binding.scrollView.setVisibility(View.GONE);
-        binding.layoutPending.setVisibility(View.VISIBLE);
+        binding.scrollReview.setVisibility(View.GONE);
     }
 
     private void showError(String msg) {
-        binding.tvError.setVisibility(View.VISIBLE);
-        binding.tvError.setText(msg);
+        binding.tvErrorReview.setVisibility(View.VISIBLE);
+        binding.tvErrorReview.setText(msg);
     }
 
     private void setLoading(boolean on) {
         binding.btnRegister.setEnabled(!on);
-        binding.progressBar.setVisibility(on ? View.VISIBLE : View.GONE);
-        binding.tvError.setVisibility(View.GONE);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) { onBackPressed(); return true; }
-        return super.onOptionsItemSelected(item);
+        binding.btnBack.setEnabled(!on);
+        binding.progressBarReview.setVisibility(on ? View.VISIBLE : View.GONE);
+        binding.tvErrorReview.setVisibility(View.GONE);
     }
 }

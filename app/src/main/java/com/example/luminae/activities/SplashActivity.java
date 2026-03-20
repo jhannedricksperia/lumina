@@ -3,11 +3,8 @@ package com.example.luminae.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
-
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.luminae.R;
 import com.example.luminae.utils.SessionManager;
 
 public class SplashActivity extends AppCompatActivity {
@@ -15,20 +12,31 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
 
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            SessionManager session = new SessionManager(this);
+        SessionManager session = new SessionManager(this);
 
-            Intent next;
+        new Handler().postDelayed(() -> {
+            Intent intent = null;
             if (session.isLoggedIn()) {
-                next = new Intent(this, MainActivity.class);
+                // Route based on role
+                String role = session.getRole();
+                switch (role != null ? role : "") {
+                    case "Admin":
+                        intent = new Intent(this, AdminActivity.class);
+                        break;
+                    case "staff":
+                     //   intent = new Intent(this, StaffActivity.class);
+                        break;
+                    default:
+                     //   intent = new Intent(this, StudentActivity.class);
+                        break;
+                }
             } else {
-                next = new Intent(this, LoginActivity.class);
+                intent = new Intent(this, LoginActivity.class);
             }
-            startActivity(next);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
             finish();
-
-        }, 1500);
+        }, 1500); // 1.5 second splash delay
     }
 }

@@ -4,15 +4,15 @@ package com.example.luminae.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
 import com.example.luminae.R;
-import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -22,7 +22,7 @@ import java.lang.String;
 
 public final class ActivityForgotPasswordBinding implements ViewBinding {
   @NonNull
-  private final LinearLayout rootView;
+  private final FrameLayout rootView;
 
   @NonNull
   public final MaterialButton btnDone;
@@ -34,19 +34,16 @@ public final class ActivityForgotPasswordBinding implements ViewBinding {
   public final TextInputEditText etEmail;
 
   @NonNull
-  public final LinearLayout layoutForm;
+  public final ScrollView layoutForm;
 
   @NonNull
-  public final LinearLayout layoutSuccess;
+  public final ScrollView layoutSuccess;
 
   @NonNull
   public final ProgressBar progressBar;
 
   @NonNull
   public final TextInputLayout tilEmail;
-
-  @NonNull
-  public final MaterialToolbar toolbar;
 
   @NonNull
   public final TextView tvBackToLogin;
@@ -57,12 +54,12 @@ public final class ActivityForgotPasswordBinding implements ViewBinding {
   @NonNull
   public final TextView tvSentTo;
 
-  private ActivityForgotPasswordBinding(@NonNull LinearLayout rootView,
+  private ActivityForgotPasswordBinding(@NonNull FrameLayout rootView,
       @NonNull MaterialButton btnDone, @NonNull MaterialButton btnSendReset,
-      @NonNull TextInputEditText etEmail, @NonNull LinearLayout layoutForm,
-      @NonNull LinearLayout layoutSuccess, @NonNull ProgressBar progressBar,
-      @NonNull TextInputLayout tilEmail, @NonNull MaterialToolbar toolbar,
-      @NonNull TextView tvBackToLogin, @NonNull TextView tvMessage, @NonNull TextView tvSentTo) {
+      @NonNull TextInputEditText etEmail, @NonNull ScrollView layoutForm,
+      @NonNull ScrollView layoutSuccess, @NonNull ProgressBar progressBar,
+      @NonNull TextInputLayout tilEmail, @NonNull TextView tvBackToLogin,
+      @NonNull TextView tvMessage, @NonNull TextView tvSentTo) {
     this.rootView = rootView;
     this.btnDone = btnDone;
     this.btnSendReset = btnSendReset;
@@ -71,7 +68,6 @@ public final class ActivityForgotPasswordBinding implements ViewBinding {
     this.layoutSuccess = layoutSuccess;
     this.progressBar = progressBar;
     this.tilEmail = tilEmail;
-    this.toolbar = toolbar;
     this.tvBackToLogin = tvBackToLogin;
     this.tvMessage = tvMessage;
     this.tvSentTo = tvSentTo;
@@ -79,7 +75,7 @@ public final class ActivityForgotPasswordBinding implements ViewBinding {
 
   @Override
   @NonNull
-  public LinearLayout getRoot() {
+  public FrameLayout getRoot() {
     return rootView;
   }
 
@@ -123,13 +119,13 @@ public final class ActivityForgotPasswordBinding implements ViewBinding {
       }
 
       id = R.id.layout_form;
-      LinearLayout layoutForm = ViewBindings.findChildViewById(rootView, id);
+      ScrollView layoutForm = ViewBindings.findChildViewById(rootView, id);
       if (layoutForm == null) {
         break missingId;
       }
 
       id = R.id.layout_success;
-      LinearLayout layoutSuccess = ViewBindings.findChildViewById(rootView, id);
+      ScrollView layoutSuccess = ViewBindings.findChildViewById(rootView, id);
       if (layoutSuccess == null) {
         break missingId;
       }
@@ -143,12 +139,6 @@ public final class ActivityForgotPasswordBinding implements ViewBinding {
       id = R.id.til_email;
       TextInputLayout tilEmail = ViewBindings.findChildViewById(rootView, id);
       if (tilEmail == null) {
-        break missingId;
-      }
-
-      id = R.id.toolbar;
-      MaterialToolbar toolbar = ViewBindings.findChildViewById(rootView, id);
-      if (toolbar == null) {
         break missingId;
       }
 
@@ -170,9 +160,9 @@ public final class ActivityForgotPasswordBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ActivityForgotPasswordBinding((LinearLayout) rootView, btnDone, btnSendReset,
-          etEmail, layoutForm, layoutSuccess, progressBar, tilEmail, toolbar, tvBackToLogin,
-          tvMessage, tvSentTo);
+      return new ActivityForgotPasswordBinding((FrameLayout) rootView, btnDone, btnSendReset,
+          etEmail, layoutForm, layoutSuccess, progressBar, tilEmail, tvBackToLogin, tvMessage,
+          tvSentTo);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

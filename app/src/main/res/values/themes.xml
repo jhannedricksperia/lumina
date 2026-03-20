@@ -15,13 +15,27 @@
 
     <!-- Reusable style for all text input fields with rounded corners -->
     <style name="LuminaField" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="boxCornerRadiusTopStart">10dp</item>
-        <item name="boxCornerRadiusTopEnd">10dp</item>
-        <item name="boxCornerRadiusBottomStart">10dp</item>
-        <item name="boxCornerRadiusBottomEnd">10dp</item>
-        <item name="boxBackgroundColor">@color/fieldBg</item>
-        <item name="boxStrokeColor">@color/textMuted</item>
-        <item name="boxStrokeWidth">1.5dp</item>
-        <item name="hintTextColor">@color/yellow</item>
+        <item name="boxStrokeColor">#33FFFFFF</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxBackgroundColor">#0DFFFFFF</item>
+        <item name="hintTextColor">#80FFFFFF</item>
+        <item name="boxCornerRadiusTopStart">12dp</item>
+        <item name="boxCornerRadiusTopEnd">12dp</item>
+        <item name="boxCornerRadiusBottomStart">12dp</item>
+        <item name="boxCornerRadiusBottomEnd">12dp</item>
+        <item name="startIconMinSize">24dp</item>
     </style>
+
+    <style name="LuminaChip" parent="Widget.MaterialComponents.Chip.Filter">
+        <item name="android:textColor">@color/chip_text_selector</item>
+        <item name="chipBackgroundColor">@color/chip_bg_selector</item>
+        <item name="chipStrokeColor">@color/chip_stroke_selector</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="android:fontFamily">@font/poppins_bold</item>
+        <item name="android:textSize">11sp</item>
+        <item name="chipCornerRadius">20dp</item>
+        <item name="chipMinHeight">32dp</item>
+        <item name="checkedIconVisible">false</item>
+    </style>
+
 </resources>

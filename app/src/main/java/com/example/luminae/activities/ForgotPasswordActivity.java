@@ -29,11 +29,6 @@ public class ForgotPasswordActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
 
-        setSupportActionBar(binding.toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("");
-        }
 
         binding.btnSendReset.setOnClickListener(v -> sendResetEmail());
 

@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.luminae.databinding.ActivityLoginBinding;
 import com.example.luminae.utils.SessionManager;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.regex.Pattern;
@@ -105,7 +104,7 @@ public class LoginActivity extends AppCompatActivity {
                         // Not approved yet — sign them out and block
                         auth.signOut();
                         showError("Your account is pending approval.\nPlease wait for an admin to activate it.");
-                    } else if ("active".equals(status)) {
+                    } else if ("Active".equals(status)) {
                         // Approved — save session and go in
                         session.save(
                                 uid,
@@ -128,9 +127,10 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void goToMain() {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, AdminActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+        finish();
     }
 
     private void showError(String msg) {

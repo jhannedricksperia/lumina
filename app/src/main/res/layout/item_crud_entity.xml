@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="14dp"
+        android:background="@drawable/glass_card">
+
+        <!-- Name + Status badge -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:gravity="center_vertical"
+            android:layout_marginBottom="4dp">
+            <TextView android:id="@+id/tv_name" android:layout_width="0dp"
+                android:layout_height="wrap_content" android:layout_weight="1"
+                android:fontFamily="@font/poppins_bold" android:textColor="@color/white"
+                android:textSize="14sp" android:text="Name" />
+            <TextView android:id="@+id/tv_status" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:paddingHorizontal="10dp"
+                android:paddingVertical="3dp" android:fontFamily="@font/poppins_bold"
+                android:textSize="10sp" android:text="Active"
+                android:background="@drawable/badge_active" />
+        </LinearLayout>
+
+        <!-- Acronym (visible only for College/Course) -->
+        <TextView android:id="@+id/tv_acronym" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:fontFamily="@font/poppins"
+            android:textColor="@color/yellow" android:textSize="11sp"
+            android:layout_marginBottom="4dp" android:text="" android:visibility="gone" />
+
+        <!-- Description -->
+        <TextView android:id="@+id/tv_description" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:fontFamily="@font/poppins"
+            android:textColor="#AAFFFFFF" android:textSize="11sp"
+            android:layout_marginBottom="8dp" android:text="—" />
+
+        <View android:layout_width="match_parent" android:layout_height="1dp"
+            android:background="#14FFFFFF" android:layout_marginBottom="8dp" />
+
+        <!-- Metadata -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="3dp">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:fontFamily="@font/poppins"
+                android:text="Created" android:textColor="#55FFFFFF" android:textSize="10sp" />
+            <TextView android:id="@+id/tv_date_created" android:layout_width="0dp"
+                android:layout_height="wrap_content" android:layout_weight="2"
+                android:fontFamily="@font/poppins" android:textColor="#CCFFFFFF"
+                android:textSize="10sp" android:gravity="end" android:text="—" />
+        </LinearLayout>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="3dp">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:fontFamily="@font/poppins"
+                android:text="Created By" android:textColor="#55FFFFFF" android:textSize="10sp" />
+            <TextView android:id="@+id/tv_created_by" android:layout_width="0dp"
+                android:layout_height="wrap_content" android:layout_weight="2"
+                android:fontFamily="@font/poppins" android:textColor="#CCFFFFFF"
+                android:textSize="10sp" android:gravity="end" android:text="—" />
+        </LinearLayout>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="3dp">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:fontFamily="@font/poppins"
+                android:text="Modified" android:textColor="#55FFFFFF" android:textSize="10sp" />
+            <TextView android:id="@+id/tv_date_modified" android:layout_width="0dp"
+                android:layout_height="wrap_content" android:layout_weight="2"
+                android:fontFamily="@font/poppins" android:textColor="#CCFFFFFF"
+                android:textSize="10sp" android:gravity="end" android:text="—" />
+        </LinearLayout>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="10dp">
+            <TextView android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:fontFamily="@font/poppins"
+                android:text="Modified By" android:textColor="#55FFFFFF" android:textSize="10sp" />
+            <TextView android:id="@+id/tv_modified_by" android:layout_width="0dp"
+                android:layout_height="wrap_content" android:layout_weight="2"
+                android:fontFamily="@font/poppins" android:textColor="#CCFFFFFF"
+                android:textSize="10sp" android:gravity="end" android:text="—" />
+        </LinearLayout>
+
+        <!-- CRUD Buttons -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_edit"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp" android:layout_height="36dp"
+                android:layout_weight="1" android:layout_marginEnd="6dp"
+                android:fontFamily="@font/poppins" android:text="Edit"
+                android:textColor="@color/yellow" android:textSize="11sp"
+                app:strokeColor="@color/yellow" app:cornerRadius="8dp" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_toggle_status"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp" android:layout_height="36dp"
+                android:layout_weight="1" android:layout_marginEnd="6dp"
+                android:fontFamily="@font/poppins" android:text="Disable"
+                android:textColor="#FF9800" android:textSize="11sp"
+                app:strokeColor="#FF9800" app:cornerRadius="8dp" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_delete"
+                android:layout_width="0dp" android:layout_height="36dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/poppins" android:text="Delete"
+                android:textColor="@color/white" android:textSize="11sp"
+                app:backgroundTint="#B71C1C" app:cornerRadius="8dp" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
