@@ -19,8 +19,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="edit" />
-                            <entry key="sourceFile" value="C:\Users\jhann\OneDrive\Desktop\icons\edit.svg" />
+                            <entry key="outputName" value="logout" />
+                            <entry key="sourceFile" value="C:\Users\jhann\OneDrive\Desktop\icons\logout.svg" />
                           </map>
                         </option>
                       </PersistentState>

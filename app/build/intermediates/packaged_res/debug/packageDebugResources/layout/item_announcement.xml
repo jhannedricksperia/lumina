@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/glass_card"
+        android:padding="14dp">
+
+        <!-- Author + date row -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:gravity="center_vertical"
+            android:layout_marginBottom="8dp">
+            <FrameLayout android:layout_width="36dp" android:layout_height="36dp"
+                android:background="@drawable/avatar_circle" android:layout_marginEnd="10dp">
+                <TextView android:id="@+id/tv_author_initials" android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:layout_gravity="center"
+                    android:fontFamily="@font/poppins_bold" android:textColor="@color/white"
+                    android:textSize="12sp" android:text="AD" />
+            </FrameLayout>
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical">
+                <TextView android:id="@+id/tv_created_by" android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:fontFamily="@font/poppins_bold"
+                    android:textColor="@color/white" android:textSize="12sp" android:text="Admin" />
+                <TextView android:id="@+id/tv_date_created" android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:fontFamily="@font/poppins"
+                    android:textColor="#88FFFFFF" android:textSize="10sp" android:text="—" />
+            </LinearLayout>
+            <!-- Status badge -->
+            <TextView android:id="@+id/tv_status" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:paddingHorizontal="10dp"
+                android:paddingVertical="3dp" android:fontFamily="@font/poppins_bold"
+                android:textSize="10sp" android:text="Active" android:background="@drawable/badge_active" />
+        </LinearLayout>
+
+        <!-- Title -->
+        <TextView android:id="@+id/tv_title" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:fontFamily="@font/poppins_bold"
+            android:textColor="@color/white" android:textSize="15sp"
+            android:layout_marginBottom="6dp" android:text="Announcement Title" />
+
+        <!-- Description -->
+        <TextView android:id="@+id/tv_description" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:fontFamily="@font/poppins"
+            android:textColor="#AAFFFFFF" android:textSize="12sp"
+            android:layout_marginBottom="8dp" android:maxLines="3"
+            android:ellipsize="end" android:text="Description..." />
+
+        <!-- Image (visible when present) -->
+        <ImageView android:id="@+id/iv_image" android:layout_width="match_parent"
+            android:layout_height="160dp" android:scaleType="centerCrop"
+            android:layout_marginBottom="8dp" android:visibility="gone"
+            android:background="#11FFFFFF" />
+
+        <View android:layout_width="match_parent" android:layout_height="1dp"
+            android:background="#14FFFFFF" android:layout_marginBottom="8dp" />
+
+        <!-- Hearts + metadata row -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:gravity="center_vertical"
+            android:layout_marginBottom="8dp">
+            <ImageView android:layout_width="16dp" android:layout_height="16dp"
+                android:src="@drawable/heart" android:tint="#FF6B6B" />
+            <TextView android:id="@+id/tv_hearts" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:fontFamily="@font/poppins"
+                android:textColor="#FF6B6B" android:textSize="11sp"
+                android:layout_marginStart="4dp" android:layout_marginEnd="16dp" android:text="0" />
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical">
+                <TextView android:id="@+id/tv_modified_info" android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:fontFamily="@font/poppins"
+                    android:textColor="#44FFFFFF" android:textSize="9sp" android:text="" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- CRUD Buttons -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_edit"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp" android:layout_height="34dp"
+                android:layout_weight="1" android:layout_marginEnd="4dp"
+                android:fontFamily="@font/poppins" android:text="Edit"
+                android:textColor="@color/yellow" android:textSize="11sp"
+                app:strokeColor="@color/yellow" app:cornerRadius="8dp" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_archive"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp" android:layout_height="34dp"
+                android:layout_weight="1" android:layout_marginEnd="4dp"
+                android:fontFamily="@font/poppins" android:text="Archive"
+                android:textColor="#88FFFFFF" android:textSize="11sp"
+                app:strokeColor="#44FFFFFF" app:cornerRadius="8dp" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_delete"
+                android:layout_width="0dp" android:layout_height="34dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/poppins" android:text="Delete"
+                android:textColor="@color/white" android:textSize="11sp"
+                app:backgroundTint="#B71C1C" app:cornerRadius="8dp" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

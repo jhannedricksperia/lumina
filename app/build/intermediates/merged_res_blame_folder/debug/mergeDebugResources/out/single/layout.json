@@ -24,6 +24,14 @@
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\item_event.xml"
     },
     {
+        "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-mergeDebugResources-38:\\layout\\badge_create.xml",
+        "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\badge_create.xml"
+    },
+    {
+        "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-mergeDebugResources-38:\\layout\\badge_viewed.xml",
+        "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\badge_viewed.xml"
+    },
+    {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-mergeDebugResources-38:\\layout\\item_staff.xml",
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\item_staff.xml"
     },
@@ -32,12 +40,16 @@
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\dialog_change_password.xml"
     },
     {
-        "merged": "com.example.luminae.app-mergeDebugResources-38:/layout/fragment_admin_dashboard.xml",
-        "source": "com.example.luminae.app-main-41:/layout/fragment_admin_dashboard.xml"
+        "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-mergeDebugResources-38:\\layout\\badge_delete.xml",
+        "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\badge_delete.xml"
     },
     {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-mergeDebugResources-38:\\layout\\activity_main.xml",
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-mergeDebugResources-38:\\layout\\activity_activity_log.xml",
+        "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\activity_activity_log.xml"
     },
     {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-mergeDebugResources-38:\\layout\\dialog_post_announcement.xml",
@@ -64,6 +76,10 @@
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\activity_splash.xml"
     },
     {
+        "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-mergeDebugResources-38:\\layout\\dialog_add_student.xml",
+        "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\dialog_add_student.xml"
+    },
+    {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-mergeDebugResources-38:\\layout\\item_activity_log.xml",
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\item_activity_log.xml"
     },
@@ -76,6 +92,10 @@
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\activity_forgot_password.xml"
     },
     {
+        "merged": "com.example.luminae.app-mergeDebugResources-38:/layout/fragment_admin_profile.xml",
+        "source": "com.example.luminae.app-main-41:/layout/fragment_admin_profile.xml"
+    },
+    {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-mergeDebugResources-38:\\layout\\activity_student_management.xml",
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\activity_student_management.xml"
     },
@@ -84,12 +104,12 @@
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\activity_staff_management.xml"
     },
     {
-        "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-mergeDebugResources-38:\\layout\\fragment_admin_dashboard.xml",
-        "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\fragment_admin_dashboard.xml"
-    },
-    {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-mergeDebugResources-38:\\layout\\fragment_admin_event.xml",
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\fragment_admin_event.xml"
+    },
+    {
+        "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-mergeDebugResources-38:\\layout\\fragment_admin_dashboard.xml",
+        "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\fragment_admin_dashboard.xml"
     },
     {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-mergeDebugResources-38:\\layout\\item_participant.xml",
@@ -98,6 +118,10 @@
     {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-mergeDebugResources-38:\\layout\\activity_register.xml",
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\activity_register.xml"
+    },
+    {
+        "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-mergeDebugResources-38:\\layout\\badge_modified.xml",
+        "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\badge_modified.xml"
     },
     {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-mergeDebugResources-38:\\layout\\activity_event_participants.xml",

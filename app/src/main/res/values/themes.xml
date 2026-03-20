@@ -11,6 +11,7 @@
         <item name="colorControlNormal">@color/textMuted</item>
         <item name="colorControlActivated">@color/yellow</item>
         <item name="android:textColorHint">@color/textHint</item>
+        <item name="toolbarStyle">@style/LuminaToolbar</item>
     </style>
 
     <!-- Reusable style for all text input fields with rounded corners -->
@@ -36,6 +37,10 @@
         <item name="chipCornerRadius">20dp</item>
         <item name="chipMinHeight">32dp</item>
         <item name="checkedIconVisible">false</item>
+    </style>
+
+    <style name="LuminaToolbar" parent="Widget.MaterialComponents.Toolbar">
+        <item name="android:paddingTop">15dp</item>
     </style>
 
 </resources>

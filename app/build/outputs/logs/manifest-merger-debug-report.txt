@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:2:1-60:12
-INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:2:1-60:12
-INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:2:1-60:12
-INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:2:1-60:12
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:2:1-63:12
+INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:2:1-63:12
+INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:2:1-63:12
+INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:2:1-63:12
 MERGED from [androidx.databinding:viewbinding:8.12.3] C:\Users\jhann\.gradle\caches\8.13\transforms\863e157ac87340803bbc8c1069523be9\transformed\jetified-viewbinding-8.12.3\AndroidManifest.xml:2:1-7:12
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\jhann\.gradle\caches\8.13\transforms\7876fca21c50c68d63bdc9346f1acc9b\transformed\material-1.11.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\jhann\.gradle\caches\8.13\transforms\406306de9396c93982301dd8dadc2a18\transformed\constraintlayout-2.1.4\AndroidManifest.xml:2:1-11:12
@@ -86,8 +86,8 @@ MERGED from [com.google.android.recaptcha:recaptcha:18.1.2] C:\Users\jhann\.grad
 	android:name
 		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:4:22-64
 application
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:6:5-58:19
-INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:6:5-58:19
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:6:5-61:19
+INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:6:5-61:19
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\jhann\.gradle\caches\8.13\transforms\7876fca21c50c68d63bdc9346f1acc9b\transformed\material-1.11.0\AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\jhann\.gradle\caches\8.13\transforms\7876fca21c50c68d63bdc9346f1acc9b\transformed\material-1.11.0\AndroidManifest.xml:22:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\jhann\.gradle\caches\8.13\transforms\406306de9396c93982301dd8dadc2a18\transformed\constraintlayout-2.1.4\AndroidManifest.xml:9:5-20
@@ -222,12 +222,18 @@ ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManif
 		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:54:13-37
 	android:name
 		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:53:13-65
-meta-data#preloaded_fonts
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:55:9-57:57
-	android:resource
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:57:13-54
+activity#com.example.luminae.activities.ActivityLogActivity
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:55:9-57:40
+	android:exported
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:57:13-37
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:56:13-43
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:56:13-59
+meta-data#preloaded_fonts
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:58:9-60:57
+	android:resource
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:60:13-54
+	android:name
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:59:13-43
 uses-sdk
 INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml

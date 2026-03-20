@@ -52,6 +52,9 @@
         <activity
             android:name=".activities.StudentManagementActivity"
             android:exported="false" />
+        <activity
+            android:name=".activities.ActivityLogActivity"
+            android:exported="false" />
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

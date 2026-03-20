@@ -15,13 +15,14 @@ import com.github.mikephil.charting.data.*;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.*;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class AdminDashboardFragment extends Fragment {
 
     private FragmentAdminDashboardBinding b;
     private FirebaseFirestore db;
-    private String currentFilter = "today"; // today | week | month | custom
+    private String currentFilter = "today";
     private Date customDate = null;
 
     @Nullable @Override
@@ -35,11 +36,26 @@ public class AdminDashboardFragment extends Fragment {
         return b.getRoot();
     }
 
-    // ── Filter Chips ────────────────────────────────────────────────────────
+    // ── Filter Chips ─────────────────────────────────────────────────────────
     private void setupChipFilter() {
-        b.chipToday.setOnClickListener(v  -> { currentFilter = "today";  customDate = null; loadData(); });
-        b.chipWeek.setOnClickListener(v   -> { currentFilter = "week";   customDate = null; loadData(); });
-        b.chipMonth.setOnClickListener(v  -> { currentFilter = "month";  customDate = null; loadData(); });
+        b.chipToday.setOnClickListener(v -> {
+            currentFilter = "today";
+            customDate = null;
+            b.tvDateLabel.setText("Today");
+            loadData();
+        });
+        b.chipWeek.setOnClickListener(v -> {
+            currentFilter = "week";
+            customDate = null;
+            b.tvDateLabel.setText("Last 7 days");
+            loadData();
+        });
+        b.chipMonth.setOnClickListener(v -> {
+            currentFilter = "month";
+            customDate = null;
+            b.tvDateLabel.setText("Last 30 days");
+            loadData();
+        });
         b.chipCustom.setOnClickListener(v -> showDatePicker());
     }
 
@@ -49,12 +65,14 @@ public class AdminDashboardFragment extends Fragment {
             c.set(y, m, d, 0, 0, 0);
             customDate = c.getTime();
             currentFilter = "custom";
-            b.tvDateLabel.setText(d + "/" + (m + 1) + "/" + y);
+            // Format as "Mar 20, 2026"
+            SimpleDateFormat sdf = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
+            b.tvDateLabel.setText(sdf.format(customDate));
             loadData();
         }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show();
     }
 
-    // ── Management card navigation ───────────────────────────────────────────
+    // ── Management card navigation ────────────────────────────────────────────
     private void setupManagementCards() {
         b.cardStudentMgmt.setOnClickListener(v ->
                 startActivity(new android.content.Intent(getActivity(), StudentManagementActivity.class)));
@@ -68,7 +86,7 @@ public class AdminDashboardFragment extends Fragment {
                 startActivity(new android.content.Intent(getActivity(), CourseManagementActivity.class)));
     }
 
-    // ── Data Loading ─────────────────────────────────────────────────────────
+    // ── Data Loading ──────────────────────────────────────────────────────────
     private void loadData() {
         Timestamp from = getFromTimestamp();
         loadCounts(from);
@@ -82,7 +100,9 @@ public class AdminDashboardFragment extends Fragment {
         switch (currentFilter) {
             case "week":   c.add(Calendar.DAY_OF_YEAR, -7); break;
             case "month":  c.add(Calendar.MONTH, -1); break;
-            case "custom": if (customDate != null) { c.setTime(customDate); } break;
+            case "custom":
+                if (customDate != null) { c.setTime(customDate); }
+                break;
             default: // today
                 c.set(Calendar.HOUR_OF_DAY, 0);
                 c.set(Calendar.MINUTE, 0);
@@ -91,33 +111,62 @@ public class AdminDashboardFragment extends Fragment {
         return new Timestamp(c.getTime());
     }
 
+    // ── Counts ────────────────────────────────────────────────────────────────
     private void loadCounts(Timestamp from) {
-        // Total users
+        // Users — students, staff, active
         db.collection("users").get().addOnSuccessListener(s -> {
+            if (b == null) return;
             b.tvTotalUsers.setText(String.valueOf(s.size()));
-            long active = s.getDocuments().stream()
-                    .filter(d -> "Active".equals(d.getString("status"))).count();
+
+            long active = 0, students = 0, staff = 0;
+            for (DocumentSnapshot d : s.getDocuments()) {
+                String role   = d.getString("role");
+                String status = d.getString("status");
+                if ("Active".equals(status)) active++;
+                if ("Student".equals(role))  students++;
+                if ("Staff".equals(role))    staff++;
+            }
             b.tvActiveUsers.setText(String.valueOf(active));
-            long students = s.getDocuments().stream()
-                    .filter(d -> "student".equals(d.getString("role"))).count();
-            long staff = s.getDocuments().stream()
-                    .filter(d -> "staff".equals(d.getString("role"))).count();
             b.tvStudentCount.setText(students + " students");
             b.tvStaffCount.setText(staff + " staff");
         });
 
-        // Announcements
+        // Announcements (filtered by date)
         db.collection("announcements")
                 .whereGreaterThanOrEqualTo("createdAt", from)
-                .get().addOnSuccessListener(s -> b.tvTotalAnnouncements.setText(String.valueOf(s.size())));
+                .get().addOnSuccessListener(s -> {
+                    if (b == null) return;
+                    b.tvTotalAnnouncements.setText(String.valueOf(s.size()));
+                });
 
-        // Events
+        // Events (filtered by date)
         db.collection("events")
                 .whereGreaterThanOrEqualTo("createdAt", from)
-                .get().addOnSuccessListener(s -> b.tvTotalEvents.setText(String.valueOf(s.size())));
+                .get().addOnSuccessListener(s -> {
+                    if (b == null) return;
+                    b.tvTotalEvents.setText(String.valueOf(s.size()));
+                });
+
+        // Campus count
+        db.collection("campuses").get().addOnSuccessListener(s -> {
+            if (b == null) return;
+            b.tvCampusCount.setText(s.size() + " campuses");
+        });
+
+        // College count
+        db.collection("colleges").get().addOnSuccessListener(s -> {
+            if (b == null) return;
+            b.tvCollegeCount.setText(s.size() + " colleges");
+        });
+
+        // Course count
+        db.collection("courses").get().addOnSuccessListener(s -> {
+            if (b == null) return;
+            b.tvCourseCount.setText(s.size() + " courses");
+        });
     }
 
-    // ── Bar Chart: Users per Campus ──────────────────────────────────────────
+    // ── Bar Chart: Users per Campus ───────────────────────────────────────────
     private void loadCampusBarChart(Timestamp from) {
         db.collection("users").get().addOnSuccessListener(snap -> {
             Map<String, Integer> campusMap = new LinkedHashMap<>();
@@ -160,7 +209,7 @@ public class AdminDashboardFragment extends Fragment {
         b.chartUsersCampus.invalidate();
     }
 
-    // ── Line Chart: Posts over time (last 7 days) ────────────────────────────
+    // ── Line Chart: Posts over last 7 days ───────────────────────────────────
     private void loadPostsLineChart(Timestamp from) {
         Calendar c = Calendar.getInstance();
         c.set(Calendar.HOUR_OF_DAY, 0); c.set(Calendar.MINUTE, 0); c.set(Calendar.SECOND, 0);
@@ -169,23 +218,22 @@ public class AdminDashboardFragment extends Fragment {
         String[] dow = {"Sun","Mon","Tue","Wed","Thu","Fri","Sat"};
         for (int i = 6; i >= 0; i--) {
             Calendar d = (Calendar) c.clone();
-            d.add(Calendar.DAY_OF_YEAR, -(i));
+            d.add(Calendar.DAY_OF_YEAR, -i);
             days[6 - i] = d.getTime();
             dayLabels[6 - i] = dow[d.get(Calendar.DAY_OF_WEEK) - 1];
         }
 
         final int[] announceCounts = new int[7];
-        final int[] eventCounts = new int[7];
+        final int[] eventCounts    = new int[7];
         final int[] done = {0};
 
         db.collection("announcements").get().addOnSuccessListener(snap -> {
             for (DocumentSnapshot doc : snap.getDocuments()) {
                 Timestamp ts = doc.getTimestamp("createdAt");
                 if (ts == null) continue;
-                for (int i = 0; i < 6; i++) {
+                for (int i = 0; i < 6; i++)
                     if (ts.toDate().after(days[i]) && ts.toDate().before(days[i + 1]))
                         announceCounts[i]++;
-                }
             }
             if (++done[0] == 2) buildLineChart(announceCounts, eventCounts, dayLabels);
         });
@@ -194,10 +242,9 @@ public class AdminDashboardFragment extends Fragment {
             for (DocumentSnapshot doc : snap.getDocuments()) {
                 Timestamp ts = doc.getTimestamp("createdAt");
                 if (ts == null) continue;
-                for (int i = 0; i < 6; i++) {
+                for (int i = 0; i < 6; i++)
                     if (ts.toDate().after(days[i]) && ts.toDate().before(days[i + 1]))
                         eventCounts[i]++;
-                }
             }
             if (++done[0] == 2) buildLineChart(announceCounts, eventCounts, dayLabels);
         });
@@ -236,18 +283,19 @@ public class AdminDashboardFragment extends Fragment {
         b.chartPostsTimeline.invalidate();
     }
 
-    // ── Pie Chart: Roles ─────────────────────────────────────────────────────
+    // ── Pie Chart: Roles ──────────────────────────────────────────────────────
     private void loadRolesPieChart() {
         db.collection("users").get().addOnSuccessListener(snap -> {
             int students = 0, staff = 0, admins = 0;
             for (DocumentSnapshot d : snap.getDocuments()) {
                 String role = d.getString("role");
+                // lowercase to match Firestore values saved by RegisterActivity
                 if ("student".equals(role)) students++;
-                else if ("staff".equals(role)) staff++;
-                else if ("admin".equals(role)) admins++;
+                else if ("staff".equals(role))   staff++;
+                else if ("admin".equals(role))   admins++;
             }
             List<PieEntry> entries = new ArrayList<>();
-            if (students > 0) entries.add(new PieEntry(students, "Students"));
+            if (students > 0) entries.add(new PieEntry(students, "Student"));
             if (staff    > 0) entries.add(new PieEntry(staff,    "Staff"));
             if (admins   > 0) entries.add(new PieEntry(admins,   "Admin"));
 
@@ -268,4 +316,5 @@ public class AdminDashboardFragment extends Fragment {
     }
 
     @Override public void onDestroyView() { super.onDestroyView(); b = null; }
+
 }

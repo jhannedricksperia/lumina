@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Background -->
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/background"
+        android:scaleType="centerCrop" />
+
+    <!-- Deep gradient overlay — pulls from BulSU crimson + navy -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/splash_overlay" />
+
+    <!-- Main content -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingHorizontal="36dp">
+
+        <!-- Glass card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="36dp"
+            android:background="@drawable/glass_card"
+            android:elevation="12dp">
+
+            <!-- Logo in a circular ring -->
+            <FrameLayout
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:background="@drawable/logo_ring">
+
+                <ImageView
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/logo"
+                    android:scaleType="fitCenter" />
+
+            </FrameLayout>
+
+            <!-- App name -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/poppins_bold"
+                android:letterSpacing="0.25"
+                android:text="LUMINA"
+                android:textColor="#FFFFFF"
+                android:textSize="34sp" />
+
+            <!-- Gold + crimson accent line with diamond -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal">
+
+                <View
+                    android:layout_width="40dp"
+                    android:layout_height="1dp"
+                    android:background="@drawable/line_fade_right" />
+
+                <View
+                    android:layout_width="6dp"
+                    android:layout_height="6dp"
+                    android:layout_marginHorizontal="8dp"
+                    android:background="@drawable/diamond_gold" />
+
+                <View
+                    android:layout_width="40dp"
+                    android:layout_height="1dp"
+                    android:background="@drawable/line_fade_left" />
+
+            </LinearLayout>
+
+            <!-- Subtitle -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins"
+                android:gravity="center"
+                android:lineSpacingMultiplier="1.5"
+                android:text="BulSU Announcement\nand Events Hub"
+                android:textColor="#99FFFFFF"
+                android:textSize="12sp" />
+
+            <!-- University badge -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/badge_crimson"
+                android:fontFamily="@font/poppins_bold"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="4dp"
+                android:text="BULACAN STATE UNIVERSITY"
+                android:textColor="#FFCCCC"
+                android:textSize="8sp"
+                android:letterSpacing="0.15" />
+
+        </LinearLayout>
+
+        <!-- Animated dots -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="16dp"
+            android:layout_marginTop="40dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <View
+                android:id="@+id/dot1"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:layout_marginHorizontal="5dp"
+                android:background="@drawable/dot_white" />
+
+            <View
+                android:id="@+id/dot2"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:layout_marginHorizontal="5dp"
+                android:background="@drawable/dot_gold" />
+
+            <View
+                android:id="@+id/dot3"
+                android:layout_width="8dp"
+                android:layout_height="8dp"
+                android:layout_marginHorizontal="5dp"
+                android:background="@drawable/dot_crimson" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Version tag bottom center -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="24dp"
+        android:fontFamily="@font/poppins"
+        android:text="v1.0.0"
+        android:textColor="#33FFFFFF"
+        android:textSize="10sp"
+        android:letterSpacing="0.1" />
+
+</FrameLayout>

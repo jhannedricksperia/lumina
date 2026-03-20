@@ -10,9 +10,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.luminae.R;
 import com.example.luminae.databinding.ActivityGenericManagementBinding;
+import com.example.luminae.utils.ActivityLogger;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
@@ -34,7 +34,7 @@ public class CampusManagementActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         setSupportActionBar(b.toolbar);
-        b.toolbar.setTitle("Campus Management");
+        getSupportActionBar().setTitle("Campus Management");
         b.toolbar.setNavigationOnClickListener(v -> finish());
 
         adapter = new CrudAdapter();
@@ -84,7 +84,10 @@ public class CampusManagementActivity extends AppCompatActivity {
                 .setPositiveButton("Save", (d, w) -> {
                     String name = etName.getText().toString().trim();
                     String desc = etDesc.getText().toString().trim();
-                    if (name.isEmpty()) { Toast.makeText(this, "Name required", Toast.LENGTH_SHORT).show(); return; }
+                    if (name.isEmpty()) {
+                        Toast.makeText(this, "Name required", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     String uid = FirebaseAuth.getInstance().getUid();
                     if (existing == null) {
                         Map<String, Object> data = new HashMap<>();
@@ -93,23 +96,28 @@ public class CampusManagementActivity extends AppCompatActivity {
                         data.put("status", "Active");
                         data.put("createdAt", Timestamp.now());
                         data.put("createdBy", uid);
-                        db.collection("campuses").add(data);
+                        db.collection("campuses").add(data)
+                                .addOnSuccessListener(ref ->
+                                        ActivityLogger.logCampus(ActivityLogger.ACTION_CREATE, name));
                     } else {
-                        existing.getReference().update("name", name, "description", desc,
-                                "modifiedAt", Timestamp.now(), "modifiedBy", uid);
+                        existing.getReference().update(
+                                        "name", name, "description", desc,
+                                        "modifiedAt", Timestamp.now(), "modifiedBy", uid)
+                                .addOnSuccessListener(v ->
+                                        ActivityLogger.logCampus(ActivityLogger.ACTION_MODIFIED, name));
                     }
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
     }
 
-    // ── Adapter ──────────────────────────────────────────────────────────────
+    // ── Adapter ───────────────────────────────────────────────────────────────
     private class CrudAdapter extends RecyclerView.Adapter<CrudAdapter.VH> {
 
         class VH extends RecyclerView.ViewHolder {
             TextView tvName, tvStatus, tvAcronym, tvDesc,
-                     tvDateCreated, tvCreatedBy, tvDateModified, tvModifiedBy,
-                     btnEdit, btnToggle, btnDelete;
+                    tvDateCreated, tvCreatedBy, tvDateModified, tvModifiedBy,
+                    btnEdit, btnToggle, btnDelete;
 
             VH(View v) {
                 super(v);
@@ -134,9 +142,10 @@ public class CampusManagementActivity extends AppCompatActivity {
         @Override public void onBindViewHolder(VH h, int pos) {
             DocumentSnapshot doc = filtered.get(pos);
             SimpleDateFormat sdf = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
+            String name   = orDash(doc.getString("name"));
             String status = doc.getString("status") != null ? doc.getString("status") : "Active";
 
-            h.tvName.setText(orDash(doc.getString("name")));
+            h.tvName.setText(name);
             h.tvDesc.setText(orDash(doc.getString("description")));
             h.tvStatus.setText(status);
             h.tvAcronym.setVisibility(View.GONE);
@@ -159,16 +168,26 @@ public class CampusManagementActivity extends AppCompatActivity {
 
             h.btnToggle.setOnClickListener(v -> {
                 String ns = "Active".equals(status) ? "Inactive" : "Active";
-                doc.getReference().update("status", ns, "modifiedAt", Timestamp.now(),
-                        "modifiedBy", FirebaseAuth.getInstance().getUid());
+                doc.getReference().update(
+                                "status", ns,
+                                "modifiedAt", Timestamp.now(),
+                                "modifiedBy", FirebaseAuth.getInstance().getUid())
+                        .addOnSuccessListener(unused ->
+                                ActivityLogger.logCampus(ActivityLogger.ACTION_MODIFIED,
+                                        name + " → " + ns));
             });
 
             h.btnDelete.setOnClickListener(v ->
                     new MaterialAlertDialogBuilder(CampusManagementActivity.this)
                             .setTitle("Delete Campus")
-                            .setMessage("Delete " + doc.getString("name") + "? This cannot be undone.")
-                            .setPositiveButton("Delete", (d, w) -> doc.getReference().delete())
-                            .setNegativeButton("Cancel", null).show());
+                            .setMessage("Delete " + name + "? This cannot be undone.")
+                            .setPositiveButton("Delete", (d, w) ->
+                                    doc.getReference().delete()
+                                            .addOnSuccessListener(unused ->
+                                                    ActivityLogger.logCampus(
+                                                            ActivityLogger.ACTION_DELETE, name)))
+                            .setNegativeButton("Cancel", null)
+                            .show());
         }
 
         @Override public int getItemCount() { return filtered.size(); }

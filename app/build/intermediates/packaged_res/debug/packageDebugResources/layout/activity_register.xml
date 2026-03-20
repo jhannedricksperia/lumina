@@ -1,0 +1,595 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/background"
+        android:scaleType="centerCrop" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/splash_overlay" />
+
+    <!-- ── SCREEN 1: Form ── -->
+    <ScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:overScrollMode="never">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:minHeight="700dp"
+            android:orientation="vertical"
+            android:padding="28dp">
+
+            <FrameLayout
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:background="@drawable/logo_ring">
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/logo"
+                    android:scaleType="fitCenter" />
+            </FrameLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:fontFamily="@font/poppins_bold"
+                android:letterSpacing="0.25"
+                android:text="LUMINA"
+                android:textColor="#FFFFFF"
+                android:textSize="28sp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_marginTop="6dp"
+                android:orientation="horizontal">
+                <View android:layout_width="32dp" android:layout_height="1dp" android:background="@drawable/line_fade_right" />
+                <View android:layout_width="5dp" android:layout_height="5dp" android:layout_marginHorizontal="6dp" android:background="@drawable/diamond_gold" />
+                <View android:layout_width="32dp" android:layout_height="1dp" android:background="@drawable/line_fade_left" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="24dp"
+                android:fontFamily="@font/poppins"
+                android:gravity="center"
+                android:text="BulSU Announcement and Events Hub"
+                android:textColor="#66FFFFFF"
+                android:textSize="11sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp"
+                android:background="@drawable/glass_card"
+                android:elevation="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_bold"
+                    android:text="Create account"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="20dp"
+                    android:fontFamily="@font/poppins"
+                    android:text="Only @ms.bulsu.edu.ph emails accepted"
+                    android:textColor="#55FFFFFF"
+                    android:textSize="11sp" />
+
+                <!-- First + Last Name -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="14dp">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_first_name"
+                        style="@style/LuminaField"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp"
+                        android:hint="First Name">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_first_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/person"
+                            android:drawableTint="@color/textMuted"
+                            android:drawablePadding="12dp"
+                            android:paddingStart="12dp"
+                            android:fontFamily="@font/poppins"
+                            android:inputType="textPersonName"
+                            android:textColor="@color/white"
+                            android:textColorHint="@color/textHint" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_last_name"
+                        style="@style/LuminaField"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="8dp"
+                        android:hint="Last Name">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_last_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/person"
+                            android:drawableTint="@color/textMuted"
+                            android:drawablePadding="12dp"
+                            android:paddingStart="12dp"
+                            android:fontFamily="@font/poppins"
+                            android:inputType="textPersonName"
+                            android:textColor="@color/white"
+                            android:textColorHint="@color/textHint" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+
+                <!-- Campus -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_campus"
+                    style="@style/LuminaField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    android:hint="Campus">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_campus"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/email"
+                        android:drawableTint="@color/textMuted"
+                        android:drawablePadding="12dp"
+                        android:paddingStart="12dp"
+                        android:fontFamily="@font/poppins"
+                        android:inputType="textCapWords"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/textHint" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- College -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_college"
+                    style="@style/LuminaField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    android:hint="College">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_college"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/email"
+                        android:drawableTint="@color/textMuted"
+                        android:drawablePadding="12dp"
+                        android:paddingStart="12dp"
+                        android:fontFamily="@font/poppins"
+                        android:inputType="textCapWords"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/textHint" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Course -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_course"
+                    style="@style/LuminaField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    android:hint="Course">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_course"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/email"
+                        android:drawableTint="@color/textMuted"
+                        android:drawablePadding="12dp"
+                        android:paddingStart="12dp"
+                        android:fontFamily="@font/poppins"
+                        android:inputType="textCapWords"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/textHint" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <!-- Username -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_username"
+                    style="@style/LuminaField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    android:hint="Username">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_username"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/person"
+                        android:drawableTint="@color/textMuted"
+                        android:drawablePadding="12dp"
+                        android:paddingStart="12dp"
+                        android:fontFamily="@font/poppins"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/textHint" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Email -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_email"
+                    style="@style/LuminaField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    android:hint="BulSU Email Address">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/email"
+                        android:drawableTint="@color/textMuted"
+                        android:drawablePadding="12dp"
+                        android:paddingStart="12dp"
+                        android:fontFamily="@font/poppins"
+                        android:inputType="textEmailAddress"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/textHint" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Password -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_password"
+                    style="@style/LuminaField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    android:hint="Password (min. 6 characters)"
+                    app:endIconMode="password_toggle"
+                    app:endIconTint="@color/textMuted">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/password"
+                        android:drawableTint="@color/textMuted"
+                        android:drawablePadding="12dp"
+                        android:paddingStart="12dp"
+                        android:fontFamily="@font/poppins"
+                        android:inputType="textPassword"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/textHint" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Confirm Password -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_confirm_password"
+                    style="@style/LuminaField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:hint="Confirm Password"
+                    app:endIconMode="password_toggle"
+                    app:endIconTint="@color/textMuted">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_confirm_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/password"
+                        android:drawableTint="@color/textMuted"
+                        android:drawablePadding="12dp"
+                        android:paddingStart="12dp"
+                        android:fontFamily="@font/poppins"
+                        android:inputType="textPassword"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/textHint" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Error -->
+                <TextView
+                    android:id="@+id/tv_error"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:fontFamily="@font/poppins"
+                    android:gravity="center"
+                    android:textColor="#FF6B6B"
+                    android:textSize="11sp"
+                    android:visibility="gone" />
+
+                <!-- Progress -->
+                <ProgressBar
+                    android:id="@+id/progress_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="6dp"
+                    android:indeterminateTint="@color/yellow"
+                    android:visibility="gone" />
+
+                <!-- Next button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_next"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="@font/poppins_bold"
+                    android:letterSpacing="0.1"
+                    android:text="NEXT"
+                    android:textColor="@color/white"
+                    android:textSize="13sp"
+                    app:backgroundTint="@color/maroon"
+                    app:cornerRadius="12dp"
+                    app:elevation="6dp" />
+
+                <!-- Divider -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_marginVertical="16dp"
+                    android:orientation="horizontal">
+                    <View android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" android:background="#14FFFFFF" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginHorizontal="12dp" android:fontFamily="@font/poppins" android:text="OR" android:textColor="#33FFFFFF" android:textSize="10sp" />
+                    <View android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" android:background="#14FFFFFF" />
+                </LinearLayout>
+
+                <!-- Sign in link -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="horizontal">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:fontFamily="@font/poppins" android:text="Already have an account?  " android:textColor="#55FFFFFF" android:textSize="12sp" />
+                    <TextView
+                        android:id="@+id/tv_go_to_login"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:fontFamily="@font/poppins_bold"
+                        android:text="Sign In"
+                        android:textColor="@color/yellow"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/poppins"
+                android:text="v1.0.0"
+                android:textColor="#22FFFFFF"
+                android:textSize="9sp"
+                android:letterSpacing="0.1" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- ── SCREEN 2: Review ── -->
+    <ScrollView
+        android:id="@+id/scroll_review"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:overScrollMode="never"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:minHeight="700dp"
+            android:orientation="vertical"
+            android:padding="28dp">
+
+            <FrameLayout
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:background="@drawable/logo_ring">
+                <ImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/logo"
+                    android:scaleType="fitCenter" />
+            </FrameLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:fontFamily="@font/poppins_bold"
+                android:letterSpacing="0.25"
+                android:text="LUMINA"
+                android:textColor="#FFFFFF"
+                android:textSize="28sp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_marginTop="6dp"
+                android:orientation="horizontal">
+                <View android:layout_width="32dp" android:layout_height="1dp" android:background="@drawable/line_fade_right" />
+                <View android:layout_width="5dp" android:layout_height="5dp" android:layout_marginHorizontal="6dp" android:background="@drawable/diamond_gold" />
+                <View android:layout_width="32dp" android:layout_height="1dp" android:background="@drawable/line_fade_left" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="24dp"
+                android:fontFamily="@font/poppins"
+                android:gravity="center"
+                android:text="BulSU Announcement and Events Hub"
+                android:textColor="#66FFFFFF"
+                android:textSize="11sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp"
+                android:background="@drawable/glass_card"
+                android:elevation="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_bold"
+                    android:text="Review your details"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="20dp"
+                    android:fontFamily="@font/poppins"
+                    android:text="Please confirm before submitting"
+                    android:textColor="#55FFFFFF"
+                    android:textSize="11sp" />
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#14FFFFFF" android:layout_marginBottom="16dp" />
+
+                <!-- review rows helper macro — label | value -->
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginBottom="12dp">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:fontFamily="@font/poppins" android:text="Full Name" android:textColor="#66FFFFFF" android:textSize="11sp" />
+                    <TextView android:id="@+id/tv_review_name" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="2" android:fontFamily="@font/poppins_bold" android:gravity="end" android:textColor="#FFFFFF" android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginBottom="12dp">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:fontFamily="@font/poppins" android:text="Campus" android:textColor="#66FFFFFF" android:textSize="11sp" />
+                    <TextView android:id="@+id/tv_review_campus" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="2" android:fontFamily="@font/poppins_bold" android:gravity="end" android:textColor="#FFFFFF" android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginBottom="12dp">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:fontFamily="@font/poppins" android:text="College" android:textColor="#66FFFFFF" android:textSize="11sp" />
+                    <TextView android:id="@+id/tv_review_college" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="2" android:fontFamily="@font/poppins_bold" android:gravity="end" android:textColor="#FFFFFF" android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginBottom="12dp">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:fontFamily="@font/poppins" android:text="Course" android:textColor="#66FFFFFF" android:textSize="11sp" />
+                    <TextView android:id="@+id/tv_review_course" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="2" android:fontFamily="@font/poppins_bold" android:gravity="end" android:textColor="#FFFFFF" android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginBottom="12dp">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:fontFamily="@font/poppins" android:text="Username" android:textColor="#66FFFFFF" android:textSize="11sp" />
+                    <TextView android:id="@+id/tv_review_username" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="2" android:fontFamily="@font/poppins_bold" android:gravity="end" android:textColor="#FFFFFF" android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginBottom="12dp">
+                    <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:fontFamily="@font/poppins" android:text="Email" android:textColor="#66FFFFFF" android:textSize="11sp" />
+                    <TextView android:id="@+id/tv_review_email" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="2" android:fontFamily="@font/poppins_bold" android:gravity="end" android:textColor="#FFFFFF" android:textSize="12sp" />
+                </LinearLayout>
+
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#14FFFFFF" android:layout_marginBottom="20dp" />
+
+                <!-- Error -->
+                <TextView
+                    android:id="@+id/tv_error_review"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:fontFamily="@font/poppins"
+                    android:gravity="center"
+                    android:textColor="#FF6B6B"
+                    android:textSize="11sp"
+                    android:visibility="gone" />
+
+                <!-- Progress -->
+                <ProgressBar
+                    android:id="@+id/progress_bar_review"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="6dp"
+                    android:indeterminateTint="@color/yellow"
+                    android:visibility="gone" />
+
+                <!-- Back + Register -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_back"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:text="BACK"
+                        android:textColor="@color/white"
+                        android:textSize="13sp"
+                        app:cornerRadius="12dp"
+                        app:strokeColor="#44FFFFFF" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_register"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="2"
+                        android:layout_marginStart="8dp"
+                        android:fontFamily="@font/poppins_bold"
+                        android:letterSpacing="0.1"
+                        android:text="REGISTER"
+                        android:textColor="@color/white"
+                        android:textSize="13sp"
+                        app:backgroundTint="@color/maroon"
+                        app:cornerRadius="12dp"
+                        app:elevation="6dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/poppins"
+                android:text="v1.0.0"
+                android:textColor="#22FFFFFF"
+                android:textSize="9sp"
+                android:letterSpacing="0.1" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</FrameLayout>

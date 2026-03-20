@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.luminae.R;
 import com.example.luminae.activities.EventParticipantsActivity;
 import com.example.luminae.databinding.FragmentAdminEventBinding;
+import com.example.luminae.utils.ActivityLogger;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,9 +37,8 @@ public class AdminEventFragment extends Fragment {
     private EventAdapter adapter;
     private String filterPeriod = "all";
     private boolean sortDescending = true;
-    private String pendingBase64Image = null; // replaces pendingImageUri
+    private String pendingBase64Image = null;
     private ActivityResultLauncher<String> imagePicker;
-
     private String pickedDate = "", pickedTime = "";
 
     @Nullable @Override
@@ -46,12 +46,8 @@ public class AdminEventFragment extends Fragment {
         b = FragmentAdminEventBinding.inflate(inflater, container, false);
         db = FirebaseFirestore.getInstance();
 
-        // Image picker — compress to Base64 immediately on pick
         imagePicker = registerForActivityResult(new ActivityResultContracts.GetContent(),
-                uri -> {
-                    if (uri == null) return;
-                    pendingBase64Image = compressToBase64(uri);
-                });
+                uri -> { if (uri != null) pendingBase64Image = compressToBase64(uri); });
 
         adapter = new EventAdapter();
         b.recyclerEvents.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -77,62 +73,44 @@ public class AdminEventFragment extends Fragment {
         return b.getRoot();
     }
 
-    // ── Compress Uri → Base64 ────────────────────────────────────────────────
     private String compressToBase64(Uri uri) {
         try {
-            Bitmap original = MediaStore.Images.Media.getBitmap(
-                    requireContext().getContentResolver(), uri);
-
-            // Scale down to max 800px wide
+            Bitmap original = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), uri);
             int maxWidth = 800;
             if (original.getWidth() > maxWidth) {
                 float ratio = (float) maxWidth / original.getWidth();
-                int newHeight = Math.round(original.getHeight() * ratio);
-                original = Bitmap.createScaledBitmap(original, maxWidth, newHeight, true);
+                original = Bitmap.createScaledBitmap(original, maxWidth,
+                        Math.round(original.getHeight() * ratio), true);
             }
-
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            original.compress(Bitmap.CompressFormat.JPEG, 50, out); // 50% quality
+            original.compress(Bitmap.CompressFormat.JPEG, 50, out);
             return Base64.encodeToString(out.toByteArray(), Base64.DEFAULT);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        } catch (Exception e) { return null; }
     }
 
-    // ── Decode Base64 → ImageView ────────────────────────────────────────────
-    private void loadBase64Image(String base64, ImageView imageView) {
+    private void loadBase64Image(String base64, ImageView iv) {
         try {
             byte[] bytes = Base64.decode(base64, Base64.DEFAULT);
-            Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-            imageView.setImageBitmap(bmp);
-            imageView.setVisibility(View.VISIBLE);
-        } catch (Exception e) {
-            imageView.setVisibility(View.GONE);
-        }
+            iv.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+            iv.setVisibility(View.VISIBLE);
+        } catch (Exception e) { iv.setVisibility(View.GONE); }
     }
 
-    // ── Load Events ──────────────────────────────────────────────────────────
     private void loadEvents() {
-        db.collection("events")
-                .addSnapshotListener((snap, e) -> {
-                    if (snap == null) return;
-                    all = snap.getDocuments();
-                    applyFilter();
-                });
+        db.collection("events").addSnapshotListener((snap, e) -> {
+            if (snap == null) return;
+            all = snap.getDocuments();
+            applyFilter();
+        });
     }
 
     private void applyFilter() {
         Calendar from = Calendar.getInstance();
         switch (filterPeriod) {
-            case "today":
-                from.set(Calendar.HOUR_OF_DAY, 0);
-                from.set(Calendar.MINUTE, 0);
-                from.set(Calendar.SECOND, 0);
-                break;
+            case "today": from.set(Calendar.HOUR_OF_DAY, 0); from.set(Calendar.MINUTE, 0); from.set(Calendar.SECOND, 0); break;
             case "week":  from.add(Calendar.DAY_OF_YEAR, -7); break;
             case "month": from.add(Calendar.MONTH, -1); break;
-            default: from.set(2000, 0, 1);
+            default:      from.set(2000, 0, 1);
         }
         Date fromDate = from.getTime();
         filtered.clear();
@@ -143,18 +121,14 @@ public class AdminEventFragment extends Fragment {
         filtered.sort((a, z) -> {
             Timestamp ta = a.getTimestamp("createdAt"), tz = z.getTimestamp("createdAt");
             if (ta == null || tz == null) return 0;
-            return sortDescending
-                    ? tz.toDate().compareTo(ta.toDate())
-                    : ta.toDate().compareTo(tz.toDate());
+            return sortDescending ? tz.toDate().compareTo(ta.toDate()) : ta.toDate().compareTo(tz.toDate());
         });
         b.tvCount.setText(filtered.size() + " event(s)");
         adapter.notifyDataSetChanged();
     }
 
-    // ── Event Form Dialog ────────────────────────────────────────────────────
     private void showEventDialog(DocumentSnapshot existing) {
-        View form = LayoutInflater.from(getContext())
-                .inflate(R.layout.dialog_event_form, null);
+        View form = LayoutInflater.from(getContext()).inflate(R.layout.dialog_event_form, null);
 
         EditText  etTitle      = form.findViewById(R.id.et_title);
         EditText  etDesc       = form.findViewById(R.id.et_description);
@@ -168,7 +142,7 @@ public class AdminEventFragment extends Fragment {
         Button    btnPickImage = form.findViewById(R.id.btn_pick_image);
         ImageView ivPreview    = form.findViewById(R.id.iv_preview);
 
-        pendingBase64Image = null; // reset for this dialog
+        pendingBase64Image = null;
 
         if (existing != null) {
             etTitle.setText(existing.getString("title"));
@@ -180,20 +154,14 @@ public class AdminEventFragment extends Fragment {
             pickedTime = existing.getString("time") != null ? existing.getString("time") : "";
             tvPickedDate.setText(pickedDate.isEmpty() ? "No date selected" : pickedDate);
             tvPickedTime.setText(pickedTime.isEmpty() ? "No time selected" : pickedTime);
-
-            // Show existing image preview
-            String existingB64 = existing.getString("imageBase64");
-            if (existingB64 != null && !existingB64.isEmpty()) {
-                loadBase64Image(existingB64, ivPreview);
-                tvImgHint.setText("Tap to change image");
-            }
+            String b64 = existing.getString("imageBase64");
+            if (b64 != null && !b64.isEmpty()) { loadBase64Image(b64, ivPreview); tvImgHint.setText("Tap to change image"); }
         } else {
             pickedDate = ""; pickedTime = "";
             tvPickedDate.setText("No date selected");
             tvPickedTime.setText("No time selected");
         }
 
-        // Date picker
         btnPickDate.setOnClickListener(v -> {
             Calendar c = Calendar.getInstance();
             new DatePickerDialog(requireContext(), (view, y, m, d) -> {
@@ -202,23 +170,18 @@ public class AdminEventFragment extends Fragment {
             }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show();
         });
 
-        // Time picker
         btnPickTime.setOnClickListener(v -> {
             Calendar c = Calendar.getInstance();
-            new TimePickerDialog(requireContext(), (view, h, min) -> {
-                pickedTime = String.format(Locale.getDefault(), "%02d:%02d", h, min);
+            new TimePickerDialog(requireContext(), (view, hr, min) -> {
+                pickedTime = String.format(Locale.getDefault(), "%02d:%02d", hr, min);
                 tvPickedTime.setText(pickedTime);
             }, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), false).show();
         });
 
-        // Image picker — compress immediately, show preview after delay
         btnPickImage.setOnClickListener(v -> {
             imagePicker.launch("image/*");
             btnPickImage.postDelayed(() -> {
-                if (pendingBase64Image != null) {
-                    loadBase64Image(pendingBase64Image, ivPreview);
-                    tvImgHint.setText("Image selected ✓");
-                }
+                if (pendingBase64Image != null) { loadBase64Image(pendingBase64Image, ivPreview); tvImgHint.setText("Image selected ✓"); }
             }, 1000);
         });
 
@@ -231,63 +194,48 @@ public class AdminEventFragment extends Fragment {
                     String where  = etWhere.getText().toString().trim();
                     String maxStr = etMaxPax.getText().toString().trim();
                     int    maxPax = maxStr.isEmpty() ? 0 : Integer.parseInt(maxStr);
-
-                    if (title.isEmpty()) {
-                        Toast.makeText(getContext(), "Title required", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
+                    if (title.isEmpty()) { Toast.makeText(getContext(), "Title required", Toast.LENGTH_SHORT).show(); return; }
                     String uid = FirebaseAuth.getInstance().getUid();
-
-                    // Use newly picked image, or keep existing, or null
-                    String imageToSave = pendingBase64Image != null
-                            ? pendingBase64Image
+                    String imageToSave = pendingBase64Image != null ? pendingBase64Image
                             : (existing != null ? existing.getString("imageBase64") : null);
-
-                    saveEvent(existing, title, desc, where,
-                            pickedDate, pickedTime, maxPax, imageToSave, uid);
+                    saveEvent(existing, title, desc, where, pickedDate, pickedTime, maxPax, imageToSave, uid);
                     pendingBase64Image = null;
                 })
                 .setNegativeButton("Cancel", (d, w) -> pendingBase64Image = null)
                 .show();
     }
 
-    // ── Save to Firestore ────────────────────────────────────────────────────
     private void saveEvent(DocumentSnapshot existing, String title, String desc,
                            String where, String date, String time,
                            int maxPax, String imageBase64, String uid) {
+        String actorEmail = FirebaseAuth.getInstance().getCurrentUser() != null
+                ? FirebaseAuth.getInstance().getCurrentUser().getEmail() : "unknown";
+
         Map<String, Object> data = new HashMap<>();
-        data.put("title", title);
-        data.put("description", desc);
-        data.put("where", where);
-        data.put("date", date);
-        data.put("time", time);
-        data.put("maxParticipants", maxPax);
+        data.put("title", title); data.put("description", desc);
+        data.put("where", where); data.put("date", date);
+        data.put("time", time);   data.put("maxParticipants", maxPax);
         if (imageBase64 != null) data.put("imageBase64", imageBase64);
 
         if (existing == null) {
-            data.put("createdAt", Timestamp.now());
-            data.put("createdBy", uid);
-            data.put("status", "Active");
-            data.put("hearts", 0);
-            data.put("goingCount", 0);
+            data.put("createdAt", Timestamp.now()); data.put("createdBy", uid);
+            data.put("status", "Active"); data.put("hearts", 0); data.put("goingCount", 0);
             db.collection("events").add(data)
+                    .addOnSuccessListener(ref ->
+                            ActivityLogger.logEvent(ActivityLogger.ACTION_CREATE, title, actorEmail))
                     .addOnFailureListener(e ->
-                            Toast.makeText(getContext(),
-                                    "Failed: " + e.getMessage(),
-                                    Toast.LENGTH_LONG).show());
+                            Toast.makeText(getContext(), "Failed: " + e.getMessage(), Toast.LENGTH_LONG).show());
         } else {
-            data.put("modifiedAt", Timestamp.now());
-            data.put("modifiedBy", uid);
+            data.put("modifiedAt", Timestamp.now()); data.put("modifiedBy", uid);
             existing.getReference().update(data)
+                    .addOnSuccessListener(v ->
+                            ActivityLogger.logEvent(ActivityLogger.ACTION_MODIFIED, title, actorEmail))
                     .addOnFailureListener(e ->
-                            Toast.makeText(getContext(),
-                                    "Failed: " + e.getMessage(),
-                                    Toast.LENGTH_LONG).show());
+                            Toast.makeText(getContext(), "Failed: " + e.getMessage(), Toast.LENGTH_LONG).show());
         }
     }
 
-    // ── Adapter ──────────────────────────────────────────────────────────────
+    // ── Adapter ───────────────────────────────────────────────────────────────
     private class EventAdapter extends RecyclerView.Adapter<EventAdapter.VH> {
 
         class VH extends RecyclerView.ViewHolder {
@@ -321,72 +269,70 @@ public class AdminEventFragment extends Fragment {
         }
 
         @Override public VH onCreateViewHolder(ViewGroup p, int t) {
-            return new VH(LayoutInflater.from(p.getContext())
-                    .inflate(R.layout.item_event, p, false));
+            return new VH(LayoutInflater.from(p.getContext()).inflate(R.layout.item_event, p, false));
         }
 
         @Override public void onBindViewHolder(VH h, int pos) {
             DocumentSnapshot doc = filtered.get(pos);
             SimpleDateFormat sdf = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
 
-            String status = doc.getString("status")           != null ? doc.getString("status")           : "Active";
-            String title  = doc.getString("title")            != null ? doc.getString("title")            : "—";
-            String desc   = doc.getString("description")      != null ? doc.getString("description")      : "—";
-            String where  = doc.getString("where")            != null ? doc.getString("where")            : "—";
-            String date   = doc.getString("date")             != null ? doc.getString("date")             : "—";
-            String time   = doc.getString("time")             != null ? doc.getString("time")             : "—";
-            String by     = doc.getString("createdBy")        != null ? doc.getString("createdBy")        : "Admin";
-            long hearts   = doc.getLong("hearts")             != null ? doc.getLong("hearts")             : 0;
-            long going    = doc.getLong("goingCount")         != null ? doc.getLong("goingCount")         : 0;
-            long maxPax   = doc.getLong("maxParticipants")    != null ? doc.getLong("maxParticipants")    : 0;
+            String status = doc.getString("status")        != null ? doc.getString("status")        : "Active";
+            String title  = doc.getString("title")         != null ? doc.getString("title")         : "—";
+            String desc   = doc.getString("description")   != null ? doc.getString("description")   : "—";
+            String where  = doc.getString("where")         != null ? doc.getString("where")         : "—";
+            String date   = doc.getString("date")          != null ? doc.getString("date")          : "—";
+            String time   = doc.getString("time")          != null ? doc.getString("time")          : "—";
+            String by     = doc.getString("createdBy")     != null ? doc.getString("createdBy")     : "Admin";
+            long   hearts = doc.getLong("hearts")          != null ? doc.getLong("hearts")          : 0;
+            long   going  = doc.getLong("goingCount")      != null ? doc.getLong("goingCount")      : 0;
+            long   maxPax = doc.getLong("maxParticipants") != null ? doc.getLong("maxParticipants") : 0;
             Timestamp ts  = doc.getTimestamp("createdAt");
 
-            h.tvTitle.setText(title);
-            h.tvDesc.setText(desc);
-            h.tvWhere.setText("📍 " + where);
-            h.tvDate.setText("📅 " + date);
-            h.tvTime.setText("⏰ " + time);
-            h.tvMaxPax.setText("Max: " + maxPax);
-            h.tvGoingCount.setText("Going: " + going);
-            h.tvHearts.setText(String.valueOf(hearts));
+            h.tvTitle.setText(title);        h.tvDesc.setText(desc);
+            h.tvWhere.setText("📍 " + where); h.tvDate.setText("📅 " + date);
+            h.tvTime.setText("⏰ " + time);   h.tvMaxPax.setText("Max: " + maxPax);
+            h.tvGoingCount.setText("Going: " + going); h.tvHearts.setText(String.valueOf(hearts));
             h.tvCreatedBy.setText(by);
             h.tvDateCreated.setText(ts != null ? sdf.format(ts.toDate()) : "—");
             h.tvStatus.setText(status);
-            h.tvStatus.setBackgroundResource(
-                    "Active".equals(status) ? R.drawable.badge_active : R.drawable.badge_blocked);
-            h.tvAuthorInitials.setText(
-                    by.length() > 0 ? String.valueOf(by.charAt(0)).toUpperCase() : "A");
+            h.tvStatus.setBackgroundResource("Active".equals(status) ? R.drawable.badge_active : R.drawable.badge_blocked);
+            h.tvAuthorInitials.setText(by.length() > 0 ? String.valueOf(by.charAt(0)).toUpperCase() : "A");
 
             Timestamp mod = doc.getTimestamp("modifiedAt");
             String modBy  = doc.getString("modifiedBy");
-            h.tvModifiedInfo.setText(
-                    (mod != null && modBy != null)
-                            ? "Edited " + sdf.format(mod.toDate()) + " by " + modBy
-                            : "");
+            h.tvModifiedInfo.setText((mod != null && modBy != null)
+                    ? "Edited " + sdf.format(mod.toDate()) + " by " + modBy : "");
 
-            // Load Base64 image
             String base64 = doc.getString("imageBase64");
-            if (base64 != null && !base64.isEmpty()) {
-                loadBase64Image(base64, h.ivImage);
-            } else {
-                h.ivImage.setVisibility(View.GONE);
-            }
+            if (base64 != null && !base64.isEmpty()) loadBase64Image(base64, h.ivImage);
+            else h.ivImage.setVisibility(View.GONE);
 
             h.btnEdit.setOnClickListener(v -> showEventDialog(doc));
 
             h.btnArchive.setOnClickListener(v -> {
                 String ns = "Archived".equals(status) ? "Active" : "Archived";
                 h.btnArchive.setText("Archived".equals(status) ? "Archive" : "Unarchive");
-                doc.getReference().update("status", ns,
-                        "modifiedAt", Timestamp.now(),
-                        "modifiedBy", FirebaseAuth.getInstance().getUid());
+                String actorEmail = FirebaseAuth.getInstance().getCurrentUser() != null
+                        ? FirebaseAuth.getInstance().getCurrentUser().getEmail() : "unknown";
+                doc.getReference().update("status", ns, "modifiedAt", Timestamp.now(),
+                                "modifiedBy", FirebaseAuth.getInstance().getUid())
+                        .addOnSuccessListener(unused ->
+                                ActivityLogger.logEvent(ActivityLogger.ACTION_MODIFIED,
+                                        title + " → " + ns, actorEmail));
             });
 
             h.btnDelete.setOnClickListener(v ->
                     new MaterialAlertDialogBuilder(requireContext())
                             .setTitle("Delete Event")
                             .setMessage("Delete \"" + title + "\"? This cannot be undone.")
-                            .setPositiveButton("Delete", (d, w) -> doc.getReference().delete())
+                            .setPositiveButton("Delete", (d, w) -> {
+                                String actorEmail = FirebaseAuth.getInstance().getCurrentUser() != null
+                                        ? FirebaseAuth.getInstance().getCurrentUser().getEmail() : "unknown";
+                                doc.getReference().delete()
+                                        .addOnSuccessListener(unused ->
+                                                ActivityLogger.logEvent(
+                                                        ActivityLogger.ACTION_DELETE, title, actorEmail));
+                            })
                             .setNegativeButton("Cancel", null).show());
 
             h.btnParticipants.setOnClickListener(v -> {

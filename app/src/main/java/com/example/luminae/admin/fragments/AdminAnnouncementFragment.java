@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.luminae.R;
 import com.example.luminae.databinding.FragmentAdminAnnouncementBinding;
+import com.example.luminae.utils.ActivityLogger;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,7 +33,7 @@ public class AdminAnnouncementFragment extends Fragment {
     private AnnouncementAdapter adapter;
     private String filterPeriod = "all";
     private boolean sortDescending = true;
-    private String pendingBase64Image = null; // stores compressed base64 of picked image
+    private String pendingBase64Image = null;
     private ActivityResultLauncher<String> imagePicker;
 
     @Nullable @Override
@@ -40,18 +41,13 @@ public class AdminAnnouncementFragment extends Fragment {
         b = FragmentAdminAnnouncementBinding.inflate(inflater, container, false);
         db = FirebaseFirestore.getInstance();
 
-        // Image picker — compresses and converts to Base64 immediately on pick
         imagePicker = registerForActivityResult(new ActivityResultContracts.GetContent(),
-                uri -> {
-                    if (uri == null) return;
-                    pendingBase64Image = compressToBase64(uri);
-                });
+                uri -> { if (uri != null) pendingBase64Image = compressToBase64(uri); });
 
         adapter = new AnnouncementAdapter();
         b.recyclerAnnouncements.setLayoutManager(new LinearLayoutManager(getContext()));
         b.recyclerAnnouncements.setAdapter(adapter);
 
-        // Filter chips
         b.chipGroupFilter.setOnCheckedStateChangeListener((g, ids) -> {
             if      (b.chipToday.isChecked()) filterPeriod = "today";
             else if (b.chipWeek.isChecked())  filterPeriod = "week";
@@ -60,7 +56,6 @@ public class AdminAnnouncementFragment extends Fragment {
             applyFilter();
         });
 
-        // Sort toggle
         b.btnSort.setOnClickListener(v -> {
             sortDescending = !sortDescending;
             b.btnSort.setText(sortDescending ? "↓ Newest" : "↑ Oldest");
@@ -73,63 +68,44 @@ public class AdminAnnouncementFragment extends Fragment {
         return b.getRoot();
     }
 
-    // ── Convert Uri → compressed Base64 string ───────────────────────────────
     private String compressToBase64(Uri uri) {
         try {
-            Bitmap original = MediaStore.Images.Media.getBitmap(
-                    requireContext().getContentResolver(), uri);
-
-            // Scale down if too large (max 800px wide)
+            Bitmap original = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), uri);
             int maxWidth = 800;
             if (original.getWidth() > maxWidth) {
                 float ratio = (float) maxWidth / original.getWidth();
-                int newHeight = Math.round(original.getHeight() * ratio);
-                original = Bitmap.createScaledBitmap(original, maxWidth, newHeight, true);
+                original = Bitmap.createScaledBitmap(original, maxWidth,
+                        Math.round(original.getHeight() * ratio), true);
             }
-
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            original.compress(Bitmap.CompressFormat.JPEG, 50, out); // 50% quality
-            byte[] bytes = out.toByteArray();
-            return Base64.encodeToString(bytes, Base64.DEFAULT);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+            original.compress(Bitmap.CompressFormat.JPEG, 50, out);
+            return Base64.encodeToString(out.toByteArray(), Base64.DEFAULT);
+        } catch (Exception e) { return null; }
     }
 
-    // ── Decode Base64 → Bitmap for ImageView ─────────────────────────────────
-    private void loadBase64Image(String base64, ImageView imageView) {
+    private void loadBase64Image(String base64, ImageView iv) {
         try {
             byte[] bytes = Base64.decode(base64, Base64.DEFAULT);
-            Bitmap bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-            imageView.setImageBitmap(bmp);
-            imageView.setVisibility(View.VISIBLE);
-        } catch (Exception e) {
-            imageView.setVisibility(View.GONE);
-        }
+            iv.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+            iv.setVisibility(View.VISIBLE);
+        } catch (Exception e) { iv.setVisibility(View.GONE); }
     }
 
-    // ── Load from Firestore ───────────────────────────────────────────────────
     private void loadAnnouncements() {
-        db.collection("announcements")
-                .addSnapshotListener((snap, e) -> {
-                    if (snap == null) return;
-                    all = snap.getDocuments();
-                    applyFilter();
-                });
+        db.collection("announcements").addSnapshotListener((snap, e) -> {
+            if (snap == null) return;
+            all = snap.getDocuments();
+            applyFilter();
+        });
     }
 
     private void applyFilter() {
         Calendar from = Calendar.getInstance();
         switch (filterPeriod) {
-            case "today":
-                from.set(Calendar.HOUR_OF_DAY, 0);
-                from.set(Calendar.MINUTE, 0);
-                from.set(Calendar.SECOND, 0);
-                break;
+            case "today": from.set(Calendar.HOUR_OF_DAY, 0); from.set(Calendar.MINUTE, 0); from.set(Calendar.SECOND, 0); break;
             case "week":  from.add(Calendar.DAY_OF_YEAR, -7); break;
             case "month": from.add(Calendar.MONTH, -1); break;
-            default: from.set(2000, 0, 1);
+            default:      from.set(2000, 0, 1);
         }
         Date fromDate = from.getTime();
         filtered.clear();
@@ -140,47 +116,33 @@ public class AdminAnnouncementFragment extends Fragment {
         filtered.sort((a, z) -> {
             Timestamp ta = a.getTimestamp("createdAt"), tz = z.getTimestamp("createdAt");
             if (ta == null || tz == null) return 0;
-            return sortDescending
-                    ? tz.toDate().compareTo(ta.toDate())
-                    : ta.toDate().compareTo(tz.toDate());
+            return sortDescending ? tz.toDate().compareTo(ta.toDate()) : ta.toDate().compareTo(tz.toDate());
         });
         b.tvCount.setText(filtered.size() + " announcement(s)");
         adapter.notifyDataSetChanged();
     }
 
-    // ── Post / Edit Dialog ────────────────────────────────────────────────────
     private void showPostDialog(DocumentSnapshot existing) {
-        View form = LayoutInflater.from(getContext())
-                .inflate(R.layout.dialog_post_announcement, null);
-
+        View form = LayoutInflater.from(getContext()).inflate(R.layout.dialog_post_announcement, null);
         EditText  etTitle    = form.findViewById(R.id.et_title);
         EditText  etDesc     = form.findViewById(R.id.et_description);
         ImageView ivPreview  = form.findViewById(R.id.iv_preview);
         Button    btnPickImg = form.findViewById(R.id.btn_pick_image);
         TextView  tvImgHint  = form.findViewById(R.id.tv_image_hint);
 
-        pendingBase64Image = null; // reset for this dialog session
+        pendingBase64Image = null;
 
         if (existing != null) {
             etTitle.setText(existing.getString("title"));
             etDesc.setText(existing.getString("description"));
-            // Show existing image preview if present
-            String existingB64 = existing.getString("imageBase64");
-            if (existingB64 != null && !existingB64.isEmpty()) {
-                loadBase64Image(existingB64, ivPreview);
-                tvImgHint.setText("Tap to change image");
-            }
+            String b64 = existing.getString("imageBase64");
+            if (b64 != null && !b64.isEmpty()) { loadBase64Image(b64, ivPreview); tvImgHint.setText("Tap to change image"); }
         }
 
         btnPickImg.setOnClickListener(v -> {
             imagePicker.launch("image/*");
-            // Show preview after pick — handled via pendingBase64Image
-            // We defer preview update to a short post to let the launcher complete
             btnPickImg.postDelayed(() -> {
-                if (pendingBase64Image != null) {
-                    loadBase64Image(pendingBase64Image, ivPreview);
-                    tvImgHint.setText("Image selected ✓");
-                }
+                if (pendingBase64Image != null) { loadBase64Image(pendingBase64Image, ivPreview); tvImgHint.setText("Image selected ✓"); }
             }, 1000);
         });
 
@@ -190,17 +152,10 @@ public class AdminAnnouncementFragment extends Fragment {
                 .setPositiveButton("Post", (d, w) -> {
                     String title = etTitle.getText().toString().trim();
                     String desc  = etDesc.getText().toString().trim();
-                    if (title.isEmpty()) {
-                        Toast.makeText(getContext(), "Title required", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
+                    if (title.isEmpty()) { Toast.makeText(getContext(), "Title required", Toast.LENGTH_SHORT).show(); return; }
                     String uid = FirebaseAuth.getInstance().getUid();
-
-                    // Use newly picked image, or keep existing, or null
-                    String imageToSave = pendingBase64Image != null
-                            ? pendingBase64Image
+                    String imageToSave = pendingBase64Image != null ? pendingBase64Image
                             : (existing != null ? existing.getString("imageBase64") : null);
-
                     saveAnnouncement(existing, title, desc, imageToSave, uid);
                     pendingBase64Image = null;
                 })
@@ -208,9 +163,11 @@ public class AdminAnnouncementFragment extends Fragment {
                 .show();
     }
 
-    // ── Save to Firestore ─────────────────────────────────────────────────────
     private void saveAnnouncement(DocumentSnapshot existing, String title,
                                   String desc, String imageBase64, String uid) {
+        String actorEmail = FirebaseAuth.getInstance().getCurrentUser() != null
+                ? FirebaseAuth.getInstance().getCurrentUser().getEmail() : "unknown";
+
         Map<String, Object> data = new HashMap<>();
         data.put("title", title);
         data.put("description", desc);
@@ -222,26 +179,26 @@ public class AdminAnnouncementFragment extends Fragment {
             data.put("status", "Active");
             data.put("hearts", 0);
             db.collection("announcements").add(data)
+                    .addOnSuccessListener(ref ->
+                            ActivityLogger.logAnnouncement(ActivityLogger.ACTION_CREATE, title, actorEmail))
                     .addOnFailureListener(e ->
-                            Toast.makeText(getContext(),
-                                    "Failed to post: " + e.getMessage(),
-                                    Toast.LENGTH_LONG).show());
+                            Toast.makeText(getContext(), "Failed: " + e.getMessage(), Toast.LENGTH_LONG).show());
         } else {
             data.put("modifiedAt", Timestamp.now());
             data.put("modifiedBy", uid);
             existing.getReference().update(data)
+                    .addOnSuccessListener(v ->
+                            ActivityLogger.logAnnouncement(ActivityLogger.ACTION_MODIFIED, title, actorEmail))
                     .addOnFailureListener(e ->
-                            Toast.makeText(getContext(),
-                                    "Failed to update: " + e.getMessage(),
-                                    Toast.LENGTH_LONG).show());
+                            Toast.makeText(getContext(), "Failed: " + e.getMessage(), Toast.LENGTH_LONG).show());
         }
     }
 
-    // ── Adapter ──────────────────────────────────────────────────────────────
+    // ── Adapter ───────────────────────────────────────────────────────────────
     private class AnnouncementAdapter extends RecyclerView.Adapter<AnnouncementAdapter.VH> {
 
         class VH extends RecyclerView.ViewHolder {
-            TextView  tvAuthorInitials, tvCreatedBy, tvDateCreated, tvStatus,
+            TextView tvAuthorInitials, tvCreatedBy, tvDateCreated, tvStatus,
                     tvTitle, tvDesc, tvHearts, tvModifiedInfo,
                     btnEdit, btnArchive, btnDelete;
             ImageView ivImage;
@@ -264,8 +221,7 @@ public class AdminAnnouncementFragment extends Fragment {
         }
 
         @Override public VH onCreateViewHolder(ViewGroup p, int t) {
-            return new VH(LayoutInflater.from(p.getContext())
-                    .inflate(R.layout.item_announcement, p, false));
+            return new VH(LayoutInflater.from(p.getContext()).inflate(R.layout.item_announcement, p, false));
         }
 
         @Override public void onBindViewHolder(VH h, int pos) {
@@ -285,45 +241,44 @@ public class AdminAnnouncementFragment extends Fragment {
             h.tvHearts.setText(String.valueOf(hearts));
             h.tvDateCreated.setText(ts != null ? sdf.format(ts.toDate()) : "—");
             h.tvStatus.setText(status);
-            h.tvStatus.setBackgroundResource(
-                    "Active".equals(status) ? R.drawable.badge_active : R.drawable.badge_blocked);
-            h.tvAuthorInitials.setText(
-                    by.length() > 0 ? String.valueOf(by.charAt(0)).toUpperCase() : "A");
+            h.tvStatus.setBackgroundResource("Active".equals(status) ? R.drawable.badge_active : R.drawable.badge_blocked);
+            h.tvAuthorInitials.setText(by.length() > 0 ? String.valueOf(by.charAt(0)).toUpperCase() : "A");
 
             Timestamp mod = doc.getTimestamp("modifiedAt");
             String modBy  = doc.getString("modifiedBy");
-            h.tvModifiedInfo.setText(
-                    (mod != null && modBy != null)
-                            ? "Edited " + sdf.format(mod.toDate()) + " by " + modBy
-                            : "");
+            h.tvModifiedInfo.setText((mod != null && modBy != null)
+                    ? "Edited " + sdf.format(mod.toDate()) + " by " + modBy : "");
 
-            // Load Base64 image
             String base64 = doc.getString("imageBase64");
-            if (base64 != null && !base64.isEmpty()) {
-                loadBase64Image(base64, h.ivImage);
-            } else {
-                h.ivImage.setVisibility(View.GONE);
-            }
+            if (base64 != null && !base64.isEmpty()) loadBase64Image(base64, h.ivImage);
+            else h.ivImage.setVisibility(View.GONE);
 
-            // Edit
             h.btnEdit.setOnClickListener(v -> showPostDialog(doc));
 
-            // Archive toggle
             h.btnArchive.setOnClickListener(v -> {
                 String ns = "Archived".equals(status) ? "Active" : "Archived";
                 h.btnArchive.setText("Archived".equals(status) ? "Archive" : "Unarchive");
-                doc.getReference().update(
-                        "status", ns,
-                        "modifiedAt", Timestamp.now(),
-                        "modifiedBy", FirebaseAuth.getInstance().getUid());
+                String actorEmail = FirebaseAuth.getInstance().getCurrentUser() != null
+                        ? FirebaseAuth.getInstance().getCurrentUser().getEmail() : "unknown";
+                doc.getReference().update("status", ns, "modifiedAt", Timestamp.now(),
+                                "modifiedBy", FirebaseAuth.getInstance().getUid())
+                        .addOnSuccessListener(unused ->
+                                ActivityLogger.logAnnouncement(ActivityLogger.ACTION_MODIFIED,
+                                        title + " → " + ns, actorEmail));
             });
 
-            // Delete
             h.btnDelete.setOnClickListener(v ->
                     new MaterialAlertDialogBuilder(requireContext())
                             .setTitle("Delete Announcement")
                             .setMessage("Delete \"" + title + "\"? This cannot be undone.")
-                            .setPositiveButton("Delete", (d, w) -> doc.getReference().delete())
+                            .setPositiveButton("Delete", (d, w) -> {
+                                String actorEmail = FirebaseAuth.getInstance().getCurrentUser() != null
+                                        ? FirebaseAuth.getInstance().getCurrentUser().getEmail() : "unknown";
+                                doc.getReference().delete()
+                                        .addOnSuccessListener(unused ->
+                                                ActivityLogger.logAnnouncement(
+                                                        ActivityLogger.ACTION_DELETE, title, actorEmail));
+                            })
                             .setNegativeButton("Cancel", null).show());
         }
 
