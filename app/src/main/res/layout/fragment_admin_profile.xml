@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/bgBlack">
+    android:background="@drawable/b_background"
+    android:orientation="vertical">
 
     <!-- Top Bar -->
     <LinearLayout
@@ -13,6 +13,7 @@
         android:background="@color/maroonDark"
         android:paddingHorizontal="16dp"
         android:paddingVertical="14dp">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -37,11 +38,11 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:padding="24dp"
                 android:layout_marginBottom="12dp"
-                android:background="@drawable/glass_card">
+                android:background="@drawable/glass_card"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="24dp">
 
                 <!-- Photo + initials overlay -->
                 <FrameLayout
@@ -54,9 +55,9 @@
                         android:layout_width="88dp"
                         android:layout_height="88dp"
                         android:background="@drawable/avatar_circle"
-                        android:scaleType="centerCrop"
                         android:clickable="true"
-                        android:focusable="true" />
+                        android:focusable="true"
+                        android:scaleType="centerCrop" />
 
                     <TextView
                         android:id="@+id/tv_initials"
@@ -64,9 +65,9 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:fontFamily="@font/poppins_bold"
+                        android:text="AD"
                         android:textColor="@color/white"
-                        android:textSize="28sp"
-                        android:text="AD" />
+                        android:textSize="28sp" />
 
                     <ProgressBar
                         android:id="@+id/progress_photo"
@@ -82,11 +83,11 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:layout_gravity="bottom|end"
-                        android:src="@drawable/edit"
                         android:background="@color/maroon"
-                        android:padding="4dp"
                         android:clickable="true"
-                        android:focusable="true" />
+                        android:focusable="true"
+                        android:padding="4dp"
+                        android:src="@drawable/edit" />
 
                 </FrameLayout>
 
@@ -95,32 +96,32 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_bold"
+                    android:text="Admin Name"
                     android:textColor="@color/white"
-                    android:textSize="18sp"
-                    android:text="Admin Name" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/tv_email"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins"
-                    android:textColor="#88FFFFFF"
-                    android:textSize="12sp"
                     android:layout_marginTop="2dp"
-                    android:text="admin@ms.bulsu.edu.ph" />
+                    android:fontFamily="@font/poppins"
+                    android:text="admin@ms.bulsu.edu.ph"
+                    android:textColor="#88FFFFFF"
+                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/tv_role"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:background="@drawable/badge_active"
+                    android:fontFamily="@font/poppins_bold"
                     android:paddingHorizontal="14dp"
                     android:paddingVertical="4dp"
-                    android:fontFamily="@font/poppins_bold"
-                    android:textColor="@color/yellow"
-                    android:textSize="11sp"
                     android:text="ADMIN"
-                    android:background="@drawable/badge_active" />
+                    android:textColor="@color/yellow"
+                    android:textSize="11sp" />
 
             </LinearLayout>
 
@@ -128,19 +129,19 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="16dp"
                 android:layout_marginBottom="12dp"
-                android:background="@drawable/glass_card">
+                android:background="@drawable/glass_card"
+                android:orientation="vertical"
+                android:padding="16dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
                     android:fontFamily="@font/poppins_bold"
                     android:text="Account Settings"
                     android:textColor="@color/white"
-                    android:textSize="13sp"
-                    android:layout_marginBottom="12dp" />
+                    android:textSize="13sp" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_change_password"
@@ -152,8 +153,8 @@
                     android:text="Change Password"
                     android:textColor="@color/yellow"
                     android:textSize="13sp"
-                    app:strokeColor="@color/yellow"
-                    app:cornerRadius="10dp" />
+                    app:cornerRadius="10dp"
+                    app:strokeColor="@color/yellow" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_logout"
@@ -172,24 +173,24 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/glass_card"
                 android:orientation="vertical"
-                android:padding="16dp"
-                android:background="@drawable/glass_card">
+                android:padding="16dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
                     android:fontFamily="@font/poppins_bold"
                     android:text="Activity Log"
                     android:textColor="@color/white"
-                    android:textSize="13sp"
-                    android:layout_marginBottom="8dp" />
+                    android:textSize="13sp" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#14FFFFFF"
-                    android:layout_marginBottom="8dp" />
+                    android:layout_marginBottom="8dp"
+                    android:background="#14FFFFFF" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_activity"

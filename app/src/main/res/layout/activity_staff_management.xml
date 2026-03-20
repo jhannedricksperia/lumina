@@ -3,44 +3,45 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/bgBlack">
+    android:background="@drawable/b_background"
+    android:orientation="vertical">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/maroonDark"
-        app:title="Staff Management"
-        app:titleTextColor="@color/white"
         app:navigationIcon="@drawable/back"
-        app:navigationIconTint="@color/white" />
+        app:navigationIconTint="@color/white"
+        app:title="Staff Management"
+        app:titleTextColor="@color/white" />
 
     <!-- FAB-style Add button row -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="12dp"
+        android:background="@color/maroonDark"
         android:gravity="center_vertical"
-        android:background="@color/maroonDark">
+        android:orientation="horizontal"
+        android:padding="12dp">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_search"
             style="@style/LuminaField"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginEnd="8dp"
+            android:layout_weight="1"
             android:hint="Search staff...">
+
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_search"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins"
                 android:inputType="text"
                 android:textColor="@color/white"
                 android:textColorHint="@color/textHint"
-                android:fontFamily="@font/poppins"
                 android:textSize="12sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -60,24 +61,38 @@
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="none"
         android:paddingHorizontal="12dp"
-        android:paddingVertical="8dp">
+        android:paddingVertical="8dp"
+        android:scrollbars="none">
+
         <com.google.android.material.chip.ChipGroup
             android:id="@+id/chip_group_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:singleSelection="true"
-            app:selectionRequired="true">
-            <com.google.android.material.chip.Chip android:id="@+id/chip_all"
-                style="@style/LuminaChip" android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:text="All" android:checked="true" />
-            <com.google.android.material.chip.Chip android:id="@+id/chip_active"
-                style="@style/LuminaChip" android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:text="Active" />
-            <com.google.android.material.chip.Chip android:id="@+id/chip_blocked"
-                style="@style/LuminaChip" android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:text="Blocked" />
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_all"
+                style="@style/LuminaChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="All" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_active"
+                style="@style/LuminaChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Active" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_blocked"
+                style="@style/LuminaChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Blocked" />
         </com.google.android.material.chip.ChipGroup>
     </HorizontalScrollView>
 
@@ -85,12 +100,12 @@
         android:id="@+id/tv_count"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins"
         android:paddingHorizontal="16dp"
         android:paddingBottom="6dp"
-        android:fontFamily="@font/poppins"
+        android:text="Loading..."
         android:textColor="#55FFFFFF"
-        android:textSize="11sp"
-        android:text="Loading..." />
+        android:textSize="11sp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_staff"

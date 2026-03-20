@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/bgBlack">
+    android:background="@drawable/b_background"
+    android:orientation="vertical">
 
     <!-- Toolbar -->
     <com.google.android.material.appbar.MaterialToolbar
@@ -12,10 +12,10 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/maroonDark"
-        app:title="Add Staff"
-        app:titleTextColor="@color/white"
         app:navigationIcon="@drawable/back"
-        app:navigationIconTint="@color/white" />
+        app:navigationIconTint="@color/white"
+        app:title="Add Staff"
+        app:titleTextColor="@color/white" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -32,19 +32,19 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp"
                 android:background="@drawable/glass_card"
-                android:elevation="8dp">
+                android:elevation="8dp"
+                android:orientation="vertical"
+                android:padding="20dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
                     android:fontFamily="@font/poppins_bold"
                     android:text="Staff Information"
                     android:textColor="@color/white"
-                    android:textSize="15sp"
-                    android:layout_marginBottom="16dp" />
+                    android:textSize="15sp" />
 
                 <!-- First Name -->
                 <com.google.android.material.textfield.TextInputLayout
@@ -54,6 +54,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="14dp"
                     android:hint="First Name">
+
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_first_name"
                         android:layout_width="match_parent"
@@ -72,6 +73,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="14dp"
                     android:hint="Last Name">
+
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_last_name"
                         android:layout_width="match_parent"
@@ -90,6 +92,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="14dp"
                     android:hint="Designation (e.g. Coordinator, Dean)">
+
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_designation"
                         android:layout_width="match_parent"
@@ -110,6 +113,7 @@
                     android:hint="BulSU Email Address"
                     app:helperText="\@ms.bulsu.edu.ph only"
                     app:helperTextTextColor="@color/textMuted">
+
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_email"
                         android:layout_width="match_parent"
@@ -126,10 +130,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
                     android:fontFamily="@font/poppins"
+                    android:lineSpacingMultiplier="1.4"
                     android:text="A temporary password will be assigned. Staff must reset it on first login."
                     android:textColor="#55FFFFFF"
-                    android:textSize="10sp"
-                    android:lineSpacingMultiplier="1.4" />
+                    android:textSize="10sp" />
 
                 <!-- Error -->
                 <TextView
@@ -164,14 +168,14 @@
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                         android:layout_width="0dp"
                         android:layout_height="50dp"
-                        android:layout_weight="1"
                         android:layout_marginEnd="8dp"
+                        android:layout_weight="1"
                         android:fontFamily="@font/poppins_bold"
                         android:text="CANCEL"
                         android:textColor="@color/white"
                         android:textSize="13sp"
-                        app:strokeColor="#44FFFFFF"
-                        app:cornerRadius="12dp" />
+                        app:cornerRadius="12dp"
+                        app:strokeColor="#44FFFFFF" />
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_save"

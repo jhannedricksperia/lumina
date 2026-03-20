@@ -4,42 +4,43 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/bgBlack">
+    android:background="@drawable/b_background"
+    android:orientation="vertical">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/maroonDark"
-        app:titleTextColor="@color/white"
         app:navigationIcon="@drawable/back"
-        app:navigationIconTint="@color/white" />
+        app:navigationIconTint="@color/white"
+        app:titleTextColor="@color/white" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="12dp"
+        android:background="@color/maroonDark"
         android:gravity="center_vertical"
-        android:background="@color/maroonDark">
+        android:orientation="horizontal"
+        android:padding="12dp">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_search"
             style="@style/LuminaField"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginEnd="8dp"
+            android:layout_weight="1"
             android:hint="Search...">
+
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_search"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins"
                 android:inputType="text"
                 android:textColor="@color/white"
                 android:textColorHint="@color/textHint"
-                android:fontFamily="@font/poppins"
                 android:textSize="12sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -59,12 +60,12 @@
         android:id="@+id/tv_count"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins"
         android:paddingHorizontal="16dp"
         android:paddingVertical="8dp"
-        android:fontFamily="@font/poppins"
+        android:text="Loading..."
         android:textColor="#55FFFFFF"
-        android:textSize="11sp"
-        android:text="Loading..." />
+        android:textSize="11sp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_items"
