@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- layout/dialog_audience_picker.xml
+     Used as the view inside MaterialAlertDialogBuilder for audience selection.
+     Hierarchy: Campus > College > Course (each loaded from Firestore dynamically) -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- ── Campus ── -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_bold"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:layout_marginBottom="4dp"
+            android:text="Campus" />
+
+        <Spinner
+            android:id="@+id/spinner_campus"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/glass_card"
+            android:paddingHorizontal="12dp"
+            android:layout_marginBottom="14dp"
+            android:spinnerMode="dropdown" />
+
+        <!-- ── College (hidden until campus selected) ── -->
+        <TextView
+            android:id="@+id/label_college"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_bold"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:layout_marginBottom="4dp"
+            android:visibility="gone"
+            android:text="College" />
+
+        <Spinner
+            android:id="@+id/spinner_college"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/glass_card"
+            android:paddingHorizontal="12dp"
+            android:layout_marginBottom="14dp"
+            android:spinnerMode="dropdown"
+            android:visibility="gone" />
+
+        <!-- ── Course (hidden until college selected) ── -->
+        <TextView
+            android:id="@+id/label_course"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_bold"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:layout_marginBottom="4dp"
+            android:visibility="gone"
+            android:text="Course" />
+
+        <Spinner
+            android:id="@+id/spinner_course"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/glass_card"
+            android:paddingHorizontal="12dp"
+            android:layout_marginBottom="4dp"
+            android:spinnerMode="dropdown"
+            android:visibility="gone" />
+
+        <!-- Loading indicator while fetching from Firestore -->
+        <ProgressBar
+            android:id="@+id/progress_audience"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+    </LinearLayout>
+</ScrollView>

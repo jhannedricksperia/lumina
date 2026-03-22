@@ -25,6 +25,9 @@ public final class FragmentAdminDashboardBinding implements ViewBinding {
   private final LinearLayout rootView;
 
   @NonNull
+  public final LinearLayout cardActivityLogMgmt;
+
+  @NonNull
   public final LinearLayout cardCampusMgmt;
 
   @NonNull
@@ -94,18 +97,19 @@ public final class FragmentAdminDashboardBinding implements ViewBinding {
   public final TextView tvTotalUsers;
 
   private FragmentAdminDashboardBinding(@NonNull LinearLayout rootView,
-      @NonNull LinearLayout cardCampusMgmt, @NonNull LinearLayout cardCollegeMgmt,
-      @NonNull LinearLayout cardCourseMgmt, @NonNull LinearLayout cardStaffMgmt,
-      @NonNull LinearLayout cardStudentMgmt, @NonNull LineChart chartPostsTimeline,
-      @NonNull PieChart chartUserRoles, @NonNull BarChart chartUsersCampus,
-      @NonNull Chip chipCustom, @NonNull ChipGroup chipGroupFilter, @NonNull Chip chipMonth,
-      @NonNull Chip chipToday, @NonNull Chip chipWeek, @NonNull TextView tvActiveUsers,
-      @NonNull TextView tvCampusCount, @NonNull TextView tvCollegeCount,
-      @NonNull TextView tvCourseCount, @NonNull TextView tvDateLabel,
-      @NonNull TextView tvStaffCount, @NonNull TextView tvStudentCount,
-      @NonNull TextView tvTotalAnnouncements, @NonNull TextView tvTotalEvents,
-      @NonNull TextView tvTotalUsers) {
+      @NonNull LinearLayout cardActivityLogMgmt, @NonNull LinearLayout cardCampusMgmt,
+      @NonNull LinearLayout cardCollegeMgmt, @NonNull LinearLayout cardCourseMgmt,
+      @NonNull LinearLayout cardStaffMgmt, @NonNull LinearLayout cardStudentMgmt,
+      @NonNull LineChart chartPostsTimeline, @NonNull PieChart chartUserRoles,
+      @NonNull BarChart chartUsersCampus, @NonNull Chip chipCustom,
+      @NonNull ChipGroup chipGroupFilter, @NonNull Chip chipMonth, @NonNull Chip chipToday,
+      @NonNull Chip chipWeek, @NonNull TextView tvActiveUsers, @NonNull TextView tvCampusCount,
+      @NonNull TextView tvCollegeCount, @NonNull TextView tvCourseCount,
+      @NonNull TextView tvDateLabel, @NonNull TextView tvStaffCount,
+      @NonNull TextView tvStudentCount, @NonNull TextView tvTotalAnnouncements,
+      @NonNull TextView tvTotalEvents, @NonNull TextView tvTotalUsers) {
     this.rootView = rootView;
+    this.cardActivityLogMgmt = cardActivityLogMgmt;
     this.cardCampusMgmt = cardCampusMgmt;
     this.cardCollegeMgmt = cardCollegeMgmt;
     this.cardCourseMgmt = cardCourseMgmt;
@@ -158,6 +162,12 @@ public final class FragmentAdminDashboardBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
+      id = R.id.card_activity_log_mgmt;
+      LinearLayout cardActivityLogMgmt = ViewBindings.findChildViewById(rootView, id);
+      if (cardActivityLogMgmt == null) {
+        break missingId;
+      }
+
       id = R.id.card_campus_mgmt;
       LinearLayout cardCampusMgmt = ViewBindings.findChildViewById(rootView, id);
       if (cardCampusMgmt == null) {
@@ -296,11 +306,12 @@ public final class FragmentAdminDashboardBinding implements ViewBinding {
         break missingId;
       }
 
-      return new FragmentAdminDashboardBinding((LinearLayout) rootView, cardCampusMgmt,
-          cardCollegeMgmt, cardCourseMgmt, cardStaffMgmt, cardStudentMgmt, chartPostsTimeline,
-          chartUserRoles, chartUsersCampus, chipCustom, chipGroupFilter, chipMonth, chipToday,
-          chipWeek, tvActiveUsers, tvCampusCount, tvCollegeCount, tvCourseCount, tvDateLabel,
-          tvStaffCount, tvStudentCount, tvTotalAnnouncements, tvTotalEvents, tvTotalUsers);
+      return new FragmentAdminDashboardBinding((LinearLayout) rootView, cardActivityLogMgmt,
+          cardCampusMgmt, cardCollegeMgmt, cardCourseMgmt, cardStaffMgmt, cardStudentMgmt,
+          chartPostsTimeline, chartUserRoles, chartUsersCampus, chipCustom, chipGroupFilter,
+          chipMonth, chipToday, chipWeek, tvActiveUsers, tvCampusCount, tvCollegeCount,
+          tvCourseCount, tvDateLabel, tvStaffCount, tvStudentCount, tvTotalAnnouncements,
+          tvTotalEvents, tvTotalUsers);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

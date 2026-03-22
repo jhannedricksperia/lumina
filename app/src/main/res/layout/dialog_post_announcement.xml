@@ -1,79 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Place this file in: res/layout/dialog_post_announcement.xml -->
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
 
+    <!-- Title -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_marginBottom="12dp"
+        android:hint="Title *">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:maxLines="1" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Description -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_marginBottom="12dp"
+        android:hint="Description">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/et_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textMultiLine"
+            android:minLines="3"
+            android:maxLines="6" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Audience -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_bold"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:layout_marginBottom="4dp"
+        android:text="Audience" />
+
+    <!-- Row: label + pick button -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="12dp">
 
-        <!-- Title -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_title"
-            style="@style/LuminaField"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:hint="Announcement Title">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textCapSentences"
-                android:fontFamily="@font/poppins" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Description -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_description"
-            style="@style/LuminaField"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            android:hint="Description">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textMultiLine"
-                android:minLines="3"
-                android:fontFamily="@font/poppins" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Pick Image Button -->
-        <Button
-            android:id="@+id/btn_pick_image"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginBottom="6dp"
-            android:fontFamily="@font/poppins"
-            android:text="Pick Image (optional)"
-            android:textSize="12sp"
-            android:backgroundTint="@color/maroonDark" />
-
-        <!-- Hint text under button -->
         <TextView
-            android:id="@+id/tv_image_hint"
-            android:layout_width="wrap_content"
+            android:id="@+id/tv_audience_label"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
+            android:layout_weight="1"
             android:fontFamily="@font/poppins"
-            android:textColor="#66FFFFFF"
-            android:textSize="10sp"
-            android:text="Images are compressed automatically (max ~800px)" />
+            android:textColor="#AAFFFFFF"
+            android:textSize="12sp"
+            android:text="👥 Everyone" />
 
-        <!-- Image Preview -->
-        <ImageView
-            android:id="@+id/iv_preview"
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:scaleType="centerCrop"
-            android:background="#11FFFFFF"
-            android:visibility="gone" />
-
+        <TextView
+            android:id="@+id/btn_pick_audience"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:background="@drawable/glass_card"
+            android:gravity="center"
+            android:paddingHorizontal="14dp"
+            android:fontFamily="@font/poppins_bold"
+            android:textColor="@color/yellowDark"
+            android:textSize="12sp"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="Change" />
     </LinearLayout>
-</ScrollView>
+
+    <!-- Image hint -->
+    <TextView
+        android:id="@+id/tv_image_hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins"
+        android:text="No image selected"
+        android:textColor="#88FFFFFF"
+        android:textSize="11sp"
+        android:layout_marginBottom="6dp" />
+
+    <!-- Image pick button -->
+    <TextView
+        android:id="@+id/btn_pick_image"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:background="@drawable/glass_card"
+        android:gravity="center"
+        android:text="📷  Add Image (optional)"
+        android:textColor="@color/white"
+        android:textSize="13sp"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Image preview -->
+    <ImageView
+        android:id="@+id/iv_preview"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:scaleType="centerCrop"
+        android:background="@drawable/glass_card"
+        android:visibility="gone" />
+
+</LinearLayout>

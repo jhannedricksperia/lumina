@@ -14,7 +14,6 @@ import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
 import com.example.luminae.R;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import java.lang.NullPointerException;
 import java.lang.Override;
 import java.lang.String;
@@ -48,16 +47,7 @@ public final class DialogEventFormBinding implements ViewBinding {
   public final ImageView ivPreview;
 
   @NonNull
-  public final TextInputLayout tilDescription;
-
-  @NonNull
-  public final TextInputLayout tilMaxParticipants;
-
-  @NonNull
-  public final TextInputLayout tilTitle;
-
-  @NonNull
-  public final TextInputLayout tilWhere;
+  public final TextView tvImageHint;
 
   @NonNull
   public final TextView tvPickedDate;
@@ -69,9 +59,7 @@ public final class DialogEventFormBinding implements ViewBinding {
       @NonNull Button btnPickImage, @NonNull Button btnPickTime,
       @NonNull TextInputEditText etDescription, @NonNull TextInputEditText etMaxParticipants,
       @NonNull TextInputEditText etTitle, @NonNull TextInputEditText etWhere,
-      @NonNull ImageView ivPreview, @NonNull TextInputLayout tilDescription,
-      @NonNull TextInputLayout tilMaxParticipants, @NonNull TextInputLayout tilTitle,
-      @NonNull TextInputLayout tilWhere, @NonNull TextView tvPickedDate,
+      @NonNull ImageView ivPreview, @NonNull TextView tvImageHint, @NonNull TextView tvPickedDate,
       @NonNull TextView tvPickedTime) {
     this.rootView = rootView;
     this.btnPickDate = btnPickDate;
@@ -82,10 +70,7 @@ public final class DialogEventFormBinding implements ViewBinding {
     this.etTitle = etTitle;
     this.etWhere = etWhere;
     this.ivPreview = ivPreview;
-    this.tilDescription = tilDescription;
-    this.tilMaxParticipants = tilMaxParticipants;
-    this.tilTitle = tilTitle;
-    this.tilWhere = tilWhere;
+    this.tvImageHint = tvImageHint;
     this.tvPickedDate = tvPickedDate;
     this.tvPickedTime = tvPickedTime;
   }
@@ -165,27 +150,9 @@ public final class DialogEventFormBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.til_description;
-      TextInputLayout tilDescription = ViewBindings.findChildViewById(rootView, id);
-      if (tilDescription == null) {
-        break missingId;
-      }
-
-      id = R.id.til_max_participants;
-      TextInputLayout tilMaxParticipants = ViewBindings.findChildViewById(rootView, id);
-      if (tilMaxParticipants == null) {
-        break missingId;
-      }
-
-      id = R.id.til_title;
-      TextInputLayout tilTitle = ViewBindings.findChildViewById(rootView, id);
-      if (tilTitle == null) {
-        break missingId;
-      }
-
-      id = R.id.til_where;
-      TextInputLayout tilWhere = ViewBindings.findChildViewById(rootView, id);
-      if (tilWhere == null) {
+      id = R.id.tv_image_hint;
+      TextView tvImageHint = ViewBindings.findChildViewById(rootView, id);
+      if (tvImageHint == null) {
         break missingId;
       }
 
@@ -202,8 +169,8 @@ public final class DialogEventFormBinding implements ViewBinding {
       }
 
       return new DialogEventFormBinding((ScrollView) rootView, btnPickDate, btnPickImage,
-          btnPickTime, etDescription, etMaxParticipants, etTitle, etWhere, ivPreview,
-          tilDescription, tilMaxParticipants, tilTitle, tilWhere, tvPickedDate, tvPickedTime);
+          btnPickTime, etDescription, etMaxParticipants, etTitle, etWhere, ivPreview, tvImageHint,
+          tvPickedDate, tvPickedTime);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

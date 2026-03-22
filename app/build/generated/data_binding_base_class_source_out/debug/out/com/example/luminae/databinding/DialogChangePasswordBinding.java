@@ -12,7 +12,6 @@ import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
 import com.example.luminae.R;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import java.lang.NullPointerException;
 import java.lang.Override;
 import java.lang.String;
@@ -31,29 +30,15 @@ public final class DialogChangePasswordBinding implements ViewBinding {
   public final TextInputEditText etNewPassword;
 
   @NonNull
-  public final TextInputLayout tilConfirmPassword;
-
-  @NonNull
-  public final TextInputLayout tilCurrentPassword;
-
-  @NonNull
-  public final TextInputLayout tilNewPassword;
-
-  @NonNull
   public final TextView tvError;
 
   private DialogChangePasswordBinding(@NonNull LinearLayout rootView,
       @NonNull TextInputEditText etConfirmPassword, @NonNull TextInputEditText etCurrentPassword,
-      @NonNull TextInputEditText etNewPassword, @NonNull TextInputLayout tilConfirmPassword,
-      @NonNull TextInputLayout tilCurrentPassword, @NonNull TextInputLayout tilNewPassword,
-      @NonNull TextView tvError) {
+      @NonNull TextInputEditText etNewPassword, @NonNull TextView tvError) {
     this.rootView = rootView;
     this.etConfirmPassword = etConfirmPassword;
     this.etCurrentPassword = etCurrentPassword;
     this.etNewPassword = etNewPassword;
-    this.tilConfirmPassword = tilConfirmPassword;
-    this.tilCurrentPassword = tilCurrentPassword;
-    this.tilNewPassword = tilNewPassword;
     this.tvError = tvError;
   }
 
@@ -102,24 +87,6 @@ public final class DialogChangePasswordBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.til_confirm_password;
-      TextInputLayout tilConfirmPassword = ViewBindings.findChildViewById(rootView, id);
-      if (tilConfirmPassword == null) {
-        break missingId;
-      }
-
-      id = R.id.til_current_password;
-      TextInputLayout tilCurrentPassword = ViewBindings.findChildViewById(rootView, id);
-      if (tilCurrentPassword == null) {
-        break missingId;
-      }
-
-      id = R.id.til_new_password;
-      TextInputLayout tilNewPassword = ViewBindings.findChildViewById(rootView, id);
-      if (tilNewPassword == null) {
-        break missingId;
-      }
-
       id = R.id.tv_error;
       TextView tvError = ViewBindings.findChildViewById(rootView, id);
       if (tvError == null) {
@@ -127,8 +94,7 @@ public final class DialogChangePasswordBinding implements ViewBinding {
       }
 
       return new DialogChangePasswordBinding((LinearLayout) rootView, etConfirmPassword,
-          etCurrentPassword, etNewPassword, tilConfirmPassword, tilCurrentPassword, tilNewPassword,
-          tvError);
+          etCurrentPassword, etNewPassword, tvError);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

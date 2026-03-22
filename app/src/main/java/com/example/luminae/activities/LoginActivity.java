@@ -35,7 +35,6 @@ public class LoginActivity extends AppCompatActivity {
         auth    = FirebaseAuth.getInstance();
         db      = FirebaseFirestore.getInstance();
 
-        // Live email validation
         binding.etEmail.addTextChangedListener(new android.text.TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int a, int b, int c) {}
             @Override public void afterTextChanged(android.text.Editable s) {}
@@ -71,10 +70,8 @@ public class LoginActivity extends AppCompatActivity {
         binding.tilPassword.setError(null);
         setLoading(true);
 
-        // Step 1 — Sign in with Firebase Auth
         auth.signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
-                    // Step 2 — Check status in Firestore
                     String uid = authResult.getUser().getUid();
                     checkUserStatus(uid, email);
                 })
@@ -85,10 +82,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void checkUserStatus(String uid, String email) {
-        // Fetch user doc from Firestore to check role + status
-        db.collection("users")
-                .document(uid)
-                .get()
+        db.collection("users").document(uid).get()
                 .addOnSuccessListener(doc -> {
                     setLoading(false);
 
@@ -99,20 +93,14 @@ public class LoginActivity extends AppCompatActivity {
                     }
 
                     String status = doc.getString("status");
+                    String role   = doc.getString("role");
 
                     if ("pending".equals(status)) {
-                        // Not approved yet — sign them out and block
                         auth.signOut();
                         showError("Your account is pending approval.\nPlease wait for an admin to activate it.");
                     } else if ("Active".equals(status)) {
-                        // Approved — save session and go in
-                        session.save(
-                                uid,
-                                doc.getString("username"),
-                                email,
-                                doc.getString("role")
-                        );
-                        goToMain();
+                        session.save(uid, doc.getString("username"), email, role);
+                        routeByRole(role);
                     } else {
                         auth.signOut();
                         showError("Your account is inactive. Contact an admin.");
@@ -125,9 +113,21 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-
-    private void goToMain() {
-        Intent intent = new Intent(this, AdminActivity.class);
+    private void routeByRole(String role) {
+        Intent intent;
+        if (role == null) role = "";
+        switch (role.toLowerCase()) {
+            case "admin":
+                intent = new Intent(this, AdminActivity.class);
+                break;
+            case "staff":
+                intent = new Intent(this, StaffActivity.class);
+                break;
+            case "student":
+            default:
+                intent = new Intent(this, StudentActivity.class);
+                break;
+        }
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();

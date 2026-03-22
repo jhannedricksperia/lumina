@@ -4,9 +4,8 @@ package com.example.luminae.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ScrollView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,17 +13,19 @@ import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
 import com.example.luminae.R;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import java.lang.NullPointerException;
 import java.lang.Override;
 import java.lang.String;
 
 public final class DialogPostAnnouncementBinding implements ViewBinding {
   @NonNull
-  private final ScrollView rootView;
+  private final LinearLayout rootView;
 
   @NonNull
-  public final Button btnPickImage;
+  public final TextView btnPickAudience;
+
+  @NonNull
+  public final TextView btnPickImage;
 
   @NonNull
   public final TextInputEditText etDescription;
@@ -36,31 +37,29 @@ public final class DialogPostAnnouncementBinding implements ViewBinding {
   public final ImageView ivPreview;
 
   @NonNull
-  public final TextInputLayout tilDescription;
-
-  @NonNull
-  public final TextInputLayout tilTitle;
+  public final TextView tvAudienceLabel;
 
   @NonNull
   public final TextView tvImageHint;
 
-  private DialogPostAnnouncementBinding(@NonNull ScrollView rootView, @NonNull Button btnPickImage,
+  private DialogPostAnnouncementBinding(@NonNull LinearLayout rootView,
+      @NonNull TextView btnPickAudience, @NonNull TextView btnPickImage,
       @NonNull TextInputEditText etDescription, @NonNull TextInputEditText etTitle,
-      @NonNull ImageView ivPreview, @NonNull TextInputLayout tilDescription,
-      @NonNull TextInputLayout tilTitle, @NonNull TextView tvImageHint) {
+      @NonNull ImageView ivPreview, @NonNull TextView tvAudienceLabel,
+      @NonNull TextView tvImageHint) {
     this.rootView = rootView;
+    this.btnPickAudience = btnPickAudience;
     this.btnPickImage = btnPickImage;
     this.etDescription = etDescription;
     this.etTitle = etTitle;
     this.ivPreview = ivPreview;
-    this.tilDescription = tilDescription;
-    this.tilTitle = tilTitle;
+    this.tvAudienceLabel = tvAudienceLabel;
     this.tvImageHint = tvImageHint;
   }
 
   @Override
   @NonNull
-  public ScrollView getRoot() {
+  public LinearLayout getRoot() {
     return rootView;
   }
 
@@ -85,8 +84,14 @@ public final class DialogPostAnnouncementBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
+      id = R.id.btn_pick_audience;
+      TextView btnPickAudience = ViewBindings.findChildViewById(rootView, id);
+      if (btnPickAudience == null) {
+        break missingId;
+      }
+
       id = R.id.btn_pick_image;
-      Button btnPickImage = ViewBindings.findChildViewById(rootView, id);
+      TextView btnPickImage = ViewBindings.findChildViewById(rootView, id);
       if (btnPickImage == null) {
         break missingId;
       }
@@ -109,15 +114,9 @@ public final class DialogPostAnnouncementBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.til_description;
-      TextInputLayout tilDescription = ViewBindings.findChildViewById(rootView, id);
-      if (tilDescription == null) {
-        break missingId;
-      }
-
-      id = R.id.til_title;
-      TextInputLayout tilTitle = ViewBindings.findChildViewById(rootView, id);
-      if (tilTitle == null) {
+      id = R.id.tv_audience_label;
+      TextView tvAudienceLabel = ViewBindings.findChildViewById(rootView, id);
+      if (tvAudienceLabel == null) {
         break missingId;
       }
 
@@ -127,8 +126,8 @@ public final class DialogPostAnnouncementBinding implements ViewBinding {
         break missingId;
       }
 
-      return new DialogPostAnnouncementBinding((ScrollView) rootView, btnPickImage, etDescription,
-          etTitle, ivPreview, tilDescription, tilTitle, tvImageHint);
+      return new DialogPostAnnouncementBinding((LinearLayout) rootView, btnPickAudience,
+          btnPickImage, etDescription, etTitle, ivPreview, tvAudienceLabel, tvImageHint);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

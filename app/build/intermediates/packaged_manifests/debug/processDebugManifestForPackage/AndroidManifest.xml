@@ -73,6 +73,18 @@
         <activity
             android:name="com.example.luminae.activities.ActivityLogActivity"
             android:exported="false" />
+        <activity
+            android:name="com.example.luminae.activities.StudentActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.luminae.activities.StaffActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.luminae.activities.PostDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.luminae.activities.UserProfileActivity"
+            android:exported="false" />
 
         <meta-data
             android:name="preloaded_fonts"

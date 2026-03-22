@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
+    android:background="@drawable/glass_card"
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical"
+    android:padding="14dp">
+
+    <!-- Header Row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
+
+        <!-- Poster Photo -->
+        <ImageView
+            android:id="@+id/iv_poster_photo"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/avatar_circle"
+            android:scaleType="centerCrop" />
+
+        <!-- Type Badge -->
+
+        <!-- Poster Name + Designation -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_type_badge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/badge_announcement"
+                android:fontFamily="@font/poppins_bold"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="3dp"
+                android:text="Announcement"
+                android:textColor="@color/white"
+                android:textSize="10sp" />
+
+            <TextView
+                android:id="@+id/tv_poster_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_bold"
+                android:textColor="@color/white"
+                android:textSize="13sp"
+                android:text="Name" />
+
+            <TextView
+                android:id="@+id/tv_poster_designation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins"
+                android:textColor="#88FFFFFF"
+                android:textSize="10sp"
+                android:text="Designation" />
+        </LinearLayout>
+
+        <!-- My Post Badge -->
+        <TextView
+            android:id="@+id/tv_my_post_badge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/badge_active"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="2dp"
+            android:textColor="@color/white"
+            android:textSize="9sp"
+            android:fontFamily="@font/poppins_bold"
+            android:layout_marginEnd="6dp"
+            android:visibility="gone"
+            android:text="MY POST" />
+
+        <!-- Delete Button -->
+        <TextView
+            android:id="@+id/btn_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/badge_delete"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="3dp"
+            android:textColor="@color/white"
+            android:textSize="10sp"
+            android:fontFamily="@font/poppins"
+            android:clickable="true"
+            android:focusable="true"
+            android:visibility="gone"
+            android:text="Delete" />
+    </LinearLayout>
+
+    <!-- Time + Audience -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="6dp">
+
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins"
+            android:text="Jan 1  •  12:00 PM"
+            android:textColor="#66FFFFFF"
+            android:textSize="10sp" />
+
+        <TextView
+            android:id="@+id/tv_audience"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:fontFamily="@font/poppins"
+            android:text="👥 Everyone"
+            android:textColor="#88FFFFFF"
+            android:textSize="10sp" />
+    </LinearLayout>
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins_bold"
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        android:layout_marginBottom="4dp"
+        android:text="Title" />
+
+    <!-- Description -->
+    <TextView
+        android:id="@+id/tv_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/poppins"
+        android:textColor="#CCFFFFFF"
+        android:textSize="12sp"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:layout_marginBottom="8dp"
+        android:text="Description" />
+
+    <!-- Post Image -->
+    <ImageView
+        android:id="@+id/iv_post_image"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:scaleType="centerCrop"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone"
+        android:background="#11FFFFFF" />
+
+    <!-- Event Info Block (location + date) -->
+    <LinearLayout
+        android:id="@+id/layout_event_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="6dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins"
+            android:textColor="#CCFFFFFF"
+            android:textSize="11sp"
+            android:text="📍 Location" />
+
+        <TextView
+            android:id="@+id/tv_event_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins"
+            android:textColor="#CCFFFFFF"
+            android:textSize="11sp"
+            android:text="📅 Date" />
+    </LinearLayout>
+
+    <!-- Stats Row -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
+
+        <!-- Like button / count -->
+        <TextView
+            android:id="@+id/btn_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins"
+            android:textColor="#EF9A9A"
+            android:textSize="12sp"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginEnd="12dp"
+            android:text="♥ 0" />
+
+        <!-- Comment button / count -->
+        <TextView
+            android:id="@+id/btn_comment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins"
+            android:textColor="#90CAF9"
+            android:textSize="12sp"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginEnd="12dp"
+            android:text="💬 0" />
+
+        <!-- Going info (used by StaffPostFragment; hidden for announcements) -->
+        <TextView
+            android:id="@+id/tv_going_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins"
+            android:textColor="#A5D6A7"
+            android:textSize="12sp"
+            android:layout_marginEnd="12dp"
+            android:visibility="gone"
+            android:text="🎫 0 going" />
+
+        <View android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" />
+
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:src="@drawable/right"
+            app:tint="@color/gray" />
+    </LinearLayout>
+
+    <!-- Going Row (events only) -->
+    <LinearLayout
+        android:id="@+id/layout_going_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_going_count"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/poppins"
+            android:textColor="#A5D6A7"
+            android:textSize="12sp"
+            android:text="🎫 0 going" />
+
+        <!-- Going button -->
+        <TextView
+            android:id="@+id/btn_going"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/badge_event"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="5dp"
+            android:fontFamily="@font/poppins_bold"
+            android:textColor="@color/white"
+            android:textSize="11sp"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="Going" />
+    </LinearLayout>
+
+</LinearLayout>

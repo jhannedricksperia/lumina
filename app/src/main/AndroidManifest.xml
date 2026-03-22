@@ -55,6 +55,19 @@
         <activity
             android:name=".activities.ActivityLogActivity"
             android:exported="false" />
+        <activity
+            android:name=".activities.StudentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.StaffActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.PostDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.UserProfileActivity"
+            android:exported="false" />
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
