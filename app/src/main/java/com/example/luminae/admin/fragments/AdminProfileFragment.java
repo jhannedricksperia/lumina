@@ -47,8 +47,17 @@ public class AdminProfileFragment extends Fragment {
 
         b.btnChangePassword.setOnClickListener(v -> showChangePasswordDialog());
 
-        b.btnViewActivityLog.setOnClickListener(v ->
-                startActivity(new Intent(getActivity(), ActivityLogActivity.class)));
+        b.btnViewActivityLog.setOnClickListener(v -> {
+            String uid = auth.getUid();
+            if (uid == null) return;
+            db.collection("users").document(uid).get()
+                    .addOnSuccessListener(doc -> {
+                        String email = doc.getString("email");
+                        Intent intent = new Intent(getActivity(), ActivityLogActivity.class);
+                        if (email != null) intent.putExtra("filterByEmail", email);
+                        startActivity(intent);
+                    });
+        });
 
         b.btnLogout.setOnClickListener(v -> showLogoutDialog());
 

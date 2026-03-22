@@ -84,6 +84,8 @@ public class AdminDashboardFragment extends Fragment {
                 startActivity(new android.content.Intent(getActivity(), CollegeManagementActivity.class)));
         b.cardCourseMgmt.setOnClickListener(v ->
                 startActivity(new android.content.Intent(getActivity(), CourseManagementActivity.class)));
+        b.cardActivityLogMgmt.setOnClickListener(v ->
+                startActivity(new android.content.Intent(getActivity(), ActivityLogActivity.class)));
     }
 
     // ── Data Loading ──────────────────────────────────────────────────────────

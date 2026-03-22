@@ -54,12 +54,18 @@ public class ActivityLogActivity extends AppCompatActivity {
     private String filterModule = "All";
     private String filterAction = "All";
 
+    private String filterByEmail = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         b = ActivityActivityLogBinding.inflate(getLayoutInflater());
         setContentView(b.getRoot());
         db = FirebaseFirestore.getInstance();
+        filterByEmail = getIntent().getStringExtra("filterByEmail");
+        if (filterByEmail != null) {
+            getSupportActionBar().setTitle("My Activity Log");
+        }
 
         setSupportActionBar(b.toolbar);
         getSupportActionBar().setTitle("Activity Log");
@@ -108,13 +114,19 @@ public class ActivityLogActivity extends AppCompatActivity {
     // ── Load Firestore ────────────────────────────────────────────────────────
     private void loadLogs() {
         b.tvCount.setText("Loading...");
-        db.collection("activity_logs")
-                .orderBy("timestamp", Query.Direction.DESCENDING)
-                .addSnapshotListener((snap, e) -> {
-                    if (snap == null) return;
-                    all = snap.getDocuments();
-                    applyFilter();
-                });
+        Query query = db.collection("activity_logs")
+                .orderBy("timestamp", Query.Direction.DESCENDING);
+
+        // If launched from Profile, filter to current user only
+        if (filterByEmail != null) {
+            query = query.whereEqualTo("email", filterByEmail);
+        }
+
+        query.addSnapshotListener((snap, e) -> {
+            if (snap == null) return;
+            all = snap.getDocuments();
+            applyFilter();
+        });
     }
 
     // ── Filter ────────────────────────────────────────────────────────────────
