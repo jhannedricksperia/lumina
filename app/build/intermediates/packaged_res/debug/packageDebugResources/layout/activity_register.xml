@@ -154,72 +154,80 @@
 
                 </LinearLayout>
 
-                <!-- Campus -->
+                <!-- Campus Dropdown -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_campus"
-                    style="@style/LuminaField"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="14dp"
                     android:hint="Campus">
-                    <com.google.android.material.textfield.TextInputEditText
+
+                    <AutoCompleteTextView
                         android:id="@+id/et_campus"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/email"
-                        android:drawableTint="@color/textMuted"
+                        android:drawableStart="@drawable/campus"
                         android:drawablePadding="12dp"
-                        android:paddingStart="12dp"
+                        android:drawableTint="@color/textMuted"
                         android:fontFamily="@font/poppins"
-                        android:inputType="textCapWords"
+                        android:paddingStart="12dp"
                         android:textColor="@color/white"
-                        android:textColorHint="@color/textHint" />
+                        android:textColorHint="@color/textHint"
+                        android:inputType="none"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- College -->
+                <!-- College Dropdown -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_college"
-                    style="@style/LuminaField"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="14dp"
                     android:hint="College">
-                    <com.google.android.material.textfield.TextInputEditText
+
+                    <AutoCompleteTextView
                         android:id="@+id/et_college"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/email"
-                        android:drawableTint="@color/textMuted"
+                        android:drawableStart="@drawable/college"
                         android:drawablePadding="12dp"
-                        android:paddingStart="12dp"
+                        android:drawableTint="@color/textMuted"
                         android:fontFamily="@font/poppins"
-                        android:inputType="textCapWords"
+                        android:paddingStart="12dp"
                         android:textColor="@color/white"
-                        android:textColorHint="@color/textHint" />
+                        android:textColorHint="@color/textHint"
+                        android:inputType="none"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Course -->
+                <!-- Course Dropdown -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_course"
-                    style="@style/LuminaField"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="14dp"
                     android:hint="Course">
-                    <com.google.android.material.textfield.TextInputEditText
+
+                    <AutoCompleteTextView
                         android:id="@+id/et_course"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/email"
-                        android:drawableTint="@color/textMuted"
+                        android:drawableStart="@drawable/course"
                         android:drawablePadding="12dp"
-                        android:paddingStart="12dp"
+                        android:drawableTint="@color/textMuted"
                         android:fontFamily="@font/poppins"
-                        android:inputType="textCapWords"
+                        android:paddingStart="12dp"
                         android:textColor="@color/white"
-                        android:textColorHint="@color/textHint" />
+                        android:textColorHint="@color/textHint"
+                        android:inputType="none"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false" />
                 </com.google.android.material.textfield.TextInputLayout>
-
 
                 <!-- Username -->
                 <com.google.android.material.textfield.TextInputLayout
@@ -484,7 +492,6 @@
 
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#14FFFFFF" android:layout_marginBottom="16dp" />
 
-                <!-- review rows helper macro — label | value -->
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:layout_marginBottom="12dp">
                     <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:fontFamily="@font/poppins" android:text="Full Name" android:textColor="#66FFFFFF" android:textSize="11sp" />
                     <TextView android:id="@+id/tv_review_name" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="2" android:fontFamily="@font/poppins_bold" android:gravity="end" android:textColor="#FFFFFF" android:textSize="12sp" />
@@ -514,7 +521,6 @@
                     <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:fontFamily="@font/poppins" android:text="Email" android:textColor="#66FFFFFF" android:textSize="11sp" />
                     <TextView android:id="@+id/tv_review_email" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="2" android:fontFamily="@font/poppins_bold" android:gravity="end" android:textColor="#FFFFFF" android:textSize="12sp" />
                 </LinearLayout>
-
 
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#14FFFFFF" android:layout_marginBottom="20dp" />
 

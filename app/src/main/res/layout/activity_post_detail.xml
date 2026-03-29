@@ -6,16 +6,24 @@
     android:background="@drawable/b_background"
     android:orientation="vertical">
 
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="wrap_content"
         android:background="@color/maroonDark"
-        app:navigationIcon="@drawable/ic_back"
-        app:titleTextColor="@color/white"
-        />
+        android:fitsSystemWindows="true">
 
-    <!-- Scrollable content -->
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/maroonDark"
+            app:menu="@menu/menu_post_detail"
+            app:navigationIcon="@drawable/ic_back"
+            app:navigationIconTint="@color/white"
+            app:titleTextColor="@color/white" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -45,22 +53,38 @@
                     android:orientation="horizontal"
                     android:layout_marginBottom="12dp">
 
-                    <TextView
+                    <FrameLayout
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:background="@drawable/circle_maroon"
-                        android:gravity="center"
-                        android:textColor="@color/white"
-                        android:textSize="14sp"
-                        android:fontFamily="@font/poppins_bold"
-                        android:layout_marginEnd="10dp"
-                        android:text="\?\?" />
+                        android:layout_marginEnd="10dp">
+
+                        <TextView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/circle_maroon"
+                            android:gravity="center"
+                            android:textColor="@color/white"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/poppins_bold"
+                            android:text="\?\?" />
+
+                        <ImageView
+                            android:id="@+id/iv_poster_photo"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:scaleType="centerCrop"
+                            android:background="@drawable/circle_maroon"
+                            android:clipToOutline="true"
+                            android:visibility="gone" />
+
+                    </FrameLayout>
 
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical">
+
                         <TextView
                             android:id="@+id/tv_posted_by"
                             android:layout_width="wrap_content"
@@ -69,6 +93,7 @@
                             android:textColor="@color/white"
                             android:textSize="13sp"
                             android:text="Poster Name" />
+
                         <TextView
                             android:id="@+id/tv_posted_by_desig"
                             android:layout_width="wrap_content"
@@ -87,6 +112,7 @@
                         android:textColor="#66FFFFFF"
                         android:textSize="10sp"
                         android:text="Jan 1" />
+
                 </LinearLayout>
 
                 <!-- Title -->
@@ -130,6 +156,7 @@
                     android:background="#1AFFFFFF"
                     android:orientation="vertical"
                     android:padding="12dp"
+                    android:layout_marginBottom="12dp"
                     android:visibility="gone">
 
                     <LinearLayout
@@ -138,8 +165,11 @@
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
                         android:layout_marginBottom="6dp">
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="📍 " android:textSize="13sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="📍 "
+                            android:textSize="13sp" />
                         <TextView
                             android:id="@+id/tv_event_location"
                             android:layout_width="wrap_content"
@@ -156,8 +186,11 @@
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
                         android:layout_marginBottom="6dp">
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="🗓️ " android:textSize="13sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🗓️ "
+                            android:textSize="13sp" />
                         <TextView
                             android:id="@+id/tv_event_date"
                             android:layout_width="wrap_content"
@@ -173,8 +206,11 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical">
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                            android:text="🎫 " android:textSize="13sp" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🎫 "
+                            android:textSize="13sp" />
                         <TextView
                             android:id="@+id/tv_participants_count"
                             android:layout_width="wrap_content"
@@ -184,17 +220,50 @@
                             android:textSize="13sp"
                             android:text="0 going" />
                     </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Like / Comment row -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="4dp">
+
+                    <TextView
+                        android:id="@+id/btn_like_post"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins"
+                        android:textColor="#EF9A9A"
+                        android:textSize="13sp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:paddingEnd="16dp"
+                        android:text="♥ 0" />
+
+                    <TextView
+                        android:id="@+id/tv_comment_count_inline"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins"
+                        android:textColor="#90CAF9"
+                        android:textSize="13sp"
+                        android:text="💬 0" />
+
                 </LinearLayout>
 
             </LinearLayout>
 
-            <!-- Comments Section -->
+            <!-- Comments Section Header -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
                 android:layout_marginBottom="10dp">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -203,6 +272,7 @@
                     android:textColor="@color/white"
                     android:textSize="14sp"
                     android:text="Comments" />
+
                 <TextView
                     android:id="@+id/tv_comment_count"
                     android:layout_width="wrap_content"
@@ -211,6 +281,7 @@
                     android:textColor="#88FFFFFF"
                     android:textSize="12sp"
                     android:text="0 comment(s)" />
+
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -244,20 +315,28 @@
             app:boxCornerRadiusBottomEnd="24dp"
             app:boxBackgroundColor="@color/white"
             app:boxStrokeColor="@color/yellowDark"
-            app:hintTextColor="@color/maroonDark">
+            app:hintTextColor="@color/maroonDark"
+            app:hintEnabled="false">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_comment"
                 android:layout_width="match_parent"
-                android:layout_height="44dp"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:fontFamily="@font/poppins"
                 android:hint="Write a comment…"
+                android:inputType="textMultiLine"
+                android:maxLines="5"
+                android:minLines="1"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:scrollbars="vertical"
                 android:textColor="@color/maroonDark"
                 android:textColorHint="#88000000"
-                android:fontFamily="@font/poppins"
-                android:textSize="13sp"
-                android:imeOptions="actionSend"
-                android:inputType="textMultiLine"
-                android:background="@null" />
+                android:textSize="13sp" />
+
         </com.google.android.material.textfield.TextInputLayout>
 
         <ImageView
@@ -266,7 +345,7 @@
             android:layout_height="40dp"
             android:background="@drawable/circle_maroon"
             android:padding="10dp"
-            android:src="@drawable/right"
+            android:src="@drawable/send"
             android:clickable="true"
             android:focusable="true"
             app:tint="@color/yellowDark" />

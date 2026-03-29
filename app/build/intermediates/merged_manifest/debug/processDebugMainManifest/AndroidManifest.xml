@@ -81,7 +81,8 @@
             android:exported="false" />
         <activity
             android:name="com.example.luminae.activities.PostDetailActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="com.example.luminae.activities.UserProfileActivity"
             android:exported="false" />

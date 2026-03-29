@@ -3139,6 +3139,7 @@ drawable material_ic_keyboard_arrow_previous_black_24dp
 drawable material_ic_keyboard_arrow_right_black_24dp
 drawable material_ic_menu_arrow_down_black_24dp
 drawable material_ic_menu_arrow_up_black_24dp
+drawable more
 drawable mtrl_bottomsheet_drag_handle
 drawable mtrl_checkbox_button
 drawable mtrl_checkbox_button_checked_unchecked
@@ -3195,6 +3196,7 @@ drawable password
 drawable person
 drawable person_add
 drawable right
+drawable send
 drawable splash_overlay
 drawable staff
 drawable student
@@ -3271,6 +3273,7 @@ id action_menu_presenter
 id action_mode_bar
 id action_mode_bar_stub
 id action_mode_close_button
+id action_more
 id action_text
 id actions
 id activity_chooser_view_content
@@ -3311,10 +3314,7 @@ id browser_actions_menu_item_text
 id browser_actions_menu_items
 id browser_actions_menu_view
 id btn_add
-id btn_add_announcement
-id btn_add_event
 id btn_add_staff
-id btn_archive
 id btn_back
 id btn_cancel
 id btn_change_password
@@ -3328,11 +3328,11 @@ id btn_export_pdf
 id btn_going
 id btn_like
 id btn_like_comment
+id btn_like_post
 id btn_login
 id btn_logout
 id btn_mark_all_read
 id btn_next
-id btn_participants
 id btn_pick_audience
 id btn_pick_date
 id btn_pick_image
@@ -3381,6 +3381,7 @@ id chip_action_viewed
 id chip_active
 id chip_all
 id chip_announcement
+id chip_archived
 id chip_asc
 id chip_blocked
 id chip_custom
@@ -3547,7 +3548,6 @@ id inward
 id italic
 id item_touch_helper_previous_elevation
 id iv_commenter_photo
-id iv_image
 id iv_post_image
 id iv_poster_photo
 id iv_preview
@@ -3558,6 +3558,7 @@ id label_college
 id label_course
 id labeled
 id layout
+id layout_add_bar
 id layout_event_extras
 id layout_event_info
 id layout_form
@@ -3634,11 +3635,11 @@ id mtrl_picker_text_input_range_start
 id mtrl_picker_title_text
 id mtrl_view_tag_bottom_padding
 id multiply
-id nav_announcements
 id nav_dashboard
 id nav_events
 id nav_feed
 id nav_icon_dashboard
+id nav_management
 id nav_notifications
 id nav_post
 id nav_profile
@@ -3706,9 +3707,7 @@ id progress_photo
 id radio
 id ratio
 id rectangles
-id recycler_announcements
 id recycler_comments
-id recycler_events
 id recycler_feed
 id recycler_items
 id recycler_logs
@@ -3794,6 +3793,7 @@ id submenuarrow
 id submit_area
 id supportScrollUp
 id tabMode
+id tab_layout
 id tag_accessibility_actions
 id tag_accessibility_clickable_spans
 id tag_accessibility_heading
@@ -3861,13 +3861,13 @@ id tv_active_users
 id tv_announcement_count
 id tv_audience
 id tv_audience_label
-id tv_author_initials
 id tv_back_to_login
 id tv_campus
 id tv_campus_count
 id tv_college
 id tv_college_count
 id tv_comment_count
+id tv_comment_count_inline
 id tv_comment_text
 id tv_count
 id tv_course
@@ -3887,7 +3887,6 @@ id tv_error_review
 id tv_event_count
 id tv_event_date
 id tv_event_location
-id tv_event_time
 id tv_filter_label
 id tv_forgot_password
 id tv_full_name
@@ -3896,15 +3895,12 @@ id tv_go_to_register
 id tv_going_count
 id tv_going_info
 id tv_greeting
-id tv_hearts
 id tv_image_hint
 id tv_initials
 id tv_like_icon
 id tv_location
-id tv_max_participants
 id tv_message
 id tv_modified_by
-id tv_modified_info
 id tv_module
 id tv_my_post_badge
 id tv_name
@@ -3945,7 +3941,6 @@ id tv_type_badge
 id tv_unread_count
 id tv_unread_dot
 id tv_username
-id tv_where
 id unchecked
 id uniform
 id unlabeled
@@ -4127,9 +4122,9 @@ layout dialog_change_password
 layout dialog_event_form
 layout dialog_post_announcement
 layout dialog_post_event
-layout fragment_admin_announcement
 layout fragment_admin_dashboard
-layout fragment_admin_event
+layout fragment_admin_feed
+layout fragment_admin_management
 layout fragment_admin_profile
 layout fragment_staff_dashboard
 layout fragment_staff_notification
@@ -4142,12 +4137,10 @@ layout fragment_student_profile
 layout ime_base_split_test_activity
 layout ime_secondary_split_test_activity
 layout item_activity_log
-layout item_announcement
 layout item_comment
 layout item_crud_entity
-layout item_event
+layout item_event_post
 layout item_feed_post
-layout item_my_event
 layout item_notification
 layout item_participant
 layout item_staff
@@ -4213,6 +4206,7 @@ layout select_dialog_item_material
 layout select_dialog_multichoice_material
 layout select_dialog_singlechoice_material
 layout support_simple_spinner_dropdown_item
+menu menu_post_detail
 plurals mtrl_badge_content_description
 raw firebase_common_keep
 string abc_action_bar_home_description

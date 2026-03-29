@@ -20,32 +20,61 @@ import java.util.*;
 
 public class StaffManagementActivity extends AppCompatActivity {
 
+    // ---------------------------------------------------------------------------
+    // Fields
+    // ---------------------------------------------------------------------------
+
     private ActivityStaffManagementBinding b;
     private FirebaseFirestore db;
-    private List<DocumentSnapshot> allStaff = new ArrayList<>(), filtered = new ArrayList<>();
+
+    // Master list from Firestore, and the currently displayed subset after filtering.
+    private List<DocumentSnapshot> allStaff = new ArrayList<>();
+    private List<DocumentSnapshot> filtered = new ArrayList<>();
+
     private StaffAdapter adapter;
+
+    // Tracks the currently selected status chip ("All", "Active", or "Blocked").
     private String filterStatus = "All";
+
+    // ---------------------------------------------------------------------------
+    // Callback interface used to receive the actor's full name asynchronously
+    // before writing to Firestore, so that modifiedBy stores a human-readable
+    // name instead of a raw Firebase UID.
+    // ---------------------------------------------------------------------------
+    interface NameCallback {
+        void onResult(String fullName);
+    }
+
+    // ---------------------------------------------------------------------------
+    // Lifecycle
+    // ---------------------------------------------------------------------------
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        b = ActivityStaffManagementBinding.inflate(getLayoutInflater());
+        b  = ActivityStaffManagementBinding.inflate(getLayoutInflater());
         setContentView(b.getRoot());
         db = FirebaseFirestore.getInstance();
 
+        // Set up toolbar with back navigation.
         setSupportActionBar(b.toolbar);
         b.toolbar.setNavigationOnClickListener(v -> finish());
 
+        // Set up the RecyclerView.
         adapter = new StaffAdapter();
         b.recyclerStaff.setLayoutManager(new LinearLayoutManager(this));
         b.recyclerStaff.setAdapter(adapter);
 
+        // Re-filter whenever the user types in the search box.
         b.etSearch.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int a, int bc, int c) {}
             @Override public void afterTextChanged(Editable s) {}
-            @Override public void onTextChanged(CharSequence s, int a, int bc, int c) { applyFilter(); }
+            @Override public void onTextChanged(CharSequence s, int a, int bc, int c) {
+                applyFilter();
+            }
         });
 
+        // Re-filter whenever a status chip is toggled.
         b.chipGroupStatus.setOnCheckedStateChangeListener((g, ids) -> {
             if      (b.chipActive.isChecked())  filterStatus = "Active";
             else if (b.chipBlocked.isChecked()) filterStatus = "Blocked";
@@ -53,11 +82,20 @@ public class StaffManagementActivity extends AppCompatActivity {
             applyFilter();
         });
 
+        // Navigate to the staff form for adding a new staff member.
         b.btnAddStaff.setOnClickListener(v -> openStaffForm(null));
 
         loadStaff();
     }
 
+    // ---------------------------------------------------------------------------
+    // Data loading
+    // ---------------------------------------------------------------------------
+
+    /**
+     * Attaches a real-time Firestore listener that streams all users whose role
+     * is "staff", ordered alphabetically by first name.
+     */
     private void loadStaff() {
         db.collection("users")
                 .whereEqualTo("role", "staff")
@@ -69,13 +107,23 @@ public class StaffManagementActivity extends AppCompatActivity {
                 });
     }
 
+    // ---------------------------------------------------------------------------
+    // Filtering
+    // ---------------------------------------------------------------------------
+
+    /**
+     * Rebuilds the filtered list by applying both the text search query and the
+     * status chip selection, then refreshes the adapter.
+     */
     private void applyFilter() {
         String q = b.etSearch.getText().toString().trim().toLowerCase();
         filtered.clear();
         for (DocumentSnapshot doc : allStaff) {
             String name   = (doc.getString("fName") + " " + doc.getString("lName")).toLowerCase();
-            String desig  = doc.getString("designation") != null ? doc.getString("designation").toLowerCase() : "";
+            String desig  = doc.getString("designation") != null
+                    ? doc.getString("designation").toLowerCase() : "";
             String status = doc.getString("status") != null ? doc.getString("status") : "";
+
             boolean matchSearch = q.isEmpty() || name.contains(q) || desig.contains(q);
             boolean matchStatus = filterStatus.equals("All") || filterStatus.equals(status);
             if (matchSearch && matchStatus) filtered.add(doc);
@@ -84,19 +132,57 @@ public class StaffManagementActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
+    // ---------------------------------------------------------------------------
+    // Navigation
+    // ---------------------------------------------------------------------------
+
+    /**
+     * Opens the StaffFormActivity.
+     *
+     * @param existing Pass null to add a new staff member, or a DocumentSnapshot
+     *                 to edit an existing one (its ID is passed as an extra).
+     */
     private void openStaffForm(DocumentSnapshot existing) {
         Intent i = new Intent(this, StaffFormActivity.class);
         if (existing != null) i.putExtra("docId", existing.getId());
         startActivity(i);
     }
 
-    // ── Adapter ──────────────────────────────────────────────────────────────
+    // ---------------------------------------------------------------------------
+    // Helper: resolve the currently logged-in user's full name from Firestore
+    // ---------------------------------------------------------------------------
+
+    /**
+     * Looks up the current user's document in the "users" collection and returns
+     * their concatenated fName + lName via the callback.  Falls back to "Unknown"
+     * if the document cannot be retrieved.
+     */
+    private void getActorFullName(NameCallback callback) {
+        String uid = FirebaseAuth.getInstance().getUid();
+        if (uid == null) {
+            callback.onResult("Unknown");
+            return;
+        }
+        db.collection("users").document(uid).get()
+                .addOnSuccessListener(doc -> {
+                    String fName = doc.getString("fName") != null ? doc.getString("fName") : "";
+                    String lName = doc.getString("lName") != null ? doc.getString("lName") : "";
+                    String full  = (fName + " " + lName).trim();
+                    callback.onResult(full.isEmpty() ? "Unknown" : full);
+                })
+                .addOnFailureListener(e -> callback.onResult("Unknown"));
+    }
+
+    // ---------------------------------------------------------------------------
+    // RecyclerView Adapter
+    // ---------------------------------------------------------------------------
+
     private class StaffAdapter extends RecyclerView.Adapter<StaffAdapter.VH> {
 
         class VH extends RecyclerView.ViewHolder {
             TextView tvInitials, tvFullName, tvDesignation, tvStatus,
-                     tvDateCreated, tvCreatedBy, tvDateModified, tvModifiedBy,
-                     btnToggle, btnEdit, btnDelete;
+                    tvDateCreated, tvCreatedBy, tvDateModified, tvModifiedBy,
+                    btnToggle, btnEdit, btnDelete;
 
             VH(View v) {
                 super(v);
@@ -114,22 +200,28 @@ public class StaffManagementActivity extends AppCompatActivity {
             }
         }
 
-        @Override public VH onCreateViewHolder(ViewGroup p, int t) {
-            return new VH(LayoutInflater.from(p.getContext()).inflate(R.layout.item_staff, p, false));
+        @Override
+        public VH onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new VH(LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_staff, parent, false));
         }
 
-        @Override public void onBindViewHolder(VH h, int pos) {
+        @Override
+        public void onBindViewHolder(VH h, int pos) {
             DocumentSnapshot doc = filtered.get(pos);
             SimpleDateFormat sdf = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
+
             String fName  = orDash(doc.getString("fName"));
             String lName  = orDash(doc.getString("lName"));
             String status = orDash(doc.getString("status"));
 
+            // Bind basic fields.
             h.tvInitials.setText(initials(fName, lName));
             h.tvFullName.setText(fName + " " + lName);
             h.tvDesignation.setText(orDash(doc.getString("designation")));
             h.tvStatus.setText(status);
 
+            // Style the status badge and toggle button label.
             if ("Active".equals(status)) {
                 h.tvStatus.setBackgroundResource(R.drawable.badge_active);
                 h.btnToggle.setText("Block");
@@ -138,43 +230,65 @@ public class StaffManagementActivity extends AppCompatActivity {
                 h.btnToggle.setText("Unblock");
             }
 
+            // Timestamps.
             Timestamp created  = doc.getTimestamp("createdAt");
             Timestamp modified = doc.getTimestamp("modifiedAt");
             h.tvDateCreated.setText(created  != null ? sdf.format(created.toDate())  : "—");
             h.tvDateModified.setText(modified != null ? sdf.format(modified.toDate()) : "—");
+
+            // createdBy / modifiedBy now stores the full name.
             h.tvCreatedBy.setText(orDash(doc.getString("createdBy")));
             h.tvModifiedBy.setText(orDash(doc.getString("modifiedBy")));
 
-            // Toggle block
+            // Toggle block / unblock with a confirmation dialog.
+            // Resolves actor full name before writing to Firestore.
             h.btnToggle.setOnClickListener(v -> {
-                String ns = "Active".equals(status) ? "Blocked" : "Active";
+                String newStatus = "Active".equals(status) ? "Blocked" : "Active";
                 new MaterialAlertDialogBuilder(StaffManagementActivity.this)
-                        .setTitle(ns.equals("Blocked") ? "Block Staff" : "Unblock Staff")
-                        .setMessage("Set " + fName + " " + lName + " as " + ns + "?")
+                        .setTitle(newStatus.equals("Blocked") ? "Block Staff" : "Unblock Staff")
+                        .setMessage("Set " + fName + " " + lName + " as " + newStatus + "?")
                         .setPositiveButton("Confirm", (d, w) ->
-                                db.collection("users").document(doc.getId())
-                                        .update("status", ns, "modifiedAt", Timestamp.now(),
-                                                "modifiedBy", FirebaseAuth.getInstance().getUid()))
-                        .setNegativeButton("Cancel", null).show();
+                                getActorFullName(fullName -> {
+                                    String uid = FirebaseAuth.getInstance().getUid();
+                                    db.collection("users").document(doc.getId())
+                                            .update(
+                                                    "status",       newStatus,
+                                                    "modifiedAt",   Timestamp.now(),
+                                                    "modifiedBy",   fullName,   // full name, not UID
+                                                    "modifiedById", uid);
+                                }))
+                        .setNegativeButton("Cancel", null)
+                        .show();
             });
 
-            // Edit
+            // Edit opens the StaffFormActivity for the selected document.
             h.btnEdit.setOnClickListener(v -> openStaffForm(doc));
 
-            // Delete
+            // Delete with a confirmation dialog.
             h.btnDelete.setOnClickListener(v ->
                     new MaterialAlertDialogBuilder(StaffManagementActivity.this)
                             .setTitle("Delete Staff")
                             .setMessage("Permanently delete " + fName + " " + lName + "?")
                             .setPositiveButton("Delete", (d, w) ->
                                     db.collection("users").document(doc.getId()).delete())
-                            .setNegativeButton("Cancel", null).show());
+                            .setNegativeButton("Cancel", null)
+                            .show());
         }
 
-        @Override public int getItemCount() { return filtered.size(); }
+        @Override
+        public int getItemCount() { return filtered.size(); }
     }
 
-    private String orDash(String s) { return (s != null && !s.isEmpty()) ? s : "—"; }
+    // ---------------------------------------------------------------------------
+    // Utility
+    // ---------------------------------------------------------------------------
+
+    /** Returns the value if non-null and non-empty, otherwise an em dash. */
+    private String orDash(String s) {
+        return (s != null && !s.isEmpty()) ? s : "—";
+    }
+
+    /** Builds a two-letter initials string from first and last name. */
     private String initials(String f, String l) {
         String a = f.length() > 0 ? String.valueOf(f.charAt(0)).toUpperCase() : "";
         String b = l.length() > 0 ? String.valueOf(l.charAt(0)).toUpperCase() : "";

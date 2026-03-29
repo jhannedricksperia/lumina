@@ -5,10 +5,7 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import com.example.luminae.R;
-import com.example.luminae.admin.fragments.AdminAnnouncementFragment;
-import com.example.luminae.admin.fragments.AdminDashboardFragment;
-import com.example.luminae.admin.fragments.AdminEventFragment;
-import com.example.luminae.admin.fragments.AdminProfileFragment;
+import com.example.luminae.admin.fragments.*;
 import com.example.luminae.databinding.ActivityAdminBinding;
 
 public class AdminActivity extends AppCompatActivity {
@@ -28,12 +25,12 @@ public class AdminActivity extends AppCompatActivity {
             loadFragment(new AdminDashboardFragment(), "dashboard");
             setActiveTab(v);
         });
-        binding.navAnnouncements.setOnClickListener(v -> {
-            loadFragment(new AdminAnnouncementFragment(), "announcements");
+        binding.navFeed.setOnClickListener(v -> {
+            loadFragment(new AdminFeedFragment(), "feed");
             setActiveTab(v);
         });
-        binding.navEvents.setOnClickListener(v -> {
-            loadFragment(new AdminEventFragment(), "events");
+        binding.navManagement.setOnClickListener(v -> {
+            loadFragment(new AdminManagementFragment(), "management");
             setActiveTab(v);
         });
         binding.navProfile.setOnClickListener(v -> {
@@ -51,8 +48,8 @@ public class AdminActivity extends AppCompatActivity {
 
     private void setActiveTab(View active) {
         binding.navDashboard.setSelected(active == binding.navDashboard);
-        binding.navAnnouncements.setSelected(active == binding.navAnnouncements);
-        binding.navEvents.setSelected(active == binding.navEvents);
+        binding.navFeed.setSelected(active == binding.navFeed);
+        binding.navManagement.setSelected(active == binding.navManagement);
         binding.navProfile.setSelected(active == binding.navProfile);
     }
 }

@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_marginBottom="12dp"
-            android:hint="📍 Where">
+            android:hint="Where">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_where"
                 android:layout_width="match_parent"
@@ -79,7 +79,7 @@
                 android:id="@+id/btn_pick_date"
                 android:layout_width="wrap_content"
                 android:layout_height="38dp"
-                android:text="📅 Pick Date"
+                android:text="Pick Date"
                 android:textSize="12sp"
                 android:layout_marginEnd="12dp" />
 
@@ -106,7 +106,7 @@
                 android:id="@+id/btn_pick_time"
                 android:layout_width="wrap_content"
                 android:layout_height="38dp"
-                android:text="⏰ Pick Time"
+                android:text="Pick Time"
                 android:textSize="12sp"
                 android:layout_marginEnd="12dp" />
 

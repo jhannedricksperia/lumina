@@ -6,14 +6,12 @@
     android:orientation="vertical"
     android:background="@color/bgBlack">
 
-    <!-- Fragment Container -->
     <FrameLayout
         android:id="@+id/admin_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <!-- Custom Glass Bottom Nav -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="68dp"
@@ -22,7 +20,7 @@
         android:elevation="16dp"
         android:paddingHorizontal="8dp">
 
-        <!-- Dashboard Tab -->
+        <!-- Dashboard -->
         <LinearLayout
             android:id="@+id/nav_dashboard"
             android:layout_width="0dp"
@@ -49,9 +47,9 @@
                 android:textSize="9sp" />
         </LinearLayout>
 
-        <!-- Announcements Tab -->
+        <!-- Feed -->
         <LinearLayout
-            android:id="@+id/nav_announcements"
+            android:id="@+id/nav_feed"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -70,14 +68,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
                 android:fontFamily="@font/poppins"
-                android:text="Announce"
+                android:text="Feed"
                 android:textColor="@color/nav_tab_selector"
                 android:textSize="9sp" />
         </LinearLayout>
 
-        <!-- Events Tab -->
+        <!-- Management -->
         <LinearLayout
-            android:id="@+id/nav_events"
+            android:id="@+id/nav_management"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -89,19 +87,19 @@
             <ImageView
                 android:layout_width="22dp"
                 android:layout_height="22dp"
-                android:src="@drawable/event"
+                android:src="@drawable/campus"
                 app:tint="@color/nav_tab_selector" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
                 android:fontFamily="@font/poppins"
-                android:text="Events"
+                android:text="Manage"
                 android:textColor="@color/nav_tab_selector"
                 android:textSize="9sp" />
         </LinearLayout>
 
-        <!-- Profile Tab -->
+        <!-- Profile -->
         <LinearLayout
             android:id="@+id/nav_profile"
             android:layout_width="0dp"

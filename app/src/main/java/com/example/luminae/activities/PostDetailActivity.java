@@ -30,10 +30,16 @@ public class PostDetailActivity extends AppCompatActivity {
     private List<DocumentSnapshot> comments = new ArrayList<>();
     private String docId, type, postCollection;
     private String postTitle = "", postPosterUid = "";
+    private String postAuthorUid = "";
+    private boolean isAdmin = false;
+
+    private boolean postLikedByMe = false;
+    private long    postLikeCount = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         b              = ActivityPostDetailBinding.inflate(getLayoutInflater());
         db             = FirebaseFirestore.getInstance();
         auth           = FirebaseAuth.getInstance();
@@ -43,9 +49,30 @@ public class PostDetailActivity extends AppCompatActivity {
         type           = getIntent().getStringExtra("type");
         postCollection = "Announcement".equals(type) ? "announcements" : "events";
 
-        setSupportActionBar(b.toolbar);
-        if (getSupportActionBar() != null) getSupportActionBar().setTitle(type);
+        // Keyboard pushes comment bar up
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(b.getRoot(), (view, insets) -> {
+            int imeHeight = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.ime()).bottom;
+            int navHeight = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.navigationBars()).bottom;
+            view.setPadding(0, 0, 0, Math.max(imeHeight, navHeight));
+            return insets;
+        });
+
+        // Toolbar setup — do NOT call setSupportActionBar when using MaterialToolbar
+        // with app:menu in XML; the menu is already inflated by the layout.
+        b.toolbar.setTitle(type);
         b.toolbar.setNavigationOnClickListener(v -> finish());
+
+        // Hide the more button until we confirm the user can manage the post
+        MenuItem menuMore = b.toolbar.getMenu().findItem(R.id.action_more);
+        if (menuMore != null) menuMore.setVisible(false);
+
+        b.toolbar.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.action_more) {
+                showPostOptionsMenu();
+                return true;
+            }
+            return false;
+        });
 
         adapter = new CommentAdapter();
         b.recyclerComments.setLayoutManager(new LinearLayoutManager(this));
@@ -62,18 +89,49 @@ public class PostDetailActivity extends AppCompatActivity {
     private void loadPost() {
         db.collection(postCollection).document(docId).get().addOnSuccessListener(doc -> {
             if (!doc.exists()) return;
-            b.tvPostTitle.setText(doc.getString("title")                   != null ? doc.getString("title")               : "");
+
             postTitle     = doc.getString("title")    != null ? doc.getString("title")    : "";
             postPosterUid = doc.getString("postedBy") != null ? doc.getString("postedBy") : "";
-            b.tvPostDescription.setText(doc.getString("description")       != null ? doc.getString("description")         : "");
-            b.tvPostedBy.setText(doc.getString("postedByName")             != null ? doc.getString("postedByName")        : "");
-            b.tvPostedByDesig.setText(doc.getString("postedByDesignation") != null ? doc.getString("postedByDesignation") : "");
+
+            postAuthorUid = !postPosterUid.isEmpty() ? postPosterUid
+                    : (doc.getString("createdById") != null ? doc.getString("createdById") : "");
+
+            b.tvPostTitle.setText(postTitle);
+            b.tvPostDescription.setText(doc.getString("description") != null
+                    ? doc.getString("description") : "");
+
+            String posterName = doc.getString("postedByName") != null
+                    ? doc.getString("postedByName")
+                    : (doc.getString("createdBy") != null ? doc.getString("createdBy") : "");
+            b.tvPostedBy.setText(posterName);
+
+            String desig = doc.getString("postedByDesignation");
+            b.tvPostedByDesig.setText(desig != null ? desig : "");
 
             Timestamp ts = doc.getTimestamp("createdAt");
             if (ts != null)
                 b.tvPostTime.setText(new SimpleDateFormat("MMM d, yyyy  h:mm a",
                         Locale.getDefault()).format(ts.toDate()));
 
+            Long lc = doc.getLong("likeCount");
+            postLikeCount = lc != null ? lc
+                    : (doc.getLong("hearts") != null ? doc.getLong("hearts") : 0);
+
+            // Check if current user already liked this post
+            String uid = auth.getUid();
+            if (uid != null) {
+                db.collection(postCollection).document(docId)
+                        .collection("likes").document(uid).get()
+                        .addOnSuccessListener(likeDoc -> {
+                            postLikedByMe = likeDoc.exists();
+                            updatePostLikeUI();
+                        });
+            }
+            updatePostLikeUI();
+
+            b.btnLikePost.setOnClickListener(v -> togglePostLike());
+
+            // Image
             String img = doc.getString("imageBase64");
             if (img != null && !img.isEmpty()) {
                 b.ivPostImage.setVisibility(View.VISIBLE);
@@ -81,53 +139,250 @@ public class PostDetailActivity extends AppCompatActivity {
                     byte[] bytes = Base64.decode(img, Base64.DEFAULT);
                     b.ivPostImage.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
                 } catch (Exception ignored) {}
+                b.ivPostImage.setOnClickListener(v -> {
+                    try {
+                        byte[] bytes2 = Base64.decode(img, Base64.DEFAULT);
+                        android.graphics.Bitmap bmp2 =
+                                BitmapFactory.decodeByteArray(bytes2, 0, bytes2.length);
+                        if (bmp2 != null) openFullscreenImage(bmp2);
+                    } catch (Exception ignored) {}
+                });
             }
 
+            // Event extras
             if ("Event".equals(type)) {
                 b.layoutEventExtras.setVisibility(View.VISIBLE);
-                b.tvEventLocation.setText(doc.getString("location") != null ? doc.getString("location") : "");
-                b.tvEventDate.setText(doc.getString("eventDate")    != null ? doc.getString("eventDate") : "");
+                String loc = doc.getString("location") != null ? doc.getString("location")
+                        : (doc.getString("where") != null ? doc.getString("where") : "");
+                b.tvEventLocation.setText(loc);
+                String eventDate = doc.getString("eventDate") != null
+                        ? doc.getString("eventDate") : "";
+                if (eventDate.isEmpty()) {
+                    String d = doc.getString("date") != null ? doc.getString("date") : "";
+                    String t = doc.getString("time") != null ? doc.getString("time") : "";
+                    eventDate = (d + (t.isEmpty() ? "" : "  " + t)).trim();
+                }
+                b.tvEventDate.setText(eventDate);
                 Long max = doc.getLong("maxParticipants");
-                Long cnt = doc.getLong("participantCount");
+                Long cnt = doc.getLong("participantCount") != null
+                        ? doc.getLong("participantCount") : doc.getLong("goingCount");
+                if (cnt == null) cnt = 0L;
                 b.tvParticipantsCount.setText((max != null && max > 0)
                         ? cnt + " / " + max + " going" : cnt + " going");
             } else {
                 b.layoutEventExtras.setVisibility(View.GONE);
             }
 
-            // Load poster profile photo
+            // Poster photo
             String postedByPhoto = doc.getString("postedByPhoto");
             if (postedByPhoto != null && !postedByPhoto.isEmpty()) {
-                try {
-                    byte[] bytes = Base64.decode(postedByPhoto, Base64.DEFAULT);
-                    android.graphics.Bitmap bmp = android.graphics.BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    if (bmp != null && b.ivPosterPhoto != null) b.ivPosterPhoto.setImageBitmap(bmp);
-                } catch (Exception ignored) {}
-            } else {
-                // Fallback: fetch from users collection
-                String posterUid2 = doc.getString("postedBy");
-                if (posterUid2 != null && !posterUid2.isEmpty() && b.ivPosterPhoto != null) {
-                    db.collection("users").document(posterUid2).get().addOnSuccessListener(userDoc -> {
-                        String b64 = userDoc.getString("photoBase64");
-                        if (b64 != null && !b64.isEmpty()) {
-                            try {
-                                byte[] bytes = Base64.decode(b64, Base64.DEFAULT);
-                                android.graphics.Bitmap bmp = android.graphics.BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                                if (bmp != null && b.ivPosterPhoto != null) b.ivPosterPhoto.setImageBitmap(bmp);
-                            } catch (Exception ignored2) {}
-                        }
-                    });
-                }
+                tryShowPhoto(postedByPhoto);
+            } else if (!postAuthorUid.isEmpty()) {
+                db.collection("users").document(postAuthorUid).get()
+                        .addOnSuccessListener(userDoc -> {
+                            String b64 = userDoc.getString("photoBase64");
+                            if (b64 != null && !b64.isEmpty()) tryShowPhoto(b64);
+                        });
             }
 
-            String posterUid = doc.getString("postedBy");
-            if (posterUid != null && !posterUid.isEmpty())
-                b.tvPostedBy.setOnClickListener(v -> openUserProfile(posterUid));
+            if (!postAuthorUid.isEmpty())
+                b.tvPostedBy.setOnClickListener(v -> openUserProfile(postAuthorUid));
+
+            // Show 3-dot menu only for admin or post author
+            String currentUid = auth.getUid();
+            if (currentUid != null) {
+                db.collection("users").document(currentUid).get().addOnSuccessListener(userDoc -> {
+                    String role = userDoc.getString("role");
+                    isAdmin = "admin".equalsIgnoreCase(role);
+                    boolean canManage = isAdmin || currentUid.equals(postAuthorUid);
+                    MenuItem menuMore2 = b.toolbar.getMenu().findItem(R.id.action_more);
+                    if (menuMore2 != null) menuMore2.setVisible(canManage);
+                });
+            }
         });
     }
 
+    private void tryShowPhoto(String base64) {
+        try {
+            byte[] bytes = Base64.decode(base64, Base64.DEFAULT);
+            android.graphics.Bitmap bmp =
+                    android.graphics.BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            if (bmp != null && b.ivPosterPhoto != null) {
+                b.ivPosterPhoto.setVisibility(View.VISIBLE);
+                b.ivPosterPhoto.setImageBitmap(bmp);
+            }
+        } catch (Exception ignored) {}
+    }
+
     // ─────────────────────────────────────────────────────────────────────────
-    // Top-level comments
+    // Post-level like
+    // ─────────────────────────────────────────────────────────────────────────
+    private void togglePostLike() {
+        String uid = auth.getUid();
+        if (uid == null) return;
+
+        DocumentReference postRef = db.collection(postCollection).document(docId);
+        DocumentReference likeRef = postRef.collection("likes").document(uid);
+
+        likeRef.get().addOnSuccessListener(likeDoc -> {
+            if (likeDoc.exists()) {
+                likeRef.delete();
+                postRef.update("likeCount", FieldValue.increment(-1));
+                postLikedByMe = false;
+                postLikeCount = Math.max(0, postLikeCount - 1);
+            } else {
+                Map<String, Object> data = new HashMap<>();
+                data.put("uid",     uid);
+                data.put("likedAt", Timestamp.now());
+                likeRef.set(data);
+                postRef.update("likeCount", FieldValue.increment(1));
+                postLikedByMe = true;
+                postLikeCount++;
+                db.collection("users").document(uid).get().addOnSuccessListener(userDoc -> {
+                    String fn = userDoc.getString("fName") != null ? userDoc.getString("fName") : "";
+                    String ln = userDoc.getString("lName") != null ? userDoc.getString("lName") : "";
+                    NotificationHelper.notifyLike(postPosterUid, (fn + " " + ln).trim(),
+                            postTitle, docId, postCollection);
+                });
+                ActivityLogger.log(
+                        "announcements".equals(postCollection)
+                                ? ActivityLogger.MODULE_ANNOUNCEMENT
+                                : ActivityLogger.MODULE_EVENT,
+                        "Liked Post", postTitle);
+            }
+            updatePostLikeUI();
+        });
+    }
+
+    private void updatePostLikeUI() {
+        if (b.btnLikePost == null) return;
+        b.btnLikePost.setText("♥ " + postLikeCount);
+        b.btnLikePost.setTextColor(postLikedByMe ? 0xFFEF5350 : 0x88FFFFFF);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Post options (3-dot menu)
+    // ─────────────────────────────────────────────────────────────────────────
+    private void showPostOptionsMenu() {
+        String[] items = { "Edit", "Archive", "Delete" };
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Post Options")
+                .setItems(items, (dialog, which) -> {
+                    switch (which) {
+                        case 0: openEditPost();      break;
+                        case 1: toggleArchivePost(); break;
+                        case 2: confirmDeletePost(); break;
+                    }
+                })
+                .show();
+    }
+
+    private void openEditPost() {
+        db.collection(postCollection).document(docId).get().addOnSuccessListener(doc -> {
+            if (!doc.exists()) return;
+            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
+            builder.setTitle("Edit Post");
+            LinearLayout layout = new LinearLayout(this);
+            layout.setOrientation(LinearLayout.VERTICAL);
+            layout.setPadding(dp(20), dp(16), dp(20), dp(8));
+            EditText etTitle = new EditText(this);
+            etTitle.setHint("Title");
+            etTitle.setText(doc.getString("title"));
+            etTitle.setPadding(dp(8), dp(8), dp(8), dp(8));
+            layout.addView(etTitle);
+            EditText etDesc = new EditText(this);
+            etDesc.setHint("Description");
+            etDesc.setText(doc.getString("description"));
+            etDesc.setMinLines(3);
+            etDesc.setMaxLines(6);
+            etDesc.setInputType(android.text.InputType.TYPE_CLASS_TEXT
+                    | android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+            etDesc.setPadding(dp(8), dp(12), dp(8), dp(8));
+            layout.addView(etDesc);
+            builder.setView(layout);
+            builder.setPositiveButton("Save", (d, w) -> {
+                String newTitle = etTitle.getText().toString().trim();
+                String newDesc  = etDesc.getText().toString().trim();
+                if (newTitle.isEmpty()) {
+                    Toast.makeText(this, "Title cannot be empty", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Map<String, Object> updates = new HashMap<>();
+                updates.put("title",       newTitle);
+                updates.put("description", newDesc);
+                updates.put("editedAt",    Timestamp.now());
+                db.collection(postCollection).document(docId).update(updates)
+                        .addOnSuccessListener(unused -> {
+                            Toast.makeText(this, "Post updated", Toast.LENGTH_SHORT).show();
+                            b.tvPostTitle.setText(newTitle);
+                            b.tvPostDescription.setText(newDesc);
+                            postTitle = newTitle;
+                            ActivityLogger.log(
+                                    "announcements".equals(postCollection)
+                                            ? ActivityLogger.MODULE_ANNOUNCEMENT
+                                            : ActivityLogger.MODULE_EVENT,
+                                    "Edited Post", newTitle);
+                        })
+                        .addOnFailureListener(e ->
+                                Toast.makeText(this, "Update failed", Toast.LENGTH_SHORT).show());
+            });
+            builder.setNegativeButton("Cancel", null);
+            builder.show();
+        });
+    }
+
+    private void toggleArchivePost() {
+        db.collection(postCollection).document(docId).get().addOnSuccessListener(doc -> {
+            if (!doc.exists()) return;
+            String currentStatus = doc.getString("status");
+            boolean isArchived   = "Archive".equalsIgnoreCase(currentStatus)
+                    || "Archived".equalsIgnoreCase(currentStatus);
+            String newStatus     = isArchived ? "Active" : "Archive";
+            new androidx.appcompat.app.AlertDialog.Builder(this)
+                    .setTitle(isArchived ? "Restore Post?" : "Archive Post?")
+                    .setMessage(isArchived
+                            ? "This will set the post status back to Active."
+                            : "This will set the post status to Archive.")
+                    .setPositiveButton(isArchived ? "Restore" : "Archive", (d, w) ->
+                            db.collection(postCollection).document(docId)
+                                    .update("status", newStatus)
+                                    .addOnSuccessListener(unused ->
+                                            Toast.makeText(this,
+                                                    "Status set to " + newStatus,
+                                                    Toast.LENGTH_SHORT).show())
+                                    .addOnFailureListener(e ->
+                                            Toast.makeText(this,
+                                                    "Failed to update status",
+                                                    Toast.LENGTH_SHORT).show()))
+                    .setNegativeButton("Cancel", null)
+                    .show();
+        });
+    }
+
+    private void confirmDeletePost() {
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Delete Post?")
+                .setMessage("This will permanently delete the post and cannot be undone.")
+                .setPositiveButton("Delete", (d, w) ->
+                        db.collection(postCollection).document(docId).delete()
+                                .addOnSuccessListener(unused -> {
+                                    Toast.makeText(this, "Post deleted", Toast.LENGTH_SHORT).show();
+                                    ActivityLogger.log(
+                                            "announcements".equals(postCollection)
+                                                    ? ActivityLogger.MODULE_ANNOUNCEMENT
+                                                    : ActivityLogger.MODULE_EVENT,
+                                            ActivityLogger.ACTION_DELETE, postTitle);
+                                    finish();
+                                })
+                                .addOnFailureListener(e ->
+                                        Toast.makeText(this, "Delete failed",
+                                                Toast.LENGTH_SHORT).show()))
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Comments
     // ─────────────────────────────────────────────────────────────────────────
     private void loadComments() {
         db.collection(postCollection).document(docId)
@@ -137,6 +392,7 @@ public class PostDetailActivity extends AppCompatActivity {
                     if (snap == null) return;
                     comments = snap.getDocuments();
                     b.tvCommentCount.setText(comments.size() + " comment(s)");
+                    b.tvCommentCountInline.setText("💬 " + comments.size());
                     adapter.notifyDataSetChanged();
                 });
     }
@@ -163,16 +419,14 @@ public class PostDetailActivity extends AppCompatActivity {
                                 .update("commentCount", FieldValue.increment(1));
                         b.etComment.setText("");
                         b.btnSendComment.setEnabled(true);
-                        // Audit log
                         ActivityLogger.log(
                                 "announcements".equals(postCollection)
                                         ? ActivityLogger.MODULE_ANNOUNCEMENT
                                         : ActivityLogger.MODULE_EVENT,
                                 "Commented", postTitle);
-                        // Notify poster
                         String commenterName = (fName + " " + lName).trim();
-                        NotificationHelper.notifyComment(
-                                postPosterUid, commenterName, postTitle, docId, postCollection);
+                        NotificationHelper.notifyComment(postPosterUid, commenterName,
+                                postTitle, docId, postCollection);
                     })
                     .addOnFailureListener(ex -> {
                         b.btnSendComment.setEnabled(true);
@@ -181,10 +435,58 @@ public class PostDetailActivity extends AppCompatActivity {
         });
     }
 
+    // ─────────────────────────────────────────────────────────────────────────
+    // Navigation
+    // ─────────────────────────────────────────────────────────────────────────
     private void openUserProfile(String uid) {
         Intent i = new Intent(this, UserProfileActivity.class);
         i.putExtra("uid", uid);
         startActivity(i);
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Fullscreen image
+    // ─────────────────────────────────────────────────────────────────────────
+    private void openFullscreenImage(android.graphics.Bitmap bitmap) {
+        android.app.Dialog dialog = new android.app.Dialog(
+                PostDetailActivity.this,
+                android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+        dialog.setContentView(buildFullscreenImageView(dialog, bitmap));
+        dialog.show();
+    }
+
+    private FrameLayout buildFullscreenImageView(android.app.Dialog dialog,
+                                                 android.graphics.Bitmap bitmap) {
+        FrameLayout root = new FrameLayout(PostDetailActivity.this);
+        root.setBackgroundColor(0xFF000000);
+        com.github.chrisbanes.photoview.PhotoView photoView =
+                new com.github.chrisbanes.photoview.PhotoView(PostDetailActivity.this);
+        photoView.setImageBitmap(bitmap);
+        photoView.setLayoutParams(new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT));
+        root.addView(photoView);
+        TextView btnClose = new TextView(PostDetailActivity.this);
+        btnClose.setText("✕");
+        btnClose.setTextColor(0xFFFFFFFF);
+        btnClose.setTextSize(22f);
+        btnClose.setTypeface(null, Typeface.BOLD);
+        btnClose.setPadding(dp(14), dp(14), dp(14), dp(14));
+        FrameLayout.LayoutParams closeLp = new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT);
+        closeLp.gravity    = Gravity.TOP | Gravity.END;
+        closeLp.topMargin  = dp(36);
+        closeLp.rightMargin = dp(8);
+        btnClose.setLayoutParams(closeLp);
+        btnClose.setOnClickListener(v -> dialog.dismiss());
+        root.addView(btnClose);
+        return root;
+    }
+
+    private int dp(int value) {
+        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                value, getResources().getDisplayMetrics()));
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -226,51 +528,45 @@ public class PostDetailActivity extends AppCompatActivity {
 
         @Override public void onBindViewHolder(VH h, int pos) {
             DocumentSnapshot doc = comments.get(pos);
-            String uid           = auth.getUid();
-            String name          = doc.getString("name") != null ? doc.getString("name") : "Unknown";
-            String text          = doc.getString("text") != null ? doc.getString("text") : "";
-            String authorUid     = doc.getString("uid")  != null ? doc.getString("uid")  : "";
-            Timestamp ts         = doc.getTimestamp("createdAt");
-            Long likes           = doc.getLong("likeCount");
-            int likeCount        = likes != null ? likes.intValue() : 0;
+            String uid       = auth.getUid();
+            String name      = doc.getString("name") != null ? doc.getString("name") : "Unknown";
+            String text      = doc.getString("text") != null ? doc.getString("text") : "";
+            String authorUid = doc.getString("uid")  != null ? doc.getString("uid")  : "";
+            Timestamp ts     = doc.getTimestamp("createdAt");
+            Long likes       = doc.getLong("likeCount");
+            int likeCount    = likes != null ? likes.intValue() : 0;
 
             h.tvInitials.setText(initials(name));
             h.tvName.setText(name);
             h.tvText.setText(text);
             h.tvTime.setText(ts != null
-                    ? new SimpleDateFormat("MMM d  h:mm a", Locale.getDefault()).format(ts.toDate()) : "");
+                    ? new SimpleDateFormat("MMM d  h:mm a",
+                    Locale.getDefault()).format(ts.toDate()) : "");
             h.tvLikeCount.setText(String.valueOf(likeCount));
             h.tvName.setOnClickListener(v -> openUserProfile(authorUid));
-
-            // Load commenter profile photo
             loadCommenterPhoto(h, authorUid);
 
             DocumentReference commentRef = db.collection(postCollection).document(docId)
                     .collection("comments").document(doc.getId());
 
-            // ── Like ──────────────────────────────────────────────────────
             if (uid != null) {
                 commentRef.collection("likes").document(uid).get()
-                        .addOnSuccessListener(d -> updateCommentLikeUI(h, likeCount, d.exists()));
+                        .addOnSuccessListener(d ->
+                                updateCommentLikeUI(h, likeCount, d.exists()));
             }
             if (h.btnLikeComment != null)
-                h.btnLikeComment.setOnClickListener(v -> toggleCommentLike(h, uid, commentRef, doc));
-
-            // Tap the like COUNT to see who liked
-            if (h.tvLikeCount != null) {
-                h.tvLikeCount.setOnClickListener(v -> showLikers(commentRef.collection("likes")));
-            }
-
-            // ── Reply toggle (direct reply to comment) ────────────────────
+                h.btnLikeComment.setOnClickListener(v ->
+                        toggleCommentLike(h, uid, commentRef, doc));
+            if (h.tvLikeCount != null)
+                h.tvLikeCount.setOnClickListener(v ->
+                        showLikers(commentRef.collection("likes")));
             if (h.btnReply != null) {
                 h.btnReply.setOnClickListener(v -> {
-                    h.layoutReplyInput.setTag(null);           // parentReplyId = null → top-level reply
+                    h.layoutReplyInput.setTag(null);
                     if (h.etReply != null) h.etReply.setHint("Reply to " + name + "…");
                     toggleReplyInput(h);
                 });
             }
-
-            // ── Send reply ────────────────────────────────────────────────
             if (h.btnSendReply != null) {
                 h.btnSendReply.setOnClickListener(v -> {
                     if (uid == null || h.etReply == null) return;
@@ -281,75 +577,56 @@ public class PostDetailActivity extends AppCompatActivity {
                     sendReply(h, uid, commentRef, replyText, parentReplyId);
                 });
             }
-
-            // ── Load full reply thread ────────────────────────────────────
             loadReplyThread(h, commentRef);
 
-            // ── Delete comment ────────────────────────────────────────────
             boolean isOwn = uid != null && uid.equals(authorUid);
             if (h.btnDelete != null) {
-                h.btnDelete.setVisibility(isOwn ? View.VISIBLE : View.GONE);
+                h.btnDelete.setVisibility(isOwn || isAdmin ? View.VISIBLE : View.GONE);
                 h.btnDelete.setOnClickListener(v ->
                         new androidx.appcompat.app.AlertDialog.Builder(PostDetailActivity.this)
                                 .setTitle("Delete comment?")
                                 .setMessage("This cannot be undone.")
-                                .setPositiveButton("Delete", (d, w) -> {
-                                    commentRef.delete().addOnSuccessListener(unused -> {
-                                        db.collection(postCollection).document(docId)
-                                                .update("commentCount", FieldValue.increment(-1));
-                                        ActivityLogger.log(
-                                                "announcements".equals(postCollection)
-                                                        ? ActivityLogger.MODULE_ANNOUNCEMENT
-                                                        : ActivityLogger.MODULE_EVENT,
-                                                ActivityLogger.ACTION_DELETE,
-                                                "Comment on: " + postTitle);
-                                    });
-                                })
+                                .setPositiveButton("Delete", (d, w) ->
+                                        commentRef.delete().addOnSuccessListener(unused ->
+                                                db.collection(postCollection).document(docId)
+                                                        .update("commentCount",
+                                                                FieldValue.increment(-1))))
                                 .setNegativeButton("Cancel", null)
                                 .show());
             }
         }
 
-        // ─────────────────────────────────────────────────────────────────
-        // Like helpers
-        // ─────────────────────────────────────────────────────────────────
         private void toggleCommentLike(VH h, String uid, DocumentReference commentRef,
                                        DocumentSnapshot doc) {
             if (uid == null) return;
-            commentRef.collection("likes").document(uid).get().addOnSuccessListener(likeDoc -> {
-                Long cur = doc.getLong("likeCount");
-                if (likeDoc.exists()) {
-                    likeDoc.getReference().delete();
-                    commentRef.update("likeCount", FieldValue.increment(-1));
-                    updateCommentLikeUI(h, Math.max(0, (cur != null ? cur.intValue() : 1) - 1), false);
-                } else {
-                    Map<String, Object> d = new HashMap<>();
-                    d.put("uid", uid);
-                    d.put("likedAt", Timestamp.now());
-                    commentRef.collection("likes").document(uid).set(d);
-                    commentRef.update("likeCount", FieldValue.increment(1));
-                    updateCommentLikeUI(h, (cur != null ? cur.intValue() : 0) + 1, true);
-                    // Audit log
-                    ActivityLogger.log(
-                            "announcements".equals(postCollection)
-                                    ? ActivityLogger.MODULE_ANNOUNCEMENT
-                                    : ActivityLogger.MODULE_EVENT,
-                            "Liked Comment", postTitle);
-                    // Notify comment author
-                    String commentAuthorUid = likeDoc.getReference().getParent().getParent() != null
-                            ? likeDoc.getReference().getParent().getParent().getId() : "";
-                    // Fetch current user name for notification
-                    com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser();
-                    db.collection("users").document(uid).get().addOnSuccessListener(uDoc -> {
-                        String fn = uDoc.getString("fName") != null ? uDoc.getString("fName") : "";
-                        String ln = uDoc.getString("lName") != null ? uDoc.getString("lName") : "";
-                        String liker = (fn + " " + ln).trim();
-                        // notify post poster (comment like → tell poster someone liked a comment)
-                        NotificationHelper.notifyLike(postPosterUid, liker,
-                                postTitle, docId, postCollection);
+            commentRef.collection("likes").document(uid).get()
+                    .addOnSuccessListener(likeDoc -> {
+                        Long cur = doc.getLong("likeCount");
+                        if (likeDoc.exists()) {
+                            likeDoc.getReference().delete();
+                            commentRef.update("likeCount", FieldValue.increment(-1));
+                            updateCommentLikeUI(h,
+                                    Math.max(0, (cur != null ? cur.intValue() : 1) - 1), false);
+                        } else {
+                            Map<String, Object> d = new HashMap<>();
+                            d.put("uid", uid);
+                            d.put("likedAt", Timestamp.now());
+                            commentRef.collection("likes").document(uid).set(d);
+                            commentRef.update("likeCount", FieldValue.increment(1));
+                            updateCommentLikeUI(h,
+                                    (cur != null ? cur.intValue() : 0) + 1, true);
+                            db.collection("users").document(uid).get()
+                                    .addOnSuccessListener(uDoc -> {
+                                        String fn = uDoc.getString("fName") != null
+                                                ? uDoc.getString("fName") : "";
+                                        String ln = uDoc.getString("lName") != null
+                                                ? uDoc.getString("lName") : "";
+                                        NotificationHelper.notifyLike(postPosterUid,
+                                                (fn + " " + ln).trim(), postTitle,
+                                                docId, postCollection);
+                                    });
+                        }
                     });
-                }
-            });
         }
 
         private void updateCommentLikeUI(VH h, int count, boolean liked) {
@@ -359,49 +636,36 @@ public class PostDetailActivity extends AppCompatActivity {
             if (h.tvLikeCount != null) h.tvLikeCount.setTextColor(color);
         }
 
-        // ─────────────────────────────────────────────────────────────────
-        // Reply input toggle
-        // ─────────────────────────────────────────────────────────────────
         private void toggleReplyInput(VH h) {
             boolean showing = h.layoutReplyInput.getVisibility() == View.VISIBLE;
             h.layoutReplyInput.setVisibility(showing ? View.GONE : View.VISIBLE);
             if (!showing && h.etReply != null) h.etReply.requestFocus();
         }
 
-        // ─────────────────────────────────────────────────────────────────
-        // Send reply  (parentReplyId == null → direct reply to comment)
-        // ─────────────────────────────────────────────────────────────────
         private void sendReply(VH h, String uid, DocumentReference commentRef,
                                String replyText, String parentReplyId) {
             h.btnSendReply.setEnabled(false);
             db.collection("users").document(uid).get().addOnSuccessListener(userDoc -> {
-                String fName = userDoc.getString("fName") != null ? userDoc.getString("fName") : "";
-                String lName = userDoc.getString("lName") != null ? userDoc.getString("lName") : "";
+                String fName = userDoc.getString("fName") != null
+                        ? userDoc.getString("fName") : "";
+                String lName = userDoc.getString("lName") != null
+                        ? userDoc.getString("lName") : "";
                 Map<String, Object> reply = new HashMap<>();
                 reply.put("uid",           uid);
                 reply.put("name",          (fName + " " + lName).trim());
                 reply.put("text",          replyText);
                 reply.put("createdAt",     Timestamp.now());
-                // "" means direct child of comment; otherwise nested under another reply
                 reply.put("parentReplyId", parentReplyId != null ? parentReplyId : "");
-
                 commentRef.collection("replies").add(reply)
                         .addOnSuccessListener(ref -> {
                             h.etReply.setText("");
                             h.layoutReplyInput.setVisibility(View.GONE);
                             h.layoutReplyInput.setTag(null);
                             h.btnSendReply.setEnabled(true);
-                            loadReplyThread(h, commentRef);   // refresh thread
-                            // Audit log
-                            ActivityLogger.log(
-                                    "announcements".equals(postCollection)
-                                            ? ActivityLogger.MODULE_ANNOUNCEMENT
-                                            : ActivityLogger.MODULE_EVENT,
-                                    "Replied", postTitle);
-                            // Notify post poster about new reply
-                            String rName = (fName + " " + lName).trim();
-                            NotificationHelper.notifyReply(
-                                    postPosterUid, rName, postTitle, docId, postCollection);
+                            loadReplyThread(h, commentRef);
+                            NotificationHelper.notifyReply(postPosterUid,
+                                    (fName + " " + lName).trim(), postTitle,
+                                    docId, postCollection);
                         })
                         .addOnFailureListener(ex -> {
                             h.btnSendReply.setEnabled(true);
@@ -411,22 +675,6 @@ public class PostDetailActivity extends AppCompatActivity {
             });
         }
 
-        // ─────────────────────────────────────────────────────────────────
-        // Threaded reply rendering
-        // ─────────────────────────────────────────────────────────────────
-
-        /**
-         * Fetches ALL replies for a comment in one query, builds a
-         * parentId → children map, then calls renderReplyChildren()
-         * recursively so every reply can itself be replied to infinitely.
-         *
-         * Firestore structure:
-         *   comments/{commentId}/replies/{replyId}
-         *     uid, name, text, createdAt, parentReplyId
-         *
-         * parentReplyId == ""  →  direct reply to the comment
-         * parentReplyId == X   →  reply to reply with id X
-         */
         private void loadReplyThread(VH h, DocumentReference commentRef) {
             if (h.layoutReplies == null) return;
             commentRef.collection("replies")
@@ -438,61 +686,42 @@ public class PostDetailActivity extends AppCompatActivity {
                             return;
                         }
                         h.layoutReplies.setVisibility(View.VISIBLE);
-
-                        // Build parent → children map
                         Map<String, List<DocumentSnapshot>> childMap = new LinkedHashMap<>();
                         for (DocumentSnapshot r : snap.getDocuments()) {
                             String pid = r.getString("parentReplyId");
                             if (pid == null) pid = "";
                             childMap.computeIfAbsent(pid, k -> new ArrayList<>()).add(r);
                         }
-
-                        // Render starting from root (direct children of comment)
                         renderReplyChildren("", childMap, h.layoutReplies, h, commentRef, 0);
                     });
         }
 
-        /**
-         * Recursively builds reply rows, indenting each level by 16 dp.
-         *
-         * @param parentId   ID of the parent ("" = root)
-         * @param childMap   full parent→children map
-         * @param container  LinearLayout to add rows into
-         * @param h          ViewHolder (owns the shared reply input)
-         * @param commentRef Firestore ref for sending new replies
-         * @param depth      nesting depth (0 = direct reply to comment)
-         */
         private void renderReplyChildren(String parentId,
                                          Map<String, List<DocumentSnapshot>> childMap,
-                                         LinearLayout container,
-                                         VH h,
-                                         DocumentReference commentRef,
-                                         int depth) {
+                                         LinearLayout container, VH h,
+                                         DocumentReference commentRef, int depth) {
             List<DocumentSnapshot> children = childMap.get(parentId);
             if (children == null) return;
-
             SimpleDateFormat sdf = new SimpleDateFormat("MMM d  h:mm a", Locale.getDefault());
-
             String currentUid = auth.getUid();
 
             for (DocumentSnapshot r : children) {
-                String rId    = r.getId();
-                String rName  = r.getString("name") != null ? r.getString("name") : "Unknown";
-                String rText  = r.getString("text") != null ? r.getString("text") : "";
-                String rUid   = r.getString("uid")  != null ? r.getString("uid")  : "";
-                Timestamp rTs = r.getTimestamp("createdAt");
-                Long rLikes   = r.getLong("likeCount");
+                String rId     = r.getId();
+                String rName   = r.getString("name") != null ? r.getString("name") : "Unknown";
+                String rText   = r.getString("text") != null ? r.getString("text") : "";
+                String rUid    = r.getString("uid")  != null ? r.getString("uid")  : "";
+                Timestamp rTs  = r.getTimestamp("createdAt");
+                Long rLikes    = r.getLong("likeCount");
                 int rLikeCount = rLikes != null ? rLikes.intValue() : 0;
 
-                DocumentReference replyRef = commentRef.collection("replies").document(rId);
+                DocumentReference replyRef =
+                        commentRef.collection("replies").document(rId);
                 boolean isMyReply = currentUid != null && currentUid.equals(rUid);
 
-                // ── Row container (indented) ──────────────────────────────
                 LinearLayout row = new LinearLayout(PostDetailActivity.this);
                 row.setOrientation(LinearLayout.VERTICAL);
                 row.setPadding(dp(8 + depth * 16), dp(6), 0, 0);
 
-                // ── Meta: arrows + name + time ────────────────────────────
                 StringBuilder arrowSb = new StringBuilder();
                 for (int i = 0; i <= depth; i++) arrowSb.append("↳ ");
                 TextView tvMeta = new TextView(PostDetailActivity.this);
@@ -501,34 +730,31 @@ public class PostDetailActivity extends AppCompatActivity {
                 tvMeta.setTextColor(0x99FFFFFF);
                 tvMeta.setTextSize(10f);
                 tvMeta.setTypeface(null, Typeface.BOLD);
-                tvMeta.setOnClickListener(v -> { if (!rUid.isEmpty()) openUserProfile(rUid); });
+                tvMeta.setOnClickListener(v -> {
+                    if (!rUid.isEmpty()) openUserProfile(rUid);
+                });
 
-                // ── Reply text ────────────────────────────────────────────
                 TextView tvBody = new TextView(PostDetailActivity.this);
                 tvBody.setText(rText);
                 tvBody.setTextColor(0xCCFFFFFF);
                 tvBody.setTextSize(12f);
                 tvBody.setPadding(0, dp(2), 0, 0);
 
-                // ── Action row: ♥ count  ↩ Reply  [Delete] ───────────────
                 LinearLayout actionRow = new LinearLayout(PostDetailActivity.this);
                 actionRow.setOrientation(LinearLayout.HORIZONTAL);
-                actionRow.setGravity(android.view.Gravity.CENTER_VERTICAL);
+                actionRow.setGravity(Gravity.CENTER_VERTICAL);
                 actionRow.setPadding(0, dp(4), 0, 0);
 
-                // Heart + count
-                TextView tvReplyHeart = new TextView(PostDetailActivity.this);
+                TextView tvReplyHeart     = new TextView(PostDetailActivity.this);
+                TextView tvReplyLikeCount = new TextView(PostDetailActivity.this);
                 tvReplyHeart.setTextSize(12f);
                 tvReplyHeart.setPadding(0, 0, dp(4), 0);
-
-                TextView tvReplyLikeCount = new TextView(PostDetailActivity.this);
                 tvReplyLikeCount.setTextSize(11f);
                 tvReplyLikeCount.setPadding(0, 0, dp(14), 0);
                 tvReplyLikeCount.setText(String.valueOf(rLikeCount));
                 tvReplyLikeCount.setClickable(true);
                 tvReplyLikeCount.setFocusable(true);
 
-                // Check if current user already liked this reply
                 final int[] replyLikeCount = {rLikeCount};
                 if (currentUid != null) {
                     replyRef.collection("likes").document(currentUid).get()
@@ -545,7 +771,6 @@ public class PostDetailActivity extends AppCompatActivity {
                     tvReplyLikeCount.setTextColor(0x88FFFFFF);
                 }
 
-                // Toggle like on tap
                 View.OnClickListener likeReplyClick = v -> {
                     if (currentUid == null) return;
                     replyRef.collection("likes").document(currentUid).get()
@@ -573,7 +798,6 @@ public class PostDetailActivity extends AppCompatActivity {
                 tvReplyLikeCount.setOnClickListener(v ->
                         showLikers(replyRef.collection("likes")));
 
-                // ↩ Reply
                 TextView tvReplyAction = new TextView(PostDetailActivity.this);
                 tvReplyAction.setText("↩ Reply");
                 tvReplyAction.setTextColor(0x88FFFFFF);
@@ -583,17 +807,17 @@ public class PostDetailActivity extends AppCompatActivity {
                 tvReplyAction.setFocusable(true);
                 tvReplyAction.setOnClickListener(v -> {
                     h.layoutReplyInput.setTag(rId);
-                    if (h.etReply != null) h.etReply.setHint("Replying to " + rName + "…");
+                    if (h.etReply != null)
+                        h.etReply.setHint("Replying to " + rName + "…");
                     h.layoutReplyInput.setVisibility(View.VISIBLE);
                     if (h.etReply != null) h.etReply.requestFocus();
                 });
 
-                // Delete (own replies only)
                 TextView tvReplyDelete = new TextView(PostDetailActivity.this);
                 tvReplyDelete.setText("Delete");
                 tvReplyDelete.setTextColor(0x66FF6B6B);
                 tvReplyDelete.setTextSize(11f);
-                tvReplyDelete.setVisibility(isMyReply ? View.VISIBLE : View.GONE);
+                tvReplyDelete.setVisibility(isMyReply || isAdmin ? View.VISIBLE : View.GONE);
                 tvReplyDelete.setClickable(true);
                 tvReplyDelete.setFocusable(true);
                 tvReplyDelete.setOnClickListener(v ->
@@ -610,20 +834,14 @@ public class PostDetailActivity extends AppCompatActivity {
                 actionRow.addView(tvReplyLikeCount);
                 actionRow.addView(tvReplyAction);
                 actionRow.addView(tvReplyDelete);
-
                 row.addView(tvMeta);
                 row.addView(tvBody);
                 row.addView(actionRow);
                 container.addView(row);
-
-                // ── Recurse ───────────────────────────────────────────────
                 renderReplyChildren(rId, childMap, container, h, commentRef, depth + 1);
             }
         }
 
-        // ─────────────────────────────────────────────────────────────────
-        // Utilities
-        // ─────────────────────────────────────────────────────────────────
         private void loadCommenterPhoto(VH h, String uid) {
             if (uid == null || uid.isEmpty() || h.ivCommenterPhoto == null) return;
             db.collection("users").document(uid).get().addOnSuccessListener(userDoc -> {
@@ -632,35 +850,30 @@ public class PostDetailActivity extends AppCompatActivity {
                     try {
                         byte[] bytes = android.util.Base64.decode(b64, android.util.Base64.DEFAULT);
                         android.graphics.Bitmap bmp =
-                                android.graphics.BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                android.graphics.BitmapFactory
+                                        .decodeByteArray(bytes, 0, bytes.length);
                         if (bmp != null) {
                             h.ivCommenterPhoto.setImageBitmap(bmp);
-                            h.ivCommenterPhoto.setVisibility(android.view.View.VISIBLE);
-                            // Hide the initials text once photo is loaded
+                            h.ivCommenterPhoto.setVisibility(View.VISIBLE);
                             if (h.tvInitials != null)
-                                h.tvInitials.setVisibility(android.view.View.INVISIBLE);
+                                h.tvInitials.setVisibility(View.INVISIBLE);
                         }
                     } catch (Exception ignored) {}
                 }
             });
         }
 
-        /**
-         * Shows a BottomSheetDialog listing everyone who liked a comment or reply.
-         * @param likesRef  the "likes" subcollection reference
-         */
         private void showLikers(CollectionReference likesRef) {
             likesRef.get().addOnSuccessListener(snap -> {
                 if (snap.isEmpty()) {
-                    Toast.makeText(PostDetailActivity.this, "No likes yet", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PostDetailActivity.this,
+                            "No likes yet", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
                 BottomSheetDialog sheet = new BottomSheetDialog(PostDetailActivity.this);
                 LinearLayout layout = new LinearLayout(PostDetailActivity.this);
                 layout.setOrientation(LinearLayout.VERTICAL);
                 layout.setPadding(dp(16), dp(16), dp(16), dp(32));
-
                 TextView title = new TextView(PostDetailActivity.this);
                 title.setText("❤️ Liked by");
                 title.setTextColor(0xFFFFFFFF);
@@ -668,8 +881,6 @@ public class PostDetailActivity extends AppCompatActivity {
                 title.setTypeface(null, Typeface.BOLD);
                 title.setPadding(0, 0, 0, dp(12));
                 layout.addView(title);
-
-                // For each like doc, fetch user name
                 List<DocumentSnapshot> likeDocs = snap.getDocuments();
                 final int[] loaded = {0};
                 for (DocumentSnapshot likeDoc : likeDocs) {
@@ -677,48 +888,49 @@ public class PostDetailActivity extends AppCompatActivity {
                     if (likerUid == null) { loaded[0]++; continue; }
                     db.collection("users").document(likerUid).get()
                             .addOnSuccessListener(userDoc -> {
-                                String fn = userDoc.getString("fName") != null ? userDoc.getString("fName") : "";
-                                String ln = userDoc.getString("lName") != null ? userDoc.getString("lName") : "";
+                                String fn = userDoc.getString("fName") != null
+                                        ? userDoc.getString("fName") : "";
+                                String ln = userDoc.getString("lName") != null
+                                        ? userDoc.getString("lName") : "";
                                 String displayName = (fn + " " + ln).trim();
                                 if (displayName.isEmpty()) displayName = likerUid;
-
-                                // Avatar + name row
                                 LinearLayout row = new LinearLayout(PostDetailActivity.this);
                                 row.setOrientation(LinearLayout.HORIZONTAL);
-                                row.setGravity(android.view.Gravity.CENTER_VERTICAL);
+                                row.setGravity(Gravity.CENTER_VERTICAL);
                                 row.setPadding(0, dp(6), 0, dp(6));
-
-                                TextView avatar = new TextView(PostDetailActivity.this);
-                                avatar.setWidth(dp(30));
-                                avatar.setHeight(dp(30));
                                 String photoB64 = userDoc.getString("photoBase64");
                                 if (photoB64 == null || photoB64.isEmpty()) {
-                                    // Initials circle
+                                    TextView avatar = new TextView(PostDetailActivity.this);
+                                    avatar.setWidth(dp(30));
+                                    avatar.setHeight(dp(30));
                                     avatar.setBackground(getDrawable(R.drawable.circle_maroon));
-                                    avatar.setGravity(android.view.Gravity.CENTER);
+                                    avatar.setGravity(Gravity.CENTER);
                                     avatar.setTextColor(0xFFFFFFFF);
                                     avatar.setTextSize(11f);
                                     avatar.setText(displayName.length() > 0
-                                            ? String.valueOf(displayName.charAt(0)).toUpperCase() : "?");
+                                            ? String.valueOf(displayName.charAt(0)).toUpperCase()
+                                            : "?");
                                     row.addView(avatar);
                                 } else {
                                     ImageView iv = new ImageView(PostDetailActivity.this);
-                                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(dp(30), dp(30));
-                                    iv.setLayoutParams(lp);
+                                    iv.setLayoutParams(
+                                            new LinearLayout.LayoutParams(dp(30), dp(30)));
                                     iv.setBackground(getDrawable(R.drawable.circle_maroon));
                                     iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
                                     iv.setClipToOutline(true);
                                     try {
-                                        byte[] bytes = android.util.Base64.decode(photoB64, android.util.Base64.DEFAULT);
-                                        android.graphics.Bitmap bmp = android.graphics.BitmapFactory
-                                                .decodeByteArray(bytes, 0, bytes.length);
+                                        byte[] bytes = android.util.Base64.decode(
+                                                photoB64, android.util.Base64.DEFAULT);
+                                        android.graphics.Bitmap bmp =
+                                                android.graphics.BitmapFactory
+                                                        .decodeByteArray(bytes, 0, bytes.length);
                                         if (bmp != null) iv.setImageBitmap(bmp);
                                     } catch (Exception ignored) {}
                                     row.addView(iv);
                                 }
-
+                                String finalDisplayName = displayName;
                                 TextView tvName = new TextView(PostDetailActivity.this);
-                                tvName.setText(displayName);
+                                tvName.setText(finalDisplayName);
                                 tvName.setTextColor(0xCCFFFFFF);
                                 tvName.setTextSize(13f);
                                 tvName.setPadding(dp(10), 0, 0, 0);
@@ -728,10 +940,8 @@ public class PostDetailActivity extends AppCompatActivity {
                                 });
                                 row.addView(tvName);
                                 layout.addView(row);
-
                                 loaded[0]++;
                                 if (loaded[0] == likeDocs.size()) {
-                                    // All names loaded — now show the sheet
                                     ScrollView sv = new ScrollView(PostDetailActivity.this);
                                     sv.addView(layout);
                                     sheet.setContentView(sv);
@@ -756,12 +966,13 @@ public class PostDetailActivity extends AppCompatActivity {
             if (parts.length >= 2 && parts[0].length() > 0 && parts[1].length() > 0)
                 return String.valueOf(parts[0].charAt(0)).toUpperCase()
                         + String.valueOf(parts[1].charAt(0)).toUpperCase();
-            return name.length() > 0 ? String.valueOf(name.charAt(0)).toUpperCase() : "?";
+            return name.length() > 0
+                    ? String.valueOf(name.charAt(0)).toUpperCase() : "?";
         }
 
         private int dp(int value) {
-            return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value,
-                    getResources().getDisplayMetrics()));
+            return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                    value, getResources().getDisplayMetrics()));
         }
 
         @Override public int getItemCount() { return comments.size(); }

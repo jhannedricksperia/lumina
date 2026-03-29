@@ -24,30 +24,30 @@ public final class ActivityAdminBinding implements ViewBinding {
   public final FrameLayout adminFragmentContainer;
 
   @NonNull
-  public final LinearLayout navAnnouncements;
-
-  @NonNull
   public final LinearLayout navDashboard;
 
   @NonNull
-  public final LinearLayout navEvents;
+  public final LinearLayout navFeed;
 
   @NonNull
   public final ImageView navIconDashboard;
 
   @NonNull
+  public final LinearLayout navManagement;
+
+  @NonNull
   public final LinearLayout navProfile;
 
   private ActivityAdminBinding(@NonNull LinearLayout rootView,
-      @NonNull FrameLayout adminFragmentContainer, @NonNull LinearLayout navAnnouncements,
-      @NonNull LinearLayout navDashboard, @NonNull LinearLayout navEvents,
-      @NonNull ImageView navIconDashboard, @NonNull LinearLayout navProfile) {
+      @NonNull FrameLayout adminFragmentContainer, @NonNull LinearLayout navDashboard,
+      @NonNull LinearLayout navFeed, @NonNull ImageView navIconDashboard,
+      @NonNull LinearLayout navManagement, @NonNull LinearLayout navProfile) {
     this.rootView = rootView;
     this.adminFragmentContainer = adminFragmentContainer;
-    this.navAnnouncements = navAnnouncements;
     this.navDashboard = navDashboard;
-    this.navEvents = navEvents;
+    this.navFeed = navFeed;
     this.navIconDashboard = navIconDashboard;
+    this.navManagement = navManagement;
     this.navProfile = navProfile;
   }
 
@@ -84,21 +84,15 @@ public final class ActivityAdminBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.nav_announcements;
-      LinearLayout navAnnouncements = ViewBindings.findChildViewById(rootView, id);
-      if (navAnnouncements == null) {
-        break missingId;
-      }
-
       id = R.id.nav_dashboard;
       LinearLayout navDashboard = ViewBindings.findChildViewById(rootView, id);
       if (navDashboard == null) {
         break missingId;
       }
 
-      id = R.id.nav_events;
-      LinearLayout navEvents = ViewBindings.findChildViewById(rootView, id);
-      if (navEvents == null) {
+      id = R.id.nav_feed;
+      LinearLayout navFeed = ViewBindings.findChildViewById(rootView, id);
+      if (navFeed == null) {
         break missingId;
       }
 
@@ -108,14 +102,20 @@ public final class ActivityAdminBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.nav_management;
+      LinearLayout navManagement = ViewBindings.findChildViewById(rootView, id);
+      if (navManagement == null) {
+        break missingId;
+      }
+
       id = R.id.nav_profile;
       LinearLayout navProfile = ViewBindings.findChildViewById(rootView, id);
       if (navProfile == null) {
         break missingId;
       }
 
-      return new ActivityAdminBinding((LinearLayout) rootView, adminFragmentContainer,
-          navAnnouncements, navDashboard, navEvents, navIconDashboard, navProfile);
+      return new ActivityAdminBinding((LinearLayout) rootView, adminFragmentContainer, navDashboard,
+          navFeed, navIconDashboard, navManagement, navProfile);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

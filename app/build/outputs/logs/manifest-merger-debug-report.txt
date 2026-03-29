@@ -1,12 +1,13 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:2:1-76:12
-INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:2:1-76:12
-INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:2:1-76:12
-INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:2:1-76:12
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:2:1-77:12
+INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:2:1-77:12
+INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:2:1-77:12
+INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:2:1-77:12
 MERGED from [androidx.databinding:viewbinding:8.12.3] C:\Users\jhann\.gradle\caches\8.13\transforms\863e157ac87340803bbc8c1069523be9\transformed\jetified-viewbinding-8.12.3\AndroidManifest.xml:2:1-7:12
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\jhann\.gradle\caches\8.13\transforms\7876fca21c50c68d63bdc9346f1acc9b\transformed\material-1.11.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\jhann\.gradle\caches\8.13\transforms\406306de9396c93982301dd8dadc2a18\transformed\constraintlayout-2.1.4\AndroidManifest.xml:2:1-11:12
+MERGED from [com.github.chrisbanes:PhotoView:2.3.0] C:\Users\jhann\.gradle\caches\8.13\transforms\6468b07719cc3588ad2feab5ee11b5cf\transformed\jetified-PhotoView-2.3.0\AndroidManifest.xml:2:1-11:12
 MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\jhann\.gradle\caches\8.13\transforms\5a6cab2db8797e200857c4e859cf174b\transformed\jetified-appcompat-resources-1.6.1\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.appcompat:appcompat:1.6.1] C:\Users\jhann\.gradle\caches\8.13\transforms\a0b1e49ad9f56cf330596846df3661c1\transformed\appcompat-1.6.1\AndroidManifest.xml:17:1-22:12
 MERGED from [com.google.firebase:firebase-auth:22.3.0] C:\Users\jhann\.gradle\caches\8.13\transforms\a652f4a7f98010b06c406b1716747495\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:17:1-75:12
@@ -86,8 +87,8 @@ MERGED from [com.google.android.recaptcha:recaptcha:18.1.2] C:\Users\jhann\.grad
 	android:name
 		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:4:22-64
 application
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:6:5-74:19
-INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:6:5-74:19
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:6:5-75:19
+INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:6:5-75:19
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\jhann\.gradle\caches\8.13\transforms\7876fca21c50c68d63bdc9346f1acc9b\transformed\material-1.11.0\AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\jhann\.gradle\caches\8.13\transforms\7876fca21c50c68d63bdc9346f1acc9b\transformed\material-1.11.0\AndroidManifest.xml:22:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\jhann\.gradle\caches\8.13\transforms\406306de9396c93982301dd8dadc2a18\transformed\constraintlayout-2.1.4\AndroidManifest.xml:9:5-20
@@ -241,23 +242,25 @@ ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManif
 	android:name
 		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:62:13-53
 activity#com.example.luminae.activities.PostDetailActivity
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:64:9-66:40
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:64:9-67:40
+	android:windowSoftInputMode
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:66:13-55
 	android:exported
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:66:13-37
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:67:13-37
 	android:name
 		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:65:13-58
 activity#com.example.luminae.activities.UserProfileActivity
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:67:9-69:40
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:68:9-70:40
 	android:exported
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:69:13-37
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:70:13-37
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:68:13-59
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:69:13-59
 meta-data#preloaded_fonts
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:71:9-73:57
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:72:9-74:57
 	android:resource
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:73:13-54
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:74:13-54
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:72:13-43
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:73:13-43
 uses-sdk
 INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml
@@ -268,6 +271,8 @@ MERGED from [com.google.android.material:material:1.11.0] C:\Users\jhann\.gradle
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\jhann\.gradle\caches\8.13\transforms\7876fca21c50c68d63bdc9346f1acc9b\transformed\material-1.11.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\jhann\.gradle\caches\8.13\transforms\406306de9396c93982301dd8dadc2a18\transformed\constraintlayout-2.1.4\AndroidManifest.xml:5:5-7:41
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\jhann\.gradle\caches\8.13\transforms\406306de9396c93982301dd8dadc2a18\transformed\constraintlayout-2.1.4\AndroidManifest.xml:5:5-7:41
+MERGED from [com.github.chrisbanes:PhotoView:2.3.0] C:\Users\jhann\.gradle\caches\8.13\transforms\6468b07719cc3588ad2feab5ee11b5cf\transformed\jetified-PhotoView-2.3.0\AndroidManifest.xml:7:5-9:41
+MERGED from [com.github.chrisbanes:PhotoView:2.3.0] C:\Users\jhann\.gradle\caches\8.13\transforms\6468b07719cc3588ad2feab5ee11b5cf\transformed\jetified-PhotoView-2.3.0\AndroidManifest.xml:7:5-9:41
 MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\jhann\.gradle\caches\8.13\transforms\5a6cab2db8797e200857c4e859cf174b\transformed\jetified-appcompat-resources-1.6.1\AndroidManifest.xml:20:5-44
 MERGED from [androidx.appcompat:appcompat-resources:1.6.1] C:\Users\jhann\.gradle\caches\8.13\transforms\5a6cab2db8797e200857c4e859cf174b\transformed\jetified-appcompat-resources-1.6.1\AndroidManifest.xml:20:5-44
 MERGED from [androidx.appcompat:appcompat:1.6.1] C:\Users\jhann\.gradle\caches\8.13\transforms\a0b1e49ad9f56cf330596846df3661c1\transformed\appcompat-1.6.1\AndroidManifest.xml:20:5-44

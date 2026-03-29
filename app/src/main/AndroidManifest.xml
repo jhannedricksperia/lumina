@@ -63,6 +63,7 @@
             android:exported="false" />
         <activity
             android:name=".activities.PostDetailActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false" />
         <activity
             android:name=".activities.UserProfileActivity"

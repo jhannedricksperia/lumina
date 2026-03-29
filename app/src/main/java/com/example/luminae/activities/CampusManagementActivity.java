@@ -21,35 +21,64 @@ import java.util.*;
 
 public class CampusManagementActivity extends AppCompatActivity {
 
+    // ---------------------------------------------------------------------------
+    // Fields
+    // ---------------------------------------------------------------------------
+
     private ActivityGenericManagementBinding b;
     private FirebaseFirestore db;
-    private List<DocumentSnapshot> all = new ArrayList<>(), filtered = new ArrayList<>();
+
+    // Master list from Firestore, and the currently displayed subset after filtering.
+    private List<DocumentSnapshot> all      = new ArrayList<>();
+    private List<DocumentSnapshot> filtered = new ArrayList<>();
+
     private CrudAdapter adapter;
+
+    // ---------------------------------------------------------------------------
+    // Callback interface used to receive the actor's full name asynchronously
+    // before writing to Firestore, so that createdBy / modifiedBy stores a
+    // human-readable name instead of a raw Firebase UID.
+    // ---------------------------------------------------------------------------
+    interface NameCallback {
+        void onResult(String fullName);
+    }
+
+    // ---------------------------------------------------------------------------
+    // Lifecycle
+    // ---------------------------------------------------------------------------
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        b = ActivityGenericManagementBinding.inflate(getLayoutInflater());
+        b  = ActivityGenericManagementBinding.inflate(getLayoutInflater());
         setContentView(b.getRoot());
         db = FirebaseFirestore.getInstance();
 
+        // Set up toolbar with back navigation.
         setSupportActionBar(b.toolbar);
         getSupportActionBar().setTitle("Campus Management");
         b.toolbar.setNavigationOnClickListener(v -> finish());
 
+        // Set up the RecyclerView.
         adapter = new CrudAdapter();
         b.recyclerItems.setLayoutManager(new LinearLayoutManager(this));
         b.recyclerItems.setAdapter(adapter);
 
+        // Re-filter whenever the user types in the search box.
         b.etSearch.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int a, int bc, int c) {}
             @Override public void afterTextChanged(Editable s) {}
-            @Override public void onTextChanged(CharSequence s, int a, int bc, int c) { applyFilter(); }
+            @Override public void onTextChanged(CharSequence s, int a, int bc, int c) {
+                applyFilter();
+            }
         });
 
+        // Open the add-campus dialog when the FAB / add button is tapped.
         b.btnAdd.setOnClickListener(v -> showFormDialog(null));
 
-        db.collection("campuses").orderBy("name")
+        // Listen for real-time updates from the campuses collection.
+        db.collection("campuses")
+                .orderBy("name")
                 .addSnapshotListener((snap, e) -> {
                     if (snap == null) return;
                     all = snap.getDocuments();
@@ -57,22 +86,42 @@ public class CampusManagementActivity extends AppCompatActivity {
                 });
     }
 
+    // ---------------------------------------------------------------------------
+    // Filtering
+    // ---------------------------------------------------------------------------
+
+    /**
+     * Rebuilds the filtered list based on the current search query and refreshes
+     * the adapter.
+     */
     private void applyFilter() {
         String q = b.etSearch.getText().toString().trim().toLowerCase();
         filtered.clear();
         for (DocumentSnapshot doc : all) {
-            String name = doc.getString("name") != null ? doc.getString("name").toLowerCase() : "";
+            String name = doc.getString("name") != null
+                    ? doc.getString("name").toLowerCase() : "";
             if (q.isEmpty() || name.contains(q)) filtered.add(doc);
         }
         b.tvCount.setText(filtered.size() + " campus(es)");
         adapter.notifyDataSetChanged();
     }
 
+    // ---------------------------------------------------------------------------
+    // Add / Edit dialog
+    // ---------------------------------------------------------------------------
+
+    /**
+     * Shows the campus form dialog.
+     *
+     * @param existing Pass null to create a new campus, or a DocumentSnapshot
+     *                 to edit an existing one.
+     */
     private void showFormDialog(DocumentSnapshot existing) {
         View form = LayoutInflater.from(this).inflate(R.layout.dialog_campus_form, null);
         TextInputEditText etName = form.findViewById(R.id.et_name);
         TextInputEditText etDesc = form.findViewById(R.id.et_description);
 
+        // Pre-fill fields when editing.
         if (existing != null) {
             etName.setText(existing.getString("name"));
             etDesc.setText(existing.getString("description"));
@@ -84,34 +133,77 @@ public class CampusManagementActivity extends AppCompatActivity {
                 .setPositiveButton("Save", (d, w) -> {
                     String name = etName.getText().toString().trim();
                     String desc = etDesc.getText().toString().trim();
+
                     if (name.isEmpty()) {
                         Toast.makeText(this, "Name required", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    String uid = FirebaseAuth.getInstance().getUid();
-                    if (existing == null) {
-                        Map<String, Object> data = new HashMap<>();
-                        data.put("name", name);
-                        data.put("description", desc);
-                        data.put("status", "Active");
-                        data.put("createdAt", Timestamp.now());
-                        data.put("createdBy", uid);
-                        db.collection("campuses").add(data)
-                                .addOnSuccessListener(ref ->
-                                        ActivityLogger.logCampus(ActivityLogger.ACTION_CREATE, name));
-                    } else {
-                        existing.getReference().update(
-                                        "name", name, "description", desc,
-                                        "modifiedAt", Timestamp.now(), "modifiedBy", uid)
-                                .addOnSuccessListener(v ->
-                                        ActivityLogger.logCampus(ActivityLogger.ACTION_MODIFIED, name));
-                    }
+
+                    // Fetch the current admin's full name before saving so that
+                    // createdBy / modifiedBy shows a readable name, not a UID.
+                    getActorFullName(fullName -> {
+                        String uid = FirebaseAuth.getInstance().getUid();
+
+                        if (existing == null) {
+                            // Create new campus document.
+                            Map<String, Object> data = new HashMap<>();
+                            data.put("name",        name);
+                            data.put("description", desc);
+                            data.put("status",      "Active");
+                            data.put("createdAt",   Timestamp.now());
+                            data.put("createdBy",   fullName);   // full name, not UID
+                            data.put("createdById", uid);        // keep UID for reference
+                            db.collection("campuses").add(data)
+                                    .addOnSuccessListener(ref ->
+                                            ActivityLogger.logCampus(
+                                                    ActivityLogger.ACTION_CREATE, name));
+                        } else {
+                            // Update existing campus document.
+                            existing.getReference().update(
+                                            "name",         name,
+                                            "description",  desc,
+                                            "modifiedAt",   Timestamp.now(),
+                                            "modifiedBy",   fullName,   // full name, not UID
+                                            "modifiedById", uid)
+                                    .addOnSuccessListener(v ->
+                                            ActivityLogger.logCampus(
+                                                    ActivityLogger.ACTION_MODIFIED, name));
+                        }
+                    });
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
     }
 
-    // ── Adapter ───────────────────────────────────────────────────────────────
+    // ---------------------------------------------------------------------------
+    // Helper: resolve the currently logged-in user's full name from Firestore
+    // ---------------------------------------------------------------------------
+
+    /**
+     * Looks up the current user's document in the "users" collection and returns
+     * their concatenated fName + lName via the callback.  Falls back to "Unknown"
+     * if the document cannot be retrieved.
+     */
+    private void getActorFullName(NameCallback callback) {
+        String uid = FirebaseAuth.getInstance().getUid();
+        if (uid == null) {
+            callback.onResult("Unknown");
+            return;
+        }
+        db.collection("users").document(uid).get()
+                .addOnSuccessListener(doc -> {
+                    String fName = doc.getString("fName") != null ? doc.getString("fName") : "";
+                    String lName = doc.getString("lName") != null ? doc.getString("lName") : "";
+                    String full  = (fName + " " + lName).trim();
+                    callback.onResult(full.isEmpty() ? "Unknown" : full);
+                })
+                .addOnFailureListener(e -> callback.onResult("Unknown"));
+    }
+
+    // ---------------------------------------------------------------------------
+    // RecyclerView Adapter
+    // ---------------------------------------------------------------------------
+
     private class CrudAdapter extends RecyclerView.Adapter<CrudAdapter.VH> {
 
         class VH extends RecyclerView.ViewHolder {
@@ -135,21 +227,27 @@ public class CampusManagementActivity extends AppCompatActivity {
             }
         }
 
-        @Override public VH onCreateViewHolder(ViewGroup p, int t) {
-            return new VH(LayoutInflater.from(p.getContext()).inflate(R.layout.item_crud_entity, p, false));
+        @Override
+        public VH onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new VH(LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_crud_entity, parent, false));
         }
 
-        @Override public void onBindViewHolder(VH h, int pos) {
+        @Override
+        public void onBindViewHolder(VH h, int pos) {
             DocumentSnapshot doc = filtered.get(pos);
             SimpleDateFormat sdf = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
+
             String name   = orDash(doc.getString("name"));
             String status = doc.getString("status") != null ? doc.getString("status") : "Active";
 
+            // Bind basic fields.
             h.tvName.setText(name);
             h.tvDesc.setText(orDash(doc.getString("description")));
             h.tvStatus.setText(status);
-            h.tvAcronym.setVisibility(View.GONE);
+            h.tvAcronym.setVisibility(View.GONE); // campuses have no acronym
 
+            // Style the status badge.
             if ("Active".equals(status)) {
                 h.tvStatus.setBackgroundResource(R.drawable.badge_active);
                 h.btnToggle.setText("Disable");
@@ -158,25 +256,37 @@ public class CampusManagementActivity extends AppCompatActivity {
                 h.btnToggle.setText("Enable");
             }
 
-            Timestamp c = doc.getTimestamp("createdAt"), m = doc.getTimestamp("modifiedAt");
+            // Timestamps.
+            Timestamp c = doc.getTimestamp("createdAt");
+            Timestamp m = doc.getTimestamp("modifiedAt");
             h.tvDateCreated.setText(c != null ? sdf.format(c.toDate()) : "—");
             h.tvDateModified.setText(m != null ? sdf.format(m.toDate()) : "—");
+
+            // createdBy / modifiedBy now stores the full name.
             h.tvCreatedBy.setText(orDash(doc.getString("createdBy")));
             h.tvModifiedBy.setText(orDash(doc.getString("modifiedBy")));
 
+            // Edit button opens the form pre-filled with existing data.
             h.btnEdit.setOnClickListener(v -> showFormDialog(doc));
 
+            // Toggle status button resolves the actor name before updating.
             h.btnToggle.setOnClickListener(v -> {
-                String ns = "Active".equals(status) ? "Inactive" : "Active";
-                doc.getReference().update(
-                                "status", ns,
-                                "modifiedAt", Timestamp.now(),
-                                "modifiedBy", FirebaseAuth.getInstance().getUid())
-                        .addOnSuccessListener(unused ->
-                                ActivityLogger.logCampus(ActivityLogger.ACTION_MODIFIED,
-                                        name + " → " + ns));
+                String newStatus = "Active".equals(status) ? "Inactive" : "Active";
+                getActorFullName(fullName -> {
+                    String uid = FirebaseAuth.getInstance().getUid();
+                    doc.getReference().update(
+                                    "status",       newStatus,
+                                    "modifiedAt",   Timestamp.now(),
+                                    "modifiedBy",   fullName,   // full name
+                                    "modifiedById", uid)
+                            .addOnSuccessListener(unused ->
+                                    ActivityLogger.logCampus(
+                                            ActivityLogger.ACTION_MODIFIED,
+                                            name + " -> " + newStatus));
+                });
             });
 
+            // Delete button shows a confirmation dialog before removing the document.
             h.btnDelete.setOnClickListener(v ->
                     new MaterialAlertDialogBuilder(CampusManagementActivity.this)
                             .setTitle("Delete Campus")
@@ -190,8 +300,16 @@ public class CampusManagementActivity extends AppCompatActivity {
                             .show());
         }
 
-        @Override public int getItemCount() { return filtered.size(); }
+        @Override
+        public int getItemCount() { return filtered.size(); }
     }
 
-    private String orDash(String s) { return (s != null && !s.isEmpty()) ? s : "—"; }
+    // ---------------------------------------------------------------------------
+    // Utility
+    // ---------------------------------------------------------------------------
+
+    /** Returns the value if non-null and non-empty, otherwise an em dash. */
+    private String orDash(String s) {
+        return (s != null && !s.isEmpty()) ? s : "—";
+    }
 }

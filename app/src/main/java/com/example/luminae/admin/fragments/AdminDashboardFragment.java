@@ -25,9 +25,12 @@ public class AdminDashboardFragment extends Fragment {
     private String currentFilter = "today";
     private Date customDate = null;
 
+    // Keep references to all active listeners so we can remove them on destroy
+    private final List<ListenerRegistration> listeners = new ArrayList<>();
+
     @Nullable @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle saved) {
-        b = FragmentAdminDashboardBinding.inflate(inflater, container, false);
+        b  = FragmentAdminDashboardBinding.inflate(inflater, container, false);
         db = FirebaseFirestore.getInstance();
 
         setupChipFilter();
@@ -36,23 +39,24 @@ public class AdminDashboardFragment extends Fragment {
         return b.getRoot();
     }
 
-    // ── Filter Chips ─────────────────────────────────────────────────────────
+    // ── Filter Chips ──────────────────────────────────────────────────────────
+
     private void setupChipFilter() {
         b.chipToday.setOnClickListener(v -> {
             currentFilter = "today";
-            customDate = null;
+            customDate    = null;
             b.tvDateLabel.setText("Today");
             loadData();
         });
         b.chipWeek.setOnClickListener(v -> {
             currentFilter = "week";
-            customDate = null;
+            customDate    = null;
             b.tvDateLabel.setText("Last 7 days");
             loadData();
         });
         b.chipMonth.setOnClickListener(v -> {
             currentFilter = "month";
-            customDate = null;
+            customDate    = null;
             b.tvDateLabel.setText("Last 30 days");
             loadData();
         });
@@ -63,16 +67,16 @@ public class AdminDashboardFragment extends Fragment {
         Calendar c = Calendar.getInstance();
         new DatePickerDialog(requireContext(), (view, y, m, d) -> {
             c.set(y, m, d, 0, 0, 0);
-            customDate = c.getTime();
+            customDate    = c.getTime();
             currentFilter = "custom";
-            // Format as "Mar 20, 2026"
             SimpleDateFormat sdf = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
-            b.tvDateLabel.setText(sdf.format(customDate));
+            if (b != null) b.tvDateLabel.setText(sdf.format(customDate));
             loadData();
         }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show();
     }
 
-    // ── Management card navigation ────────────────────────────────────────────
+    // ── Management cards ──────────────────────────────────────────────────────
+
     private void setupManagementCards() {
         b.cardStudentMgmt.setOnClickListener(v ->
                 startActivity(new android.content.Intent(getActivity(), StudentManagementActivity.class)));
@@ -88,8 +92,13 @@ public class AdminDashboardFragment extends Fragment {
                 startActivity(new android.content.Intent(getActivity(), ActivityLogActivity.class)));
     }
 
-    // ── Data Loading ──────────────────────────────────────────────────────────
+    // ── Data loading ──────────────────────────────────────────────────────────
+
     private void loadData() {
+        // Cancel any previous in-flight listeners before starting new ones
+        for (ListenerRegistration r : listeners) r.remove();
+        listeners.clear();
+
         Timestamp from = getFromTimestamp();
         loadCounts(from);
         loadCampusBarChart(from);
@@ -100,85 +109,84 @@ public class AdminDashboardFragment extends Fragment {
     private Timestamp getFromTimestamp() {
         Calendar c = Calendar.getInstance();
         switch (currentFilter) {
-            case "week":   c.add(Calendar.DAY_OF_YEAR, -7); break;
-            case "month":  c.add(Calendar.MONTH, -1); break;
+            case "week":  c.add(Calendar.DAY_OF_YEAR, -7); break;
+            case "month": c.add(Calendar.MONTH, -1);       break;
             case "custom":
-                if (customDate != null) { c.setTime(customDate); }
+                if (customDate != null) c.setTime(customDate);
                 break;
             default: // today
                 c.set(Calendar.HOUR_OF_DAY, 0);
                 c.set(Calendar.MINUTE, 0);
                 c.set(Calendar.SECOND, 0);
+                c.set(Calendar.MILLISECOND, 0);
         }
         return new Timestamp(c.getTime());
     }
 
     // ── Counts ────────────────────────────────────────────────────────────────
-    private void loadCounts(Timestamp from) {
-        // Users — students, staff, active
-        db.collection("users").get().addOnSuccessListener(s -> {
-            if (b == null) return;
-            b.tvTotalUsers.setText(String.valueOf(s.size()));
 
+    private void loadCounts(Timestamp from) {
+        db.collection("users").get().addOnSuccessListener(s -> {
+            if (b == null) return;  // guard
+            b.tvTotalUsers.setText(String.valueOf(s.size()));
             long active = 0, students = 0, staff = 0;
             for (DocumentSnapshot d : s.getDocuments()) {
                 String role   = d.getString("role");
                 String status = d.getString("status");
-                if ("Active".equals(status)) active++;
-                if ("Student".equals(role))  students++;
-                if ("Staff".equals(role))    staff++;
+                if ("Active".equals(status))  active++;
+                if ("student".equals(role))   students++;
+                if ("staff".equals(role))     staff++;
             }
             b.tvActiveUsers.setText(String.valueOf(active));
             b.tvStudentCount.setText(students + " students");
             b.tvStaffCount.setText(staff + " staff");
         });
 
-        // Announcements (filtered by date)
         db.collection("announcements")
                 .whereGreaterThanOrEqualTo("createdAt", from)
                 .get().addOnSuccessListener(s -> {
-                    if (b == null) return;
+                    if (b == null) return;  // guard
                     b.tvTotalAnnouncements.setText(String.valueOf(s.size()));
                 });
 
-        // Events (filtered by date)
         db.collection("events")
                 .whereGreaterThanOrEqualTo("createdAt", from)
                 .get().addOnSuccessListener(s -> {
-                    if (b == null) return;
+                    if (b == null) return;  // guard
                     b.tvTotalEvents.setText(String.valueOf(s.size()));
                 });
 
-        // Campus count
         db.collection("campuses").get().addOnSuccessListener(s -> {
-            if (b == null) return;
+            if (b == null) return;  // guard
             b.tvCampusCount.setText(s.size() + " campuses");
         });
 
-        // College count
         db.collection("colleges").get().addOnSuccessListener(s -> {
-            if (b == null) return;
+            if (b == null) return;  // guard
             b.tvCollegeCount.setText(s.size() + " colleges");
         });
 
-        // Course count
         db.collection("courses").get().addOnSuccessListener(s -> {
-            if (b == null) return;
+            if (b == null) return;  // guard
             b.tvCourseCount.setText(s.size() + " courses");
         });
     }
 
-    // ── Bar Chart: Users per Campus ───────────────────────────────────────────
+    // ── Bar Chart ─────────────────────────────────────────────────────────────
+
     private void loadCampusBarChart(Timestamp from) {
         db.collection("users").get().addOnSuccessListener(snap -> {
+            if (b == null) return;  // guard — THIS was the crash line
             Map<String, Integer> campusMap = new LinkedHashMap<>();
             for (DocumentSnapshot doc : snap.getDocuments()) {
                 String campus = doc.getString("campus");
                 if (campus != null && !campus.isEmpty())
                     campusMap.put(campus, campusMap.getOrDefault(campus, 0) + 1);
             }
+            if (campusMap.isEmpty()) return;
+
             List<BarEntry> entries = new ArrayList<>();
-            List<String> labels = new ArrayList<>(campusMap.keySet());
+            List<String>   labels  = new ArrayList<>(campusMap.keySet());
             for (int i = 0; i < labels.size(); i++)
                 entries.add(new BarEntry(i, campusMap.get(labels.get(i))));
 
@@ -195,6 +203,7 @@ public class AdminDashboardFragment extends Fragment {
     }
 
     private void styleBarChart(List<String> labels) {
+        if (b == null) return;  // guard
         b.chartUsersCampus.setBackgroundColor(Color.TRANSPARENT);
         b.chartUsersCampus.getDescription().setEnabled(false);
         b.chartUsersCampus.getLegend().setEnabled(false);
@@ -211,25 +220,33 @@ public class AdminDashboardFragment extends Fragment {
         b.chartUsersCampus.invalidate();
     }
 
-    // ── Line Chart: Posts over last 7 days ───────────────────────────────────
+    // ── Line Chart ────────────────────────────────────────────────────────────
+
     private void loadPostsLineChart(Timestamp from) {
+        if (b == null) return;
+
         Calendar c = Calendar.getInstance();
-        c.set(Calendar.HOUR_OF_DAY, 0); c.set(Calendar.MINUTE, 0); c.set(Calendar.SECOND, 0);
-        Date[] days = new Date[7];
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+
+        Date[]   days      = new Date[7];
         String[] dayLabels = new String[7];
-        String[] dow = {"Sun","Mon","Tue","Wed","Thu","Fri","Sat"};
+        String[] dow = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
         for (int i = 6; i >= 0; i--) {
             Calendar d = (Calendar) c.clone();
             d.add(Calendar.DAY_OF_YEAR, -i);
-            days[6 - i] = d.getTime();
+            days[6 - i]      = d.getTime();
             dayLabels[6 - i] = dow[d.get(Calendar.DAY_OF_WEEK) - 1];
         }
 
         final int[] announceCounts = new int[7];
         final int[] eventCounts    = new int[7];
-        final int[] done = {0};
+        final int[] done           = {0};
 
         db.collection("announcements").get().addOnSuccessListener(snap -> {
+            if (b == null) return;  // guard
             for (DocumentSnapshot doc : snap.getDocuments()) {
                 Timestamp ts = doc.getTimestamp("createdAt");
                 if (ts == null) continue;
@@ -241,6 +258,7 @@ public class AdminDashboardFragment extends Fragment {
         });
 
         db.collection("events").get().addOnSuccessListener(snap -> {
+            if (b == null) return;  // guard
             for (DocumentSnapshot doc : snap.getDocuments()) {
                 Timestamp ts = doc.getTimestamp("createdAt");
                 if (ts == null) continue;
@@ -253,19 +271,25 @@ public class AdminDashboardFragment extends Fragment {
     }
 
     private void buildLineChart(int[] aCounts, int[] eCounts, String[] labels) {
+        if (b == null) return;  // guard — both async callbacks share this
         List<Entry> aEntries = new ArrayList<>(), eEntries = new ArrayList<>();
         for (int i = 0; i < 7; i++) {
             aEntries.add(new Entry(i, aCounts[i]));
             eEntries.add(new Entry(i, eCounts[i]));
         }
+
         LineDataSet aDs = new LineDataSet(aEntries, "Announcements");
-        aDs.setColor(0xFFFFD700); aDs.setCircleColor(0xFFFFD700);
-        aDs.setValueTextColor(Color.WHITE); aDs.setLineWidth(2f);
+        aDs.setColor(0xFFFFD700);
+        aDs.setCircleColor(0xFFFFD700);
+        aDs.setValueTextColor(Color.WHITE);
+        aDs.setLineWidth(2f);
         aDs.setMode(LineDataSet.Mode.CUBIC_BEZIER);
 
         LineDataSet eDs = new LineDataSet(eEntries, "Events");
-        eDs.setColor(0xFFEF9A9A); eDs.setCircleColor(0xFFEF9A9A);
-        eDs.setValueTextColor(Color.WHITE); eDs.setLineWidth(2f);
+        eDs.setColor(0xFFEF9A9A);
+        eDs.setCircleColor(0xFFEF9A9A);
+        eDs.setValueTextColor(Color.WHITE);
+        eDs.setLineWidth(2f);
         eDs.setMode(LineDataSet.Mode.CUBIC_BEZIER);
 
         b.chartPostsTimeline.setData(new LineData(aDs, eDs));
@@ -285,14 +309,16 @@ public class AdminDashboardFragment extends Fragment {
         b.chartPostsTimeline.invalidate();
     }
 
-    // ── Pie Chart: Roles ──────────────────────────────────────────────────────
+    // ── Pie Chart ─────────────────────────────────────────────────────────────
+
     private void loadRolesPieChart() {
+        if (b == null) return;
         db.collection("users").get().addOnSuccessListener(snap -> {
+            if (b == null) return;  // guard
             int students = 0, staff = 0, admins = 0;
             for (DocumentSnapshot d : snap.getDocuments()) {
                 String role = d.getString("role");
-                // lowercase to match Firestore values saved by RegisterActivity
-                if ("student".equals(role)) students++;
+                if      ("student".equals(role)) students++;
                 else if ("staff".equals(role))   staff++;
                 else if ("admin".equals(role))   admins++;
             }
@@ -317,6 +343,14 @@ public class AdminDashboardFragment extends Fragment {
         });
     }
 
-    @Override public void onDestroyView() { super.onDestroyView(); b = null; }
+    // ── Lifecycle ─────────────────────────────────────────────────────────────
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // Cancel any snapshot listeners still waiting to fire
+        for (ListenerRegistration r : listeners) r.remove();
+        listeners.clear();
+        b = null;
+    }
 }

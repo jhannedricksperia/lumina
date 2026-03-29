@@ -148,7 +148,7 @@ public class StudentEventsFragment extends Fragment {
 
         @Override public VH onCreateViewHolder(ViewGroup p, int t) {
             return new VH(LayoutInflater.from(p.getContext())
-                    .inflate(R.layout.item_my_event, p, false));
+                    .inflate(R.layout.item_event_post, p, false));
         }
 
         @Override public void onBindViewHolder(VH h, int pos) {

@@ -4,6 +4,7 @@ package com.example.luminae.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AutoCompleteTextView;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -34,16 +35,16 @@ public final class ActivityRegisterBinding implements ViewBinding {
   public final MaterialButton btnRegister;
 
   @NonNull
-  public final TextInputEditText etCampus;
+  public final AutoCompleteTextView etCampus;
 
   @NonNull
-  public final TextInputEditText etCollege;
+  public final AutoCompleteTextView etCollege;
 
   @NonNull
   public final TextInputEditText etConfirmPassword;
 
   @NonNull
-  public final TextInputEditText etCourse;
+  public final AutoCompleteTextView etCourse;
 
   @NonNull
   public final TextInputEditText etEmail;
@@ -128,8 +129,8 @@ public final class ActivityRegisterBinding implements ViewBinding {
 
   private ActivityRegisterBinding(@NonNull FrameLayout rootView, @NonNull MaterialButton btnBack,
       @NonNull MaterialButton btnNext, @NonNull MaterialButton btnRegister,
-      @NonNull TextInputEditText etCampus, @NonNull TextInputEditText etCollege,
-      @NonNull TextInputEditText etConfirmPassword, @NonNull TextInputEditText etCourse,
+      @NonNull AutoCompleteTextView etCampus, @NonNull AutoCompleteTextView etCollege,
+      @NonNull TextInputEditText etConfirmPassword, @NonNull AutoCompleteTextView etCourse,
       @NonNull TextInputEditText etEmail, @NonNull TextInputEditText etFirstName,
       @NonNull TextInputEditText etLastName, @NonNull TextInputEditText etPassword,
       @NonNull TextInputEditText etUsername, @NonNull ProgressBar progressBar,
@@ -226,13 +227,13 @@ public final class ActivityRegisterBinding implements ViewBinding {
       }
 
       id = R.id.et_campus;
-      TextInputEditText etCampus = ViewBindings.findChildViewById(rootView, id);
+      AutoCompleteTextView etCampus = ViewBindings.findChildViewById(rootView, id);
       if (etCampus == null) {
         break missingId;
       }
 
       id = R.id.et_college;
-      TextInputEditText etCollege = ViewBindings.findChildViewById(rootView, id);
+      AutoCompleteTextView etCollege = ViewBindings.findChildViewById(rootView, id);
       if (etCollege == null) {
         break missingId;
       }
@@ -244,7 +245,7 @@ public final class ActivityRegisterBinding implements ViewBinding {
       }
 
       id = R.id.et_course;
-      TextInputEditText etCourse = ViewBindings.findChildViewById(rootView, id);
+      AutoCompleteTextView etCourse = ViewBindings.findChildViewById(rootView, id);
       if (etCourse == null) {
         break missingId;
       }
