@@ -4,6 +4,7 @@ package com.example.luminae.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -25,6 +26,9 @@ public final class ItemStudentBinding implements ViewBinding {
 
   @NonNull
   public final MaterialButton btnView;
+
+  @NonNull
+  public final ImageView ivProfilePhoto;
 
   @NonNull
   public final TextView tvCampus;
@@ -64,14 +68,15 @@ public final class ItemStudentBinding implements ViewBinding {
 
   private ItemStudentBinding(@NonNull LinearLayout rootView,
       @NonNull MaterialButton btnToggleStatus, @NonNull MaterialButton btnView,
-      @NonNull TextView tvCampus, @NonNull TextView tvCollege, @NonNull TextView tvCourse,
-      @NonNull TextView tvCreatedBy, @NonNull TextView tvDateCreated,
+      @NonNull ImageView ivProfilePhoto, @NonNull TextView tvCampus, @NonNull TextView tvCollege,
+      @NonNull TextView tvCourse, @NonNull TextView tvCreatedBy, @NonNull TextView tvDateCreated,
       @NonNull TextView tvDateModified, @NonNull TextView tvEmail, @NonNull TextView tvFullName,
       @NonNull TextView tvInitials, @NonNull TextView tvModifiedBy, @NonNull TextView tvStatus,
       @NonNull TextView tvUsername) {
     this.rootView = rootView;
     this.btnToggleStatus = btnToggleStatus;
     this.btnView = btnView;
+    this.ivProfilePhoto = ivProfilePhoto;
     this.tvCampus = tvCampus;
     this.tvCollege = tvCollege;
     this.tvCourse = tvCourse;
@@ -122,6 +127,12 @@ public final class ItemStudentBinding implements ViewBinding {
       id = R.id.btn_view;
       MaterialButton btnView = ViewBindings.findChildViewById(rootView, id);
       if (btnView == null) {
+        break missingId;
+      }
+
+      id = R.id.iv_profile_photo;
+      ImageView ivProfilePhoto = ViewBindings.findChildViewById(rootView, id);
+      if (ivProfilePhoto == null) {
         break missingId;
       }
 
@@ -197,9 +208,9 @@ public final class ItemStudentBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ItemStudentBinding((LinearLayout) rootView, btnToggleStatus, btnView, tvCampus,
-          tvCollege, tvCourse, tvCreatedBy, tvDateCreated, tvDateModified, tvEmail, tvFullName,
-          tvInitials, tvModifiedBy, tvStatus, tvUsername);
+      return new ItemStudentBinding((LinearLayout) rootView, btnToggleStatus, btnView,
+          ivProfilePhoto, tvCampus, tvCollege, tvCourse, tvCreatedBy, tvDateCreated, tvDateModified,
+          tvEmail, tvFullName, tvInitials, tvModifiedBy, tvStatus, tvUsername);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

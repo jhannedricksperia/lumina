@@ -1,32 +1,24 @@
 package com.example.luminae.staff.fragments;
 
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.util.Base64;
 import android.view.*;
 import android.widget.*;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.*;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.*;
 import com.example.luminae.R;
+import com.example.luminae.activities.AnnouncementFormActivity;
+import com.example.luminae.activities.EventFormActivity;
 import com.example.luminae.activities.PostDetailActivity;
 import com.example.luminae.activities.UserProfileActivity;
 import com.example.luminae.admin.fragments.ActivityLogger;
 import com.example.luminae.utils.NotificationHelper;
 import com.example.luminae.databinding.FragmentStaffPostBinding;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
-import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -44,10 +36,6 @@ public class StaffPostFragment extends Fragment {
     private String staffDesignation = "";
     private boolean staffInfoLoaded = false;
     private String staffPhotoBase64   = "";
-    private ActivityResultLauncher<String> imagePicker;
-    private String pendingImageBase64 = null;
-    private ImageView pendingImageView;
-    private Map<String, String> pendingAudience = null;
 
     @Nullable @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle saved) {
@@ -55,9 +43,6 @@ public class StaffPostFragment extends Fragment {
         db       = FirebaseFirestore.getInstance();
         auth     = FirebaseAuth.getInstance();
         staffUid = auth.getUid() != null ? auth.getUid() : "";
-
-        imagePicker = registerForActivityResult(new ActivityResultContracts.GetContent(),
-                uri -> { if (uri != null) handleImagePicked(uri); });
 
         loadStaffInfo();
         setupFilters();
@@ -68,7 +53,10 @@ public class StaffPostFragment extends Fragment {
                 Toast.makeText(getContext(), "Loading profile, please wait…", Toast.LENGTH_SHORT).show();
                 return;
             }
-            showPostTypeDialog();
+            Class<?> target = "Event".equals(currentType) ? EventFormActivity.class : AnnouncementFormActivity.class;
+            Intent i = new Intent(getActivity(), target);
+            i.putExtra("collection", "Event".equals(currentType) ? "events" : "announcements");
+            startActivity(i);
         });
 
         return b.getRoot();
@@ -151,6 +139,7 @@ public class StaffPostFragment extends Fragment {
         f.postedByName = doc.getString("postedByName") != null ? doc.getString("postedByName") : "";
         f.audienceLabel= doc.getString("audienceLabel")!= null ? doc.getString("audienceLabel"): "Everyone";
         f.postedByPhoto = doc.getString("postedByPhoto");
+        f.imageBase64  = doc.getString("imageBase64");
         Timestamp ts   = doc.getTimestamp("createdAt");
         f.createdAt    = ts != null ? ts.toDate() : new Date(0);
         Long l = doc.getLong("likeCount");
@@ -180,395 +169,14 @@ public class StaffPostFragment extends Fragment {
         }
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // Post creation dialogs
-    // ─────────────────────────────────────────────────────────────────────────
-    private void showPostTypeDialog() {
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Create Post")
-                .setItems(new String[]{"Announcement", "Event"}, (d, which) -> {
-                    if (which == 0) showAnnouncementDialog();
-                    else            showEventDialog();
-                }).show();
-    }
-
-    private void showAnnouncementDialog() {
-        View form = LayoutInflater.from(getContext()).inflate(R.layout.dialog_post_announcement, null);
-        TextInputEditText etTitle    = form.findViewById(R.id.et_title);
-        TextInputEditText etDesc     = form.findViewById(R.id.et_description);
-        ImageView         ivPreview  = form.findViewById(R.id.iv_preview);
-        TextView          btnPickImg = form.findViewById(R.id.btn_pick_image);
-        TextView          tvAudience = form.findViewById(R.id.tv_audience_label);
-        View              btnPickAud = form.findViewById(R.id.btn_pick_audience);
-
-        pendingImageBase64 = null;
-        pendingImageView   = ivPreview;
-        pendingAudience    = null;
-
-        if (tvAudience  != null) tvAudience.setText("👥 Audience: Everyone");
-        if (btnPickImg  != null) btnPickImg.setOnClickListener(v -> imagePicker.launch("image/*"));
-        if (btnPickAud  != null) btnPickAud.setOnClickListener(v ->
-                showAudiencePicker(selected -> {
-                    pendingAudience = selected;
-                    if (tvAudience != null)
-                        tvAudience.setText("👥 Audience: " + selected.get("audienceLabel"));
-                }));
-
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("New Announcement")
-                .setView(form)
-                .setPositiveButton("Post", (d, w) -> {
-                    String title = etTitle.getText() != null ? etTitle.getText().toString().trim() : "";
-                    String desc  = etDesc.getText()  != null ? etDesc.getText().toString().trim()  : "";
-                    if (title.isEmpty()) {
-                        Toast.makeText(getContext(), "Title is required", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    postAnnouncement(title, desc, pendingImageBase64, pendingAudience);
-                    pendingImageBase64 = null;
-                    pendingAudience    = null;
-                })
-                .setNegativeButton("Cancel", (d, w) -> { pendingImageBase64 = null; pendingAudience = null; })
-                .show();
-    }
-
-    private void showEventDialog() {
-        View form = LayoutInflater.from(getContext()).inflate(R.layout.dialog_post_event, null);
-        TextInputEditText etTitle    = form.findViewById(R.id.et_title);
-        TextInputEditText etDesc     = form.findViewById(R.id.et_description);
-        TextInputEditText etLocation = form.findViewById(R.id.et_where);
-        TextInputEditText etMax      = form.findViewById(R.id.et_max_participants);
-        ImageView         ivPreview  = form.findViewById(R.id.iv_preview);
-        TextView          btnPickImg = form.findViewById(R.id.btn_pick_image);
-        Button            btnPickDate= form.findViewById(R.id.btn_pick_date);
-        Button            btnPickTime= form.findViewById(R.id.btn_pick_time);
-        TextView          tvPickedDate = form.findViewById(R.id.tv_picked_date);
-        TextView          tvPickedTime = form.findViewById(R.id.tv_picked_time);
-        TextView          tvAudience   = form.findViewById(R.id.tv_audience_label);
-        View              btnPickAud   = form.findViewById(R.id.btn_pick_audience);
-
-        pendingImageBase64 = null;
-        pendingImageView   = ivPreview;
-        pendingAudience    = null;
-
-        if (tvAudience != null) tvAudience.setText("👥 Audience: Everyone");
-
-        final String[] pickedDate = {""};
-        final String[] pickedTime = {""};
-
-        if (btnPickImg  != null) btnPickImg.setOnClickListener(v -> imagePicker.launch("image/*"));
-        if (btnPickAud  != null) btnPickAud.setOnClickListener(v ->
-                showAudiencePicker(selected -> {
-                    pendingAudience = selected;
-                    if (tvAudience != null)
-                        tvAudience.setText("👥 Audience: " + selected.get("audienceLabel"));
-                }));
-        if (btnPickDate != null) btnPickDate.setOnClickListener(v -> {
-            Calendar cal = Calendar.getInstance();
-            new DatePickerDialog(requireContext(), (view, year, month, day) -> {
-                pickedDate[0] = String.format(Locale.getDefault(), "%04d-%02d-%02d", year, month + 1, day);
-                if (tvPickedDate != null) tvPickedDate.setText(pickedDate[0]);
-            }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show();
-        });
-        if (btnPickTime != null) btnPickTime.setOnClickListener(v -> {
-            Calendar cal = Calendar.getInstance();
-            new TimePickerDialog(requireContext(), (view, hour, minute) -> {
-                pickedTime[0] = String.format(Locale.getDefault(), "%02d:%02d", hour, minute);
-                if (tvPickedTime != null) tvPickedTime.setText(pickedTime[0]);
-            }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), false).show();
-        });
-
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("New Event")
-                .setView(form)
-                .setPositiveButton("Post", (d, w) -> {
-                    String title    = etTitle.getText()    != null ? etTitle.getText().toString().trim()    : "";
-                    String desc     = etDesc.getText()     != null ? etDesc.getText().toString().trim()     : "";
-                    String location = etLocation != null && etLocation.getText() != null
-                            ? etLocation.getText().toString().trim() : "";
-                    String date     = (pickedDate[0] + " " + pickedTime[0]).trim();
-                    String maxStr   = etMax != null && etMax.getText() != null
-                            ? etMax.getText().toString().trim() : "0";
-                    if (title.isEmpty()) {
-                        Toast.makeText(getContext(), "Title is required", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    long max = 0;
-                    try { max = Long.parseLong(maxStr); } catch (NumberFormatException ignored) {}
-                    postEvent(title, desc, location, date, max, pendingImageBase64, pendingAudience);
-                    pendingImageBase64 = null;
-                    pendingAudience    = null;
-                })
-                .setNegativeButton("Cancel", (d, w) -> { pendingImageBase64 = null; pendingAudience = null; })
-                .show();
-    }
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // Audience Picker  (Campus → College → Course cascade from Firestore)
-    // ─────────────────────────────────────────────────────────────────────────
-    interface AudienceCallback { void onSelected(Map<String, String> audience); }
-
-    private void showAudiencePicker(AudienceCallback callback) {
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_audience_picker, null);
-
-        Spinner     spinnerCampus  = view.findViewById(R.id.spinner_campus);
-        Spinner     spinnerCollege = view.findViewById(R.id.spinner_college);
-        Spinner     spinnerCourse  = view.findViewById(R.id.spinner_course);
-        View        labelCollege   = view.findViewById(R.id.label_college);
-        View        labelCourse    = view.findViewById(R.id.label_course);
-        ProgressBar progress       = view.findViewById(R.id.progress_audience);
-
-        List<String> campusIds    = new ArrayList<>();
-        List<String> campusNames  = new ArrayList<>();
-        List<String> collegeIds   = new ArrayList<>();
-        List<String> collegeNames = new ArrayList<>();
-        List<String> courseIds    = new ArrayList<>();
-        List<String> courseNames  = new ArrayList<>();
-
-        java.util.function.Function<List<String>, ArrayAdapter<String>> makeAdapter = names -> {
-            ArrayAdapter<String> a = new ArrayAdapter<>(requireContext(),
-                    android.R.layout.simple_spinner_item, names);
-            a.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            return a;
-        };
-
-        progress.setVisibility(View.VISIBLE);
-        db.collection("campuses").orderBy("name").get().addOnSuccessListener(snap -> {
-            progress.setVisibility(View.GONE);
-            campusIds.add("all");
-            campusNames.add("Everyone (all campuses)");
-            for (DocumentSnapshot doc : snap.getDocuments()) {
-                campusIds.add(doc.getId());
-                String n = doc.getString("name");
-                campusNames.add(n != null ? n : doc.getId());
-            }
-            spinnerCampus.setAdapter(makeAdapter.apply(campusNames));
-
-            spinnerCampus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override public void onNothingSelected(AdapterView<?> p) {}
-                @Override public void onItemSelected(AdapterView<?> p, View v, int pos, long id) {
-                    spinnerCollege.setAdapter(null);
-                    spinnerCourse.setAdapter(null);
-                    collegeIds.clear(); collegeNames.clear();
-                    courseIds.clear();  courseNames.clear();
-                    labelCollege.setVisibility(View.GONE);
-                    spinnerCollege.setVisibility(View.GONE);
-                    labelCourse.setVisibility(View.GONE);
-                    spinnerCourse.setVisibility(View.GONE);
-                    if (pos == 0) return;
-
-                    String campusId = campusIds.get(pos);
-                    progress.setVisibility(View.VISIBLE);
-                    db.collection("colleges").whereEqualTo("campusId", campusId).orderBy("name")
-                            .get().addOnSuccessListener(colSnap -> {
-                                progress.setVisibility(View.GONE);
-                                if (colSnap.isEmpty()) return;
-                                collegeIds.add("all_" + campusId);
-                                collegeNames.add("All colleges in this campus");
-                                for (DocumentSnapshot doc : colSnap.getDocuments()) {
-                                    collegeIds.add(doc.getId());
-                                    String n = doc.getString("name");
-                                    collegeNames.add(n != null ? n : doc.getId());
-                                }
-                                spinnerCollege.setAdapter(makeAdapter.apply(collegeNames));
-                                labelCollege.setVisibility(View.VISIBLE);
-                                spinnerCollege.setVisibility(View.VISIBLE);
-
-                                spinnerCollege.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                                    @Override public void onNothingSelected(AdapterView<?> p) {}
-                                    @Override public void onItemSelected(AdapterView<?> p, View v, int pos2, long id2) {
-                                        spinnerCourse.setAdapter(null);
-                                        courseIds.clear(); courseNames.clear();
-                                        labelCourse.setVisibility(View.GONE);
-                                        spinnerCourse.setVisibility(View.GONE);
-                                        if (pos2 == 0) return;
-
-                                        String collegeId = collegeIds.get(pos2);
-                                        progress.setVisibility(View.VISIBLE);
-                                        db.collection("courses").whereEqualTo("collegeId", collegeId).orderBy("name")
-                                                .get().addOnSuccessListener(crsSnap -> {
-                                                    progress.setVisibility(View.GONE);
-                                                    if (crsSnap.isEmpty()) return;
-                                                    courseIds.add("all_" + collegeId);
-                                                    courseNames.add("All courses in this college");
-                                                    for (DocumentSnapshot doc : crsSnap.getDocuments()) {
-                                                        courseIds.add(doc.getId());
-                                                        String n = doc.getString("name");
-                                                        courseNames.add(n != null ? n : doc.getId());
-                                                    }
-                                                    spinnerCourse.setAdapter(makeAdapter.apply(courseNames));
-                                                    labelCourse.setVisibility(View.VISIBLE);
-                                                    spinnerCourse.setVisibility(View.VISIBLE);
-                                                });
-                                    }
-                                });
-                            });
-                }
-            });
-        }).addOnFailureListener(e -> {
-            progress.setVisibility(View.GONE);
-            Toast.makeText(getContext(), "Failed to load campuses", Toast.LENGTH_SHORT).show();
-        });
-
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Select Audience")
-                .setView(view)
-                .setPositiveButton("Confirm", (d, w) -> {
-                    Map<String, String> result = new HashMap<>();
-                    int ci = spinnerCampus.getSelectedItemPosition();
-                    if (ci <= 0 || campusIds.isEmpty()) {
-                        result.put("type", "All");
-                        result.put("audienceLabel", "Everyone");
-                        callback.onSelected(result);
-                        return;
-                    }
-                    result.put("campusId",   campusIds.get(ci));
-                    result.put("campusName", campusNames.get(ci));
-
-                    int coli = spinnerCollege.getSelectedItemPosition();
-                    if (spinnerCollege.getVisibility() != View.VISIBLE || coli <= 0 || collegeIds.isEmpty()) {
-                        result.put("type", "Campus");
-                        result.put("audienceLabel", campusNames.get(ci));
-                        callback.onSelected(result);
-                        return;
-                    }
-                    result.put("collegeId",   collegeIds.get(coli));
-                    result.put("collegeName", collegeNames.get(coli));
-
-                    int crsi = spinnerCourse.getSelectedItemPosition();
-                    if (spinnerCourse.getVisibility() != View.VISIBLE || crsi <= 0 || courseIds.isEmpty()) {
-                        result.put("type", "College");
-                        result.put("audienceLabel", campusNames.get(ci) + " › " + collegeNames.get(coli));
-                        callback.onSelected(result);
-                        return;
-                    }
-                    result.put("courseId",   courseIds.get(crsi));
-                    result.put("courseName", courseNames.get(crsi));
-                    result.put("type", "Course");
-                    result.put("audienceLabel",
-                            campusNames.get(ci) + " › " + collegeNames.get(coli) + " › " + courseNames.get(crsi));
-                    callback.onSelected(result);
-                })
-                .setNegativeButton("Cancel", null)
-                .show();
-    }
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // Firestore writes
-    // ─────────────────────────────────────────────────────────────────────────
-    private void postAnnouncement(String title, String desc,
-                                  String imgBase64, Map<String, String> audience) {
-        Map<String, Object> data = new HashMap<>();
-        data.put("title",               title);
-        data.put("description",         desc);
-        data.put("postedBy",            staffUid);
-        data.put("postedByName",        staffName);
-        data.put("postedByDesignation", staffDesignation);
-        if (!staffPhotoBase64.isEmpty()) data.put("postedByPhoto", staffPhotoBase64);
-        data.put("createdAt",           Timestamp.now());
-        data.put("likeCount",           0L);
-        data.put("commentCount",        0L);
-        data.put("status",              "Active");
-        applyAudienceToData(data, audience);
-        if (imgBase64 != null) data.put("imageBase64", imgBase64);
-        db.collection("announcements").add(data)
-                .addOnSuccessListener(ref -> {
-                    Toast.makeText(getContext(), "Announcement posted!", Toast.LENGTH_SHORT).show();
-                    ActivityLogger.logAnnouncement(ActivityLogger.ACTION_CREATE, title, staffName);
-                    // Notify audience via push + in-app
-                    String campusId  = audience != null ? audience.getOrDefault("campusId",  "") : "";
-                    String collegeId = audience != null ? audience.getOrDefault("collegeId", "") : "";
-                    String courseId  = audience != null ? audience.getOrDefault("courseId",  "") : "";
-                    String audType   = audience != null ? audience.getOrDefault("type", "All") : "All";
-                    NotificationHelper.notifyNewPost(
-                            ref.getId(), "announcements", title, staffName,
-                            audType, campusId, collegeId, courseId, staffUid);
-                })
-                .addOnFailureListener(e ->
-                        Toast.makeText(getContext(), "Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-    }
-
-    private void postEvent(String title, String desc, String location,
-                           String eventDate, long maxPart,
-                           String imgBase64, Map<String, String> audience) {
-        Map<String, Object> data = new HashMap<>();
-        data.put("title",               title);
-        data.put("description",         desc);
-        data.put("location",            location);
-        data.put("eventDate",           eventDate);
-        data.put("maxParticipants",     maxPart);
-        data.put("participantCount",    0L);
-        data.put("postedBy",            staffUid);
-        data.put("postedByName",        staffName);
-        data.put("postedByDesignation", staffDesignation);
-        if (!staffPhotoBase64.isEmpty()) data.put("postedByPhoto", staffPhotoBase64);
-        data.put("createdAt",           Timestamp.now());
-        data.put("likeCount",           0L);
-        data.put("commentCount",        0L);
-        data.put("status",              "Active");
-        applyAudienceToData(data, audience);
-        if (imgBase64 != null) data.put("imageBase64", imgBase64);
-        db.collection("events").add(data)
-                .addOnSuccessListener(ref -> {
-                    Toast.makeText(getContext(), "Event posted!", Toast.LENGTH_SHORT).show();
-                    ActivityLogger.logEvent(ActivityLogger.ACTION_CREATE, title, staffName);
-                    // Notify audience via push + in-app
-                    String campusId  = audience != null ? audience.getOrDefault("campusId",  "") : "";
-                    String collegeId = audience != null ? audience.getOrDefault("collegeId", "") : "";
-                    String courseId  = audience != null ? audience.getOrDefault("courseId",  "") : "";
-                    String audType   = audience != null ? audience.getOrDefault("type", "All") : "All";
-                    NotificationHelper.notifyNewPost(
-                            ref.getId(), "events", title, staffName,
-                            audType, campusId, collegeId, courseId, staffUid);
-                })
-                .addOnFailureListener(e ->
-                        Toast.makeText(getContext(), "Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-    }
-
-    private void applyAudienceToData(Map<String, Object> data, Map<String, String> audience) {
-        if (audience == null || audience.isEmpty()) {
-            data.put("audienceType",  "All");
-            data.put("audienceLabel", "Everyone");
-            return;
-        }
-        data.put("audienceType",  audience.containsKey("type")          ? audience.get("type")          : "All");
-        data.put("audienceLabel", audience.containsKey("audienceLabel")  ? audience.get("audienceLabel") : "Everyone");
-        if (audience.containsKey("campusId"))  data.put("audienceCampusId",  audience.get("campusId"));
-        if (audience.containsKey("collegeId")) data.put("audienceCollegeId", audience.get("collegeId"));
-        if (audience.containsKey("courseId"))  data.put("audienceCourseId",  audience.get("courseId"));
-    }
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // Image picker
-    // ─────────────────────────────────────────────────────────────────────────
-    private void handleImagePicked(Uri uri) {
-        try {
-            Bitmap original = MediaStore.Images.Media.getBitmap(
-                    requireContext().getContentResolver(), uri);
-            int maxWidth = 800;
-            if (original.getWidth() > maxWidth) {
-                float ratio = (float) maxWidth / original.getWidth();
-                original = Bitmap.createScaledBitmap(original, maxWidth,
-                        Math.round(original.getHeight() * ratio), true);
-            }
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            original.compress(Bitmap.CompressFormat.JPEG, 75, out);
-            pendingImageBase64 = Base64.encodeToString(out.toByteArray(), Base64.DEFAULT);
-            if (pendingImageView != null) {
-                pendingImageView.setVisibility(View.VISIBLE);
-                pendingImageView.setImageBitmap(original);
-            }
-        } catch (Exception e) {
-            Toast.makeText(getContext(), "Failed to load image", Toast.LENGTH_SHORT).show();
-        }
-    }
+    // Creation and editing are now handled by dedicated form activities.
 
     // ─────────────────────────────────────────────────────────────────────────
     // Data model
     // ─────────────────────────────────────────────────────────────────────────
     static class FeedItem {
         String  docId, type, title, description, postedBy, postedByName, postedByPhoto;
-        String  location, eventDate, audienceLabel;
+        String  location, eventDate, audienceLabel, imageBase64;
         long    maxParticipants, participantCount;
         Date    createdAt;
         int     likeCount, commentCount;
@@ -585,14 +193,16 @@ public class StaffPostFragment extends Fragment {
             TextView  tvTypeBadge, tvPosterName, tvTime, tvTitle, tvDescription;
             TextView  tvLikeCount, tvCommentCount, tvGoingInfo, tvMyPostBadge, tvAudience;
             TextView  btnLike;   // R.id.btn_like is a TextView in the layout
-            ImageView ivPosterPhoto;
-            View      cardRoot, btnComment, btnDelete;
+            ImageView ivPosterPhoto, ivPostImage, btnMore;
+            View      cardRoot, btnComment;
 
             VH(View v) {
                 super(v);
                 cardRoot       = v.findViewById(R.id.card_root);
                 tvTypeBadge    = v.findViewById(R.id.tv_type_badge);
                 ivPosterPhoto  = v.findViewById(R.id.iv_poster_photo);
+                ivPostImage    = v.findViewById(R.id.iv_post_image);
+                btnMore        = v.findViewById(R.id.btn_more);
                 tvPosterName   = v.findViewById(R.id.tv_poster_name);
                 tvTime         = v.findViewById(R.id.tv_time);
                 tvTitle        = v.findViewById(R.id.tv_title);
@@ -604,7 +214,6 @@ public class StaffPostFragment extends Fragment {
                 tvGoingInfo    = v.findViewById(R.id.tv_going_info);
                 tvMyPostBadge  = v.findViewById(R.id.tv_my_post_badge);
                 tvAudience     = v.findViewById(R.id.tv_audience);
-                btnDelete      = v.findViewById(R.id.btn_delete);
             }
         }
 
@@ -625,6 +234,20 @@ public class StaffPostFragment extends Fragment {
             h.tvTime.setText(item.createdAt != null ? sdf.format(item.createdAt) : "");
             h.tvTitle.setText(item.title);
             h.tvDescription.setText(item.description);
+            if (h.ivPostImage != null) {
+                if (item.imageBase64 != null && !item.imageBase64.isEmpty()) {
+                    try {
+                        byte[] bytes = android.util.Base64.decode(item.imageBase64, android.util.Base64.DEFAULT);
+                        android.graphics.Bitmap bmp = android.graphics.BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                        if (bmp != null) {
+                            h.ivPostImage.setImageBitmap(bmp);
+                            h.ivPostImage.setVisibility(View.VISIBLE);
+                        } else h.ivPostImage.setVisibility(View.GONE);
+                    } catch (Exception ignored) { h.ivPostImage.setVisibility(View.GONE); }
+                } else {
+                    h.ivPostImage.setVisibility(View.GONE);
+                }
+            }
 
             // ── Like: check Firestore on bind so likedByMe is always accurate ──
             String uid  = auth.getUid();
@@ -679,7 +302,7 @@ public class StaffPostFragment extends Fragment {
             }
 
             // Comment count
-            if (h.tvCommentCount != null) h.tvCommentCount.setText("💬 " + item.commentCount);
+            if (h.tvCommentCount != null) h.tvCommentCount.setText("Comments: " + item.commentCount);
 
             // Going info (events only)
             if ("Event".equals(item.type)) {
@@ -688,7 +311,7 @@ public class StaffPostFragment extends Fragment {
                     String going = item.maxParticipants > 0
                             ? item.participantCount + " / " + item.maxParticipants + " going"
                             : item.participantCount + " going";
-                    h.tvGoingInfo.setText("🎫 " + going);
+                    h.tvGoingInfo.setText("Going: " + going);
                 }
             } else {
                 if (h.tvGoingInfo != null) h.tvGoingInfo.setVisibility(View.GONE);
@@ -698,12 +321,12 @@ public class StaffPostFragment extends Fragment {
             if (h.tvAudience != null) {
                 String label = item.audienceLabel != null && !item.audienceLabel.isEmpty()
                         ? item.audienceLabel : "Everyone";
-                h.tvAudience.setText("👥 " + label);
+                h.tvAudience.setText("Audience: " + label);
             }
 
-            // My post badge + delete button
+            // My post badge + more button
             if (h.tvMyPostBadge != null) h.tvMyPostBadge.setVisibility(item.isMyPost ? View.VISIBLE : View.GONE);
-            if (h.btnDelete     != null) h.btnDelete.setVisibility(item.isMyPost ? View.VISIBLE : View.GONE);
+            if (h.btnMore       != null) h.btnMore.setVisibility(item.isMyPost ? View.VISIBLE : View.GONE);
 
             // Poster photo + name → open UserProfileActivity
             View.OnClickListener openProfile = v -> openUserProfile(item.postedBy);
@@ -717,25 +340,45 @@ public class StaffPostFragment extends Fragment {
 
             // Card click → detail
             h.cardRoot.setOnClickListener(v -> openDetail(item));
+            h.cardRoot.setOnLongClickListener(v -> {
+                if (item.isMyPost) showPostOptions(item);
+                return item.isMyPost;
+            });
 
-            // Delete
-            if (h.btnDelete != null) {
-                h.btnDelete.setOnClickListener(v ->
-                        new MaterialAlertDialogBuilder(requireContext())
-                                .setTitle("Delete Post?")
-                                .setMessage("This cannot be undone.")
-                                .setPositiveButton("Delete", (d, w) -> {
-                                    String type = "Announcement".equals(item.type) ? "announcements" : "events";
-                                    db.collection(type).document(item.docId).delete();
-                                    ActivityLogger.log(
-                                            "Announcement".equals(item.type)
-                                                    ? ActivityLogger.MODULE_ANNOUNCEMENT
-                                                    : ActivityLogger.MODULE_EVENT,
-                                            ActivityLogger.ACTION_DELETE, item.title);
-                                })
-                                .setNegativeButton("Cancel", null)
-                                .show());
-            }
+            if (h.btnMore != null) h.btnMore.setOnClickListener(v -> showPostOptions(item));
+        }
+
+        private void showPostOptions(FeedItem item) {
+            String[] items = {"Edit", "Archive", "Delete"};
+            new MaterialAlertDialogBuilder(requireContext())
+                    .setTitle("Post Options")
+                    .setItems(items, (dialog, which) -> {
+                        if (which == 0) {
+                            Intent i = new Intent(getActivity(),
+                                    "Announcement".equals(item.type) ? AnnouncementFormActivity.class : EventFormActivity.class);
+                            i.putExtra("doc_id", item.docId);
+                            i.putExtra("collection", "Announcement".equals(item.type) ? "announcements" : "events");
+                            startActivity(i);
+                        } else if (which == 1) {
+                            String col = "Announcement".equals(item.type) ? "announcements" : "events";
+                            DocumentReference ref = db.collection(col).document(item.docId);
+                            ref.get().addOnSuccessListener(doc -> {
+                                String currentStatus = doc.getString("status");
+                                boolean isArchived = "Archive".equalsIgnoreCase(currentStatus)
+                                        || "Archived".equalsIgnoreCase(currentStatus);
+                                ref.update("status", isArchived ? "Active" : "Archive");
+                            });
+                        } else {
+                            String col = "Announcement".equals(item.type) ? "announcements" : "events";
+                            db.collection(col).document(item.docId).delete();
+                            ActivityLogger.log(
+                                    "Announcement".equals(item.type)
+                                            ? ActivityLogger.MODULE_ANNOUNCEMENT
+                                            : ActivityLogger.MODULE_EVENT,
+                                    ActivityLogger.ACTION_DELETE, item.title);
+                        }
+                    })
+                    .show();
         }
 
         private void openDetail(FeedItem item) {

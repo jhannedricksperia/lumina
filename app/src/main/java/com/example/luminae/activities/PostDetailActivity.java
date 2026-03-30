@@ -83,6 +83,12 @@ public class PostDetailActivity extends AppCompatActivity {
         b.btnSendComment.setOnClickListener(v -> sendComment());
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (docId != null && postCollection != null) loadPost();
+    }
+
     // ─────────────────────────────────────────────────────────────────────────
     // Post detail
     // ─────────────────────────────────────────────────────────────────────────
@@ -278,57 +284,11 @@ public class PostDetailActivity extends AppCompatActivity {
     }
 
     private void openEditPost() {
-        db.collection(postCollection).document(docId).get().addOnSuccessListener(doc -> {
-            if (!doc.exists()) return;
-            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(this);
-            builder.setTitle("Edit Post");
-            LinearLayout layout = new LinearLayout(this);
-            layout.setOrientation(LinearLayout.VERTICAL);
-            layout.setPadding(dp(20), dp(16), dp(20), dp(8));
-            EditText etTitle = new EditText(this);
-            etTitle.setHint("Title");
-            etTitle.setText(doc.getString("title"));
-            etTitle.setPadding(dp(8), dp(8), dp(8), dp(8));
-            layout.addView(etTitle);
-            EditText etDesc = new EditText(this);
-            etDesc.setHint("Description");
-            etDesc.setText(doc.getString("description"));
-            etDesc.setMinLines(3);
-            etDesc.setMaxLines(6);
-            etDesc.setInputType(android.text.InputType.TYPE_CLASS_TEXT
-                    | android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE);
-            etDesc.setPadding(dp(8), dp(12), dp(8), dp(8));
-            layout.addView(etDesc);
-            builder.setView(layout);
-            builder.setPositiveButton("Save", (d, w) -> {
-                String newTitle = etTitle.getText().toString().trim();
-                String newDesc  = etDesc.getText().toString().trim();
-                if (newTitle.isEmpty()) {
-                    Toast.makeText(this, "Title cannot be empty", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                Map<String, Object> updates = new HashMap<>();
-                updates.put("title",       newTitle);
-                updates.put("description", newDesc);
-                updates.put("editedAt",    Timestamp.now());
-                db.collection(postCollection).document(docId).update(updates)
-                        .addOnSuccessListener(unused -> {
-                            Toast.makeText(this, "Post updated", Toast.LENGTH_SHORT).show();
-                            b.tvPostTitle.setText(newTitle);
-                            b.tvPostDescription.setText(newDesc);
-                            postTitle = newTitle;
-                            ActivityLogger.log(
-                                    "announcements".equals(postCollection)
-                                            ? ActivityLogger.MODULE_ANNOUNCEMENT
-                                            : ActivityLogger.MODULE_EVENT,
-                                    "Edited Post", newTitle);
-                        })
-                        .addOnFailureListener(e ->
-                                Toast.makeText(this, "Update failed", Toast.LENGTH_SHORT).show());
-            });
-            builder.setNegativeButton("Cancel", null);
-            builder.show();
-        });
+        Intent i = new Intent(this,
+                "announcements".equals(postCollection) ? AnnouncementFormActivity.class : EventFormActivity.class);
+        i.putExtra("doc_id", docId);
+        i.putExtra("collection", postCollection);
+        startActivity(i);
     }
 
     private void toggleArchivePost() {
@@ -392,7 +352,7 @@ public class PostDetailActivity extends AppCompatActivity {
                     if (snap == null) return;
                     comments = snap.getDocuments();
                     b.tvCommentCount.setText(comments.size() + " comment(s)");
-                    b.tvCommentCountInline.setText("💬 " + comments.size());
+                    b.tvCommentCountInline.setText("Comments: " + comments.size());
                     adapter.notifyDataSetChanged();
                 });
     }
@@ -875,7 +835,7 @@ public class PostDetailActivity extends AppCompatActivity {
                 layout.setOrientation(LinearLayout.VERTICAL);
                 layout.setPadding(dp(16), dp(16), dp(16), dp(32));
                 TextView title = new TextView(PostDetailActivity.this);
-                title.setText("❤️ Liked by");
+                title.setText("Liked by");
                 title.setTextColor(0xFFFFFFFF);
                 title.setTextSize(14f);
                 title.setTypeface(null, Typeface.BOLD);

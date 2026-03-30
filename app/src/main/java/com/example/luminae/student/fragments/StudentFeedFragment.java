@@ -328,7 +328,7 @@ public class StudentFeedFragment extends Fragment {
                 item.likeCount++;
 
                 // Notify poster
-                sendNotification(item.postedBy, "❤️ " + getUserEmail() + " liked your post",
+                sendNotification(item.postedBy, getUserEmail() + " liked your post",
                         item.title, item.docId, col);
             }
             updateLikeUI(h, item);
@@ -398,7 +398,7 @@ public class StudentFeedFragment extends Fragment {
 
                                         // Notify poster
                                         sendNotification(item.postedBy,
-                                                "🎉 " + getUserEmail() + " joined your event",
+                                                getUserEmail() + " joined your event",
                                                 item.title, item.docId, "events");
                                     });
                             return;

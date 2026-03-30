@@ -10,7 +10,7 @@
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:background="@color/maroonDark"
         app:navigationIcon="@drawable/back"
         app:navigationIconTint="@color/white"
@@ -50,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:fontFamily="@font/poppins_bold"
-            android:text="Export PDF"
+            android:text="Export"
             android:textColor="@color/maroonDark"
             android:textSize="11sp"
             app:backgroundTint="@color/yellow"
@@ -131,6 +131,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Event" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_module_reports"
+                style="@style/LuminaChip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reports" />
 
         </com.google.android.material.chip.ChipGroup>
     </HorizontalScrollView>

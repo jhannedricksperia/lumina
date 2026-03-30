@@ -4,6 +4,7 @@ package com.example.luminae.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -28,6 +29,9 @@ public final class ItemStaffBinding implements ViewBinding {
 
   @NonNull
   public final MaterialButton btnToggleStatus;
+
+  @NonNull
+  public final ImageView ivProfilePhoto;
 
   @NonNull
   public final TextView tvCreatedBy;
@@ -55,14 +59,15 @@ public final class ItemStaffBinding implements ViewBinding {
 
   private ItemStaffBinding(@NonNull LinearLayout rootView, @NonNull MaterialButton btnDelete,
       @NonNull MaterialButton btnEdit, @NonNull MaterialButton btnToggleStatus,
-      @NonNull TextView tvCreatedBy, @NonNull TextView tvDateCreated,
-      @NonNull TextView tvDateModified, @NonNull TextView tvDesignation,
-      @NonNull TextView tvFullName, @NonNull TextView tvInitials, @NonNull TextView tvModifiedBy,
-      @NonNull TextView tvStatus) {
+      @NonNull ImageView ivProfilePhoto, @NonNull TextView tvCreatedBy,
+      @NonNull TextView tvDateCreated, @NonNull TextView tvDateModified,
+      @NonNull TextView tvDesignation, @NonNull TextView tvFullName, @NonNull TextView tvInitials,
+      @NonNull TextView tvModifiedBy, @NonNull TextView tvStatus) {
     this.rootView = rootView;
     this.btnDelete = btnDelete;
     this.btnEdit = btnEdit;
     this.btnToggleStatus = btnToggleStatus;
+    this.ivProfilePhoto = ivProfilePhoto;
     this.tvCreatedBy = tvCreatedBy;
     this.tvDateCreated = tvDateCreated;
     this.tvDateModified = tvDateModified;
@@ -118,6 +123,12 @@ public final class ItemStaffBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.iv_profile_photo;
+      ImageView ivProfilePhoto = ViewBindings.findChildViewById(rootView, id);
+      if (ivProfilePhoto == null) {
+        break missingId;
+      }
+
       id = R.id.tv_created_by;
       TextView tvCreatedBy = ViewBindings.findChildViewById(rootView, id);
       if (tvCreatedBy == null) {
@@ -167,8 +178,8 @@ public final class ItemStaffBinding implements ViewBinding {
       }
 
       return new ItemStaffBinding((LinearLayout) rootView, btnDelete, btnEdit, btnToggleStatus,
-          tvCreatedBy, tvDateCreated, tvDateModified, tvDesignation, tvFullName, tvInitials,
-          tvModifiedBy, tvStatus);
+          ivProfilePhoto, tvCreatedBy, tvDateCreated, tvDateModified, tvDesignation, tvFullName,
+          tvInitials, tvModifiedBy, tvStatus);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

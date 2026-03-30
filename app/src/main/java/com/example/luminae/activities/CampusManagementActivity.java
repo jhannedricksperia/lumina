@@ -1,5 +1,6 @@
 package com.example.luminae.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -73,8 +74,9 @@ public class CampusManagementActivity extends AppCompatActivity {
             }
         });
 
-        // Open the add-campus dialog when the FAB / add button is tapped.
-        b.btnAdd.setOnClickListener(v -> showFormDialog(null));
+        b.btnAdd.setOnClickListener(v -> {
+            startActivity(new Intent(this, CampusFormActivity.class));
+        });
 
         // Listen for real-time updates from the campuses collection.
         db.collection("campuses")
@@ -104,75 +106,6 @@ public class CampusManagementActivity extends AppCompatActivity {
         }
         b.tvCount.setText(filtered.size() + " campus(es)");
         adapter.notifyDataSetChanged();
-    }
-
-    // ---------------------------------------------------------------------------
-    // Add / Edit dialog
-    // ---------------------------------------------------------------------------
-
-    /**
-     * Shows the campus form dialog.
-     *
-     * @param existing Pass null to create a new campus, or a DocumentSnapshot
-     *                 to edit an existing one.
-     */
-    private void showFormDialog(DocumentSnapshot existing) {
-        View form = LayoutInflater.from(this).inflate(R.layout.dialog_campus_form, null);
-        TextInputEditText etName = form.findViewById(R.id.et_name);
-        TextInputEditText etDesc = form.findViewById(R.id.et_description);
-
-        // Pre-fill fields when editing.
-        if (existing != null) {
-            etName.setText(existing.getString("name"));
-            etDesc.setText(existing.getString("description"));
-        }
-
-        new MaterialAlertDialogBuilder(this)
-                .setTitle(existing == null ? "Add Campus" : "Edit Campus")
-                .setView(form)
-                .setPositiveButton("Save", (d, w) -> {
-                    String name = etName.getText().toString().trim();
-                    String desc = etDesc.getText().toString().trim();
-
-                    if (name.isEmpty()) {
-                        Toast.makeText(this, "Name required", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    // Fetch the current admin's full name before saving so that
-                    // createdBy / modifiedBy shows a readable name, not a UID.
-                    getActorFullName(fullName -> {
-                        String uid = FirebaseAuth.getInstance().getUid();
-
-                        if (existing == null) {
-                            // Create new campus document.
-                            Map<String, Object> data = new HashMap<>();
-                            data.put("name",        name);
-                            data.put("description", desc);
-                            data.put("status",      "Active");
-                            data.put("createdAt",   Timestamp.now());
-                            data.put("createdBy",   fullName);   // full name, not UID
-                            data.put("createdById", uid);        // keep UID for reference
-                            db.collection("campuses").add(data)
-                                    .addOnSuccessListener(ref ->
-                                            ActivityLogger.logCampus(
-                                                    ActivityLogger.ACTION_CREATE, name));
-                        } else {
-                            // Update existing campus document.
-                            existing.getReference().update(
-                                            "name",         name,
-                                            "description",  desc,
-                                            "modifiedAt",   Timestamp.now(),
-                                            "modifiedBy",   fullName,   // full name, not UID
-                                            "modifiedById", uid)
-                                    .addOnSuccessListener(v ->
-                                            ActivityLogger.logCampus(
-                                                    ActivityLogger.ACTION_MODIFIED, name));
-                        }
-                    });
-                })
-                .setNegativeButton("Cancel", null)
-                .show();
     }
 
     // ---------------------------------------------------------------------------
@@ -266,9 +199,11 @@ public class CampusManagementActivity extends AppCompatActivity {
             h.tvCreatedBy.setText(orDash(doc.getString("createdBy")));
             h.tvModifiedBy.setText(orDash(doc.getString("modifiedBy")));
 
-            // Edit button opens the form pre-filled with existing data.
-            h.btnEdit.setOnClickListener(v -> showFormDialog(doc));
-
+            h.btnEdit.setOnClickListener(v -> {
+                Intent i = new Intent(CampusManagementActivity.this, CampusFormActivity.class);
+                i.putExtra(CampusFormActivity.EXTRA_DOC_ID, doc.getId());
+                startActivity(i);
+            });
             // Toggle status button resolves the actor name before updating.
             h.btnToggle.setOnClickListener(v -> {
                 String newStatus = "Active".equals(status) ? "Inactive" : "Active";

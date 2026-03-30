@@ -1,23 +1,18 @@
 package com.example.luminae.admin.fragments;
 
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.*;
 import android.widget.*;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.*;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.luminae.R;
+import com.example.luminae.activities.AnnouncementFormActivity;
+import com.example.luminae.activities.EventFormActivity;
 import com.example.luminae.activities.PostDetailActivity;
 import com.example.luminae.databinding.FragmentAdminFeedBinding;
 import com.example.luminae.utils.ActivityLogger;
@@ -26,7 +21,6 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
-import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -48,14 +42,6 @@ public class AdminFeedFragment extends Fragment {
     private String  filterStatus   = "all"; // "all" | "active" | "archived"
     private boolean sortDescending = true;
 
-    private ActivityResultLauncher<String> imagePicker;
-    private ImageView pendingPreviewView = null;
-    private TextView  pendingImgHintView = null;
-    private final String[] pendingBase64Holder = new String[]{null};
-
-    private String pickedDate = "";
-    private String pickedTime = "";
-
     interface NameCallback { void onResult(String name); }
 
     @Nullable @Override
@@ -64,16 +50,6 @@ public class AdminFeedFragment extends Fragment {
         b    = FragmentAdminFeedBinding.inflate(inflater, container, false);
         db   = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
-
-        imagePicker = registerForActivityResult(
-                new ActivityResultContracts.GetContent(), uri -> {
-                    if (uri == null) return;
-                    String encoded = compressToBase64(uri);
-                    if (encoded == null) return;
-                    pendingBase64Holder[0] = encoded;
-                    if (pendingPreviewView != null) loadBase64Image(encoded, pendingPreviewView);
-                    if (pendingImgHintView != null) pendingImgHintView.setText("Image selected ✓");
-                });
 
         b.tabLayout.addTab(b.tabLayout.newTab().setText("Announcements"));
         b.tabLayout.addTab(b.tabLayout.newTab().setText("Events"));
@@ -110,8 +86,10 @@ public class AdminFeedFragment extends Fragment {
         });
 
         b.btnAdd.setOnClickListener(v -> {
-            if (activeTab == TAB_ANNOUNCEMENTS) showAnnouncementDialog(null);
-            else                                showEventDialog(null);
+            Intent i = new Intent(getActivity(),
+                    activeTab == TAB_ANNOUNCEMENTS ? AnnouncementFormActivity.class : EventFormActivity.class);
+            i.putExtra("collection", activeTab == TAB_ANNOUNCEMENTS ? "announcements" : "events");
+            startActivity(i);
         });
 
         reloadCollection();
@@ -195,22 +173,6 @@ public class AdminFeedFragment extends Fragment {
 
     // ── image helpers ─────────────────────────────────────────────────────────
 
-    private String compressToBase64(Uri uri) {
-        try {
-            Bitmap original = MediaStore.Images.Media.getBitmap(
-                    requireContext().getContentResolver(), uri);
-            int maxWidth = 800;
-            if (original.getWidth() > maxWidth) {
-                float ratio = (float) maxWidth / original.getWidth();
-                original = Bitmap.createScaledBitmap(original, maxWidth,
-                        Math.round(original.getHeight() * ratio), true);
-            }
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            original.compress(Bitmap.CompressFormat.JPEG, 50, out);
-            return Base64.encodeToString(out.toByteArray(), Base64.DEFAULT);
-        } catch (Exception e) { return null; }
-    }
-
     private void loadBase64Image(String base64, ImageView iv) {
         try {
             byte[] bytes = Base64.decode(base64, Base64.DEFAULT);
@@ -234,234 +196,13 @@ public class AdminFeedFragment extends Fragment {
                 .addOnFailureListener(e -> cb.onResult("Unknown"));
     }
 
-    // ── announcement dialog ───────────────────────────────────────────────────
-
-    private void showAnnouncementDialog(DocumentSnapshot existing) {
-        View form = LayoutInflater.from(getContext())
-                .inflate(R.layout.dialog_post_announcement, null);
-
-        EditText  etTitle   = form.findViewById(R.id.et_title);
-        EditText  etDesc    = form.findViewById(R.id.et_description);
-        ImageView ivPreview = form.findViewById(R.id.iv_preview);
-        TextView  btnPick   = form.findViewById(R.id.btn_pick_image);
-        TextView  tvHint    = form.findViewById(R.id.tv_image_hint);
-
-        pendingBase64Holder[0] = null;
-        pendingPreviewView     = ivPreview;
-        pendingImgHintView     = tvHint;
-
-        if (existing != null) {
-            etTitle.setText(existing.getString("title"));
-            etDesc.setText(existing.getString("description"));
-            String b64 = existing.getString("imageBase64");
-            if (b64 != null && !b64.isEmpty()) {
-                loadBase64Image(b64, ivPreview);
-                tvHint.setText("Tap to change image");
-            }
-        }
-
-        btnPick.setOnClickListener(v -> imagePicker.launch("image/*"));
-
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle(existing == null ? "New Announcement" : "Edit Announcement")
-                .setView(form)
-                .setPositiveButton("Post", (d, w) -> {
-                    String title = etTitle.getText().toString().trim();
-                    String desc  = etDesc.getText().toString().trim();
-                    if (title.isEmpty()) {
-                        Toast.makeText(getContext(), "Title required", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    String img = pendingBase64Holder[0] != null ? pendingBase64Holder[0]
-                            : (existing != null ? existing.getString("imageBase64") : null);
-                    saveAnnouncement(existing, title, desc, img);
-                })
-                .setNegativeButton("Cancel", null)
-                .setOnDismissListener(d -> {
-                    pendingBase64Holder[0] = null;
-                    pendingPreviewView     = null;
-                    pendingImgHintView     = null;
-                })
-                .show();
-    }
-
-    private void saveAnnouncement(DocumentSnapshot existing,
-                                  String title, String desc, String imageBase64) {
-        getActorFullName(fullName -> {
-            String uid = FirebaseAuth.getInstance().getUid();
-            Map<String, Object> data = new HashMap<>();
-            data.put("title",       title);
-            data.put("description", desc);
-            if (imageBase64 != null) data.put("imageBase64", imageBase64);
-
-            if (existing == null) {
-                data.put("createdAt",   Timestamp.now());
-                data.put("createdBy",   fullName);
-                data.put("createdById", uid);
-                data.put("status",      "Active");
-                data.put("likeCount",   0L);
-                db.collection("announcements").add(data)
-                        .addOnSuccessListener(r ->
-                                ActivityLogger.logAnnouncement(
-                                        ActivityLogger.ACTION_CREATE, title, fullName))
-                        .addOnFailureListener(e ->
-                                Toast.makeText(getContext(),
-                                        "Failed: " + e.getMessage(), Toast.LENGTH_LONG).show());
-            } else {
-                data.put("modifiedAt",   Timestamp.now());
-                data.put("modifiedBy",   fullName);
-                data.put("modifiedById", uid);
-                existing.getReference().update(data)
-                        .addOnSuccessListener(v ->
-                                ActivityLogger.logAnnouncement(
-                                        ActivityLogger.ACTION_MODIFIED, title, fullName))
-                        .addOnFailureListener(e ->
-                                Toast.makeText(getContext(),
-                                        "Failed: " + e.getMessage(), Toast.LENGTH_LONG).show());
-            }
-        });
-    }
-
-    // ── event dialog ──────────────────────────────────────────────────────────
-
-    private void showEventDialog(DocumentSnapshot existing) {
-        View form = LayoutInflater.from(getContext())
-                .inflate(R.layout.dialog_event_form, null);
-
-        EditText  etTitle      = form.findViewById(R.id.et_title);
-        EditText  etDesc       = form.findViewById(R.id.et_description);
-        EditText  etWhere      = form.findViewById(R.id.et_where);
-        EditText  etMaxPax     = form.findViewById(R.id.et_max_participants);
-        TextView  tvPickedDate = form.findViewById(R.id.tv_picked_date);
-        TextView  tvPickedTime = form.findViewById(R.id.tv_picked_time);
-        TextView  tvImgHint    = form.findViewById(R.id.tv_image_hint);
-        Button    btnPickDate  = form.findViewById(R.id.btn_pick_date);
-        Button    btnPickTime  = form.findViewById(R.id.btn_pick_time);
-        Button    btnPickImage = form.findViewById(R.id.btn_pick_image);
-        ImageView ivPreview    = form.findViewById(R.id.iv_preview);
-
-        pendingBase64Holder[0] = null;
-        pendingPreviewView     = ivPreview;
-        pendingImgHintView     = tvImgHint;
-
-        if (existing != null) {
-            etTitle.setText(existing.getString("title"));
-            etDesc.setText(existing.getString("description"));
-            etWhere.setText(existing.getString("where"));
-            Long maxPax = existing.getLong("maxParticipants");
-            if (maxPax != null) etMaxPax.setText(String.valueOf(maxPax));
-            pickedDate = existing.getString("date") != null ? existing.getString("date") : "";
-            pickedTime = existing.getString("time") != null ? existing.getString("time") : "";
-            tvPickedDate.setText(pickedDate.isEmpty() ? "No date selected" : pickedDate);
-            tvPickedTime.setText(pickedTime.isEmpty() ? "No time selected" : pickedTime);
-            String b64 = existing.getString("imageBase64");
-            if (b64 != null && !b64.isEmpty()) {
-                loadBase64Image(b64, ivPreview);
-                tvImgHint.setText("Tap to change image");
-            }
-        } else {
-            pickedDate = "";
-            pickedTime = "";
-            tvPickedDate.setText("No date selected");
-            tvPickedTime.setText("No time selected");
-        }
-
-        btnPickDate.setOnClickListener(v -> {
-            Calendar c = Calendar.getInstance();
-            new DatePickerDialog(requireContext(), (view, y, m, d) -> {
-                pickedDate = d + "/" + (m + 1) + "/" + y;
-                tvPickedDate.setText(pickedDate);
-            }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show();
-        });
-
-        btnPickTime.setOnClickListener(v -> {
-            Calendar c = Calendar.getInstance();
-            new TimePickerDialog(requireContext(), (view, hr, min) -> {
-                pickedTime = String.format(Locale.getDefault(), "%02d:%02d", hr, min);
-                tvPickedTime.setText(pickedTime);
-            }, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), false).show();
-        });
-
-        btnPickImage.setOnClickListener(v -> imagePicker.launch("image/*"));
-
-        new MaterialAlertDialogBuilder(requireContext())
-                .setTitle(existing == null ? "New Event" : "Edit Event")
-                .setView(form)
-                .setPositiveButton("Save", (d, w) -> {
-                    String title  = etTitle.getText().toString().trim();
-                    String desc   = etDesc.getText().toString().trim();
-                    String where  = etWhere.getText().toString().trim();
-                    String maxStr = etMaxPax.getText().toString().trim();
-                    int maxPax = 0;
-                    try { if (!maxStr.isEmpty()) maxPax = Integer.parseInt(maxStr); }
-                    catch (NumberFormatException ignored) {}
-                    if (title.isEmpty()) {
-                        Toast.makeText(getContext(), "Title required", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    String img = pendingBase64Holder[0] != null ? pendingBase64Holder[0]
-                            : (existing != null ? existing.getString("imageBase64") : null);
-                    saveEvent(existing, title, desc, where, pickedDate, pickedTime, maxPax, img);
-                })
-                .setNegativeButton("Cancel", null)
-                .setOnDismissListener(d -> {
-                    pendingBase64Holder[0] = null;
-                    pendingPreviewView     = null;
-                    pendingImgHintView     = null;
-                })
-                .show();
-    }
-
-    private void saveEvent(DocumentSnapshot existing, String title, String desc,
-                           String where, String date, String time,
-                           int maxPax, String imageBase64) {
-        getActorFullName(fullName -> {
-            String uid = FirebaseAuth.getInstance().getUid();
-            Map<String, Object> data = new HashMap<>();
-            data.put("title",           title);
-            data.put("description",     desc);
-            data.put("where",           where);
-            data.put("date",            date);
-            data.put("time",            time);
-            data.put("maxParticipants", maxPax);
-            if (imageBase64 != null) data.put("imageBase64", imageBase64);
-
-            if (existing == null) {
-                data.put("createdAt",   Timestamp.now());
-                data.put("createdBy",   fullName);
-                data.put("createdById", uid);
-                data.put("status",      "Active");
-                data.put("likeCount",   0L);
-                data.put("goingCount",  0);
-                db.collection("events").add(data)
-                        .addOnSuccessListener(r ->
-                                ActivityLogger.logEvent(
-                                        ActivityLogger.ACTION_CREATE, title, fullName))
-                        .addOnFailureListener(e ->
-                                Toast.makeText(getContext(),
-                                        "Failed: " + e.getMessage(), Toast.LENGTH_LONG).show());
-            } else {
-                data.put("modifiedAt",   Timestamp.now());
-                data.put("modifiedBy",   fullName);
-                data.put("modifiedById", uid);
-                existing.getReference().update(data)
-                        .addOnSuccessListener(v ->
-                                ActivityLogger.logEvent(
-                                        ActivityLogger.ACTION_MODIFIED, title, fullName))
-                        .addOnFailureListener(e ->
-                                Toast.makeText(getContext(),
-                                        "Failed: " + e.getMessage(), Toast.LENGTH_LONG).show());
-            }
-        });
-    }
-
     // ── adapter ───────────────────────────────────────────────────────────────
 
     private class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.VH> {
 
         class VH extends RecyclerView.ViewHolder {
-            TextView  tvCreatedBy, tvDateCreated, tvTitle, tvDesc, tvHearts, btnDelete;
-            ImageView ivImage;
+            TextView  tvCreatedBy, tvDateCreated, tvTitle, tvDesc, tvHearts;
+            ImageView ivImage, btnMore;
             TextView  tvWhere, tvEventDate, tvGoingCount, tvGoingInfo, btnGoing;
             View      layoutEventInfo;
 
@@ -477,7 +218,7 @@ public class AdminFeedFragment extends Fragment {
                 tvDesc          = v.findViewById(R.id.tv_description);
                 tvHearts        = v.findViewById(R.id.btn_like);
                 ivImage         = v.findViewById(R.id.iv_post_image);
-                btnDelete       = v.findViewById(R.id.btn_delete);
+                btnMore         = v.findViewById(R.id.btn_more);
                 tvWhere         = v.findViewById(R.id.tv_location);
                 tvEventDate     = v.findViewById(R.id.tv_event_date);
                 tvGoingCount    = v.findViewById(R.id.tv_going_count);
@@ -532,16 +273,16 @@ public class AdminFeedFragment extends Fragment {
                 if (h.layoutEventInfo != null) h.layoutEventInfo.setVisibility(View.VISIBLE);
                 long going = doc.getLong("goingCount") != null ? doc.getLong("goingCount") : 0;
                 if (h.tvWhere != null)
-                    h.tvWhere.setText("📍 " + (doc.getString("where") != null ? doc.getString("where") : "—"));
+                    h.tvWhere.setText("Location: " + (doc.getString("where") != null ? doc.getString("where") : "—"));
                 if (h.tvEventDate != null) {
                     String date = doc.getString("date") != null ? doc.getString("date") : "";
                     String time = doc.getString("time") != null ? doc.getString("time") : "";
-                    h.tvEventDate.setText("📅 " + date + (time.isEmpty() ? "" : "  " + time));
+                    h.tvEventDate.setText("Date: " + date + (time.isEmpty() ? "" : "  " + time));
                 }
-                if (h.tvGoingCount != null) h.tvGoingCount.setText("🎫 " + going + " going");
+                if (h.tvGoingCount != null) h.tvGoingCount.setText(going + " going");
                 if (h.tvGoingInfo  != null) {
                     h.tvGoingInfo.setVisibility(View.VISIBLE);
-                    h.tvGoingInfo.setText("🎫 " + going + " going");
+                    h.tvGoingInfo.setText(going + " going");
                 }
             }
 
@@ -604,11 +345,40 @@ public class AdminFeedFragment extends Fragment {
                 intent.putExtra("type",  activeTab == TAB_ANNOUNCEMENTS ? "Announcement" : "Event");
                 startActivity(intent);
             });
+            if (h.btnMore != null) {
+                h.btnMore.setVisibility(View.VISIBLE);
+                h.btnMore.setOnClickListener(v -> showPostOptions(doc, title));
+            }
+            h.itemView.setOnLongClickListener(v -> {
+                showPostOptions(doc, title);
+                return true;
+            });
+        }
 
-            // delete button — always visible for admin
-            if (h.btnDelete != null) {
-                h.btnDelete.setVisibility(View.VISIBLE);
-                h.btnDelete.setOnClickListener(v ->
+        @Override public int getItemCount() { return filtered.size(); }
+    }
+
+    private void showPostOptions(DocumentSnapshot doc, String title) {
+        String[] items = {"Edit", "Archive", "Delete"};
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Post Options")
+                .setItems(items, (dialog, which) -> {
+                    if (which == 0) {
+                        Intent i = new Intent(getActivity(),
+                                activeTab == TAB_ANNOUNCEMENTS ? AnnouncementFormActivity.class : EventFormActivity.class);
+                        i.putExtra("doc_id", doc.getId());
+                        i.putExtra("collection", activeTab == TAB_ANNOUNCEMENTS ? "announcements" : "events");
+                        startActivity(i);
+                    } else if (which == 1) {
+                        String currentStatus = doc.getString("status");
+                        boolean isArchived = "Archive".equalsIgnoreCase(currentStatus)
+                                || "Archived".equalsIgnoreCase(currentStatus);
+                        String newStatus = isArchived ? "Active" : "Archive";
+                        doc.getReference().update("status", newStatus)
+                                .addOnSuccessListener(unused -> {
+                                    // no-op
+                                });
+                    } else {
                         new MaterialAlertDialogBuilder(requireContext())
                                 .setTitle("Delete")
                                 .setMessage("Delete \"" + title + "\"? This cannot be undone.")
@@ -624,11 +394,10 @@ public class AdminFeedFragment extends Fragment {
                                                                         ActivityLogger.ACTION_DELETE, title, fullName);
                                                         })))
                                 .setNegativeButton("Cancel", null)
-                                .show());
-            }
-        }
-
-        @Override public int getItemCount() { return filtered.size(); }
+                                .show();
+                    }
+                })
+                .show();
     }
 
     // ── lifecycle cleanup ─────────────────────────────────────────────────────
@@ -637,8 +406,6 @@ public class AdminFeedFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         if (activeListener != null) { activeListener.remove(); activeListener = null; }
-        pendingPreviewView = null;
-        pendingImgHintView = null;
         b = null;
     }
 }

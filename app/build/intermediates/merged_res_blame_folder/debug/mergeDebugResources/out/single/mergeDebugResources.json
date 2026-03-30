@@ -4,20 +4,16 @@
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\drawable\\dot_crimson.xml"
     },
     {
-        "merged": "com.example.luminae.app-debug-39:/layout_activity_post_detail.xml.flat",
-        "source": "com.example.luminae.app-main-41:/layout/activity_post_detail.xml"
-    },
-    {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\drawable_badge_modified.xml.flat",
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\drawable\\badge_modified.xml"
     },
     {
-        "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\layout_dialog_post_event.xml.flat",
-        "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\dialog_post_event.xml"
-    },
-    {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\drawable_line_fade_right.xml.flat",
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\drawable\\line_fade_right.xml"
+    },
+    {
+        "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\layout_dialog_post_event.xml.flat",
+        "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\dialog_post_event.xml"
     },
     {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\drawable_college.xml.flat",
@@ -64,6 +60,10 @@
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\fragment_student_feed.xml"
     },
     {
+        "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\layout_activity_announcement_form.xml.flat",
+        "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\activity_announcement_form.xml"
+    },
+    {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\drawable_staff.xml.flat",
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\drawable\\staff.xml"
     },
@@ -80,16 +80,16 @@
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\item_crud_entity.xml"
     },
     {
+        "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\layout_item_event_post.xml.flat",
+        "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\item_event_post.xml"
+    },
+    {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\drawable_ic_dashboard.xml.flat",
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\drawable\\ic_dashboard.xml"
     },
     {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\drawable_glass_card.xml.flat",
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\drawable\\glass_card.xml"
-    },
-    {
-        "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\layout_item_event_post.xml.flat",
-        "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\item_event_post.xml"
     },
     {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\layout_dialog_post_announcement.xml.flat",
@@ -128,6 +128,10 @@
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\drawable\\ic_back.xml"
     },
     {
+        "merged": "com.example.luminae.app-debug-39:/drawable_camera.xml.flat",
+        "source": "com.example.luminae.app-main-41:/drawable/camera.xml"
+    },
+    {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\drawable_ic_post.xml.flat",
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\drawable\\ic_post.xml"
     },
@@ -136,12 +140,12 @@
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\fragment_admin_dashboard.xml"
     },
     {
-        "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\layout_item_student.xml.flat",
-        "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\item_student.xml"
-    },
-    {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\drawable_avatar_circle_staff.xml.flat",
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\drawable\\avatar_circle_staff.xml"
+    },
+    {
+        "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\layout_item_student.xml.flat",
+        "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\item_student.xml"
     },
     {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\font_poppins_bold.xml.flat",
@@ -156,12 +160,12 @@
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\fragment_staff_post.xml"
     },
     {
-        "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\drawable_student.xml.flat",
-        "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\drawable\\student.xml"
-    },
-    {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\drawable_password.xml.flat",
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\drawable\\password.xml"
+    },
+    {
+        "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\drawable_student.xml.flat",
+        "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\drawable\\student.xml"
     },
     {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\layout_activity_student.xml.flat",
@@ -176,12 +180,12 @@
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\drawable\\b_background.png"
     },
     {
-        "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\layout_item_my_event.xml.flat",
-        "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\item_my_event.xml"
-    },
-    {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\drawable_history.xml.flat",
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\drawable\\history.xml"
+    },
+    {
+        "merged": "com.example.luminae.app-debug-39:/layout_item_event_post.xml.flat",
+        "source": "com.example.luminae.app-main-41:/layout/item_event_post.xml"
     },
     {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\layout_fragment_staff_profile.xml.flat",
@@ -190,6 +194,10 @@
     {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\layout_item_notification.xml.flat",
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\item_notification.xml"
+    },
+    {
+        "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\drawable_profile_pic.png.flat",
+        "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\drawable\\profile_pic.png"
     },
     {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\drawable_download.xml.flat",
@@ -208,10 +216,6 @@
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\drawable\\dot_white.xml"
     },
     {
-        "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\layout_item_announcement.xml.flat",
-        "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\item_announcement.xml"
-    },
-    {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\layout_activity_event_participants.xml.flat",
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\activity_event_participants.xml"
     },
@@ -224,10 +228,6 @@
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\drawable\\right.xml"
     },
     {
-        "merged": "com.example.luminae.app-debug-39:/drawable_more.xml.flat",
-        "source": "com.example.luminae.app-main-41:/drawable/more.xml"
-    },
-    {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\drawable_ic_events.xml.flat",
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\drawable\\ic_events.xml"
     },
@@ -236,12 +236,12 @@
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\drawable\\line_fade_left.xml"
     },
     {
-        "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\layout_activity_activity_log.xml.flat",
-        "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\activity_activity_log.xml"
+        "merged": "com.example.luminae.app-debug-39:/layout_activity_announcement_form.xml.flat",
+        "source": "com.example.luminae.app-main-41:/layout/activity_announcement_form.xml"
     },
     {
-        "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\layout_dialog_add_student.xml.flat",
-        "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\dialog_add_student.xml"
+        "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\layout_activity_activity_log.xml.flat",
+        "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\activity_activity_log.xml"
     },
     {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\drawable_logout.xml.flat",
@@ -256,8 +256,20 @@
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\fragment_admin_management.xml"
     },
     {
+        "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\layout_dialog_export_report.xml.flat",
+        "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\dialog_export_report.xml"
+    },
+    {
+        "merged": "com.example.luminae.app-debug-39:/layout_activity_event_form.xml.flat",
+        "source": "com.example.luminae.app-main-41:/layout/activity_event_form.xml"
+    },
+    {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\drawable_line_fade.xml.flat",
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\drawable\\line_fade.xml"
+    },
+    {
+        "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\layout_activity_course_form.xml.flat",
+        "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\activity_course_form.xml"
     },
     {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\drawable_diamond_gold.xml.flat",
@@ -280,12 +292,28 @@
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\fragment_student_notification.xml"
     },
     {
+        "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\layout_activity_student_form.xml.flat",
+        "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\activity_student_form.xml"
+    },
+    {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\drawable_nav_tab_selector.xml.flat",
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\drawable\\nav_tab_selector.xml"
     },
     {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\drawable_ic_history.xml.flat",
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\drawable\\ic_history.xml"
+    },
+    {
+        "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\layout_activity_college_form.xml.flat",
+        "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\activity_college_form.xml"
+    },
+    {
+        "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\xml_file_paths.xml.flat",
+        "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\xml\\file_paths.xml"
+    },
+    {
+        "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\layout_activity_event_form.xml.flat",
+        "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\activity_event_form.xml"
     },
     {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\drawable_badge_event.xml.flat",
@@ -336,6 +364,10 @@
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\drawable\\event.xml"
     },
     {
+        "merged": "com.example.luminae.app-debug-39:/layout_item_feed_post.xml.flat",
+        "source": "com.example.luminae.app-main-41:/layout/item_feed_post.xml"
+    },
+    {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\layout_item_staff.xml.flat",
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\item_staff.xml"
     },
@@ -346,6 +378,10 @@
     {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\drawable_email.xml.flat",
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\drawable\\email.xml"
+    },
+    {
+        "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\layout_activity_campus_form.xml.flat",
+        "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\activity_campus_form.xml"
     },
     {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\drawable_badge_active.xml.flat",
@@ -374,10 +410,6 @@
     {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\drawable_person.xml.flat",
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\drawable\\person.xml"
-    },
-    {
-        "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\layout_item_event.xml.flat",
-        "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\item_event.xml"
     },
     {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\drawable_splash_overlay.xml.flat",
@@ -422,10 +454,6 @@
     {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\drawable_more.xml.flat",
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\drawable\\more.xml"
-    },
-    {
-        "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\layout_dialog_campus_form.xml.flat",
-        "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-41:\\layout\\dialog_campus_form.xml"
     },
     {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-debug-39:\\layout_fragment_student_profile.xml.flat",

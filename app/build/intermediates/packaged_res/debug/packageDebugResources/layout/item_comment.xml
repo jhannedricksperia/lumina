@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:background="@drawable/glass_card"
+    android:gravity="start"
+    android:orientation="horizontal"
+    android:padding="12dp">
+
+    <!-- Avatar: initials as fallback, photo on top when available -->
+    <FrameLayout
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginEnd="10dp">
+
+        <!-- Initials fallback (always present underneath) -->
+        <TextView
+            android:id="@+id/tv_initials"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="@drawable/circle_maroon"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            android:fontFamily="@font/poppins_bold"
+            android:text="/?" />
+
+        <!-- Profile photo overlay (hidden until loaded) -->
+        <ImageView
+            android:id="@+id/iv_commenter_photo"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="@drawable/circle_maroon"
+            android:scaleType="centerCrop"
+            android:clipToOutline="true"
+            android:visibility="gone" />
+
+    </FrameLayout>
+
+    <!-- Content column -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <!-- Name + Time -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="2dp">
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/poppins_bold"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:text="Name" />
+
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins"
+                android:textColor="#66FFFFFF"
+                android:textSize="10sp"
+                android:text="Jan 1" />
+        </LinearLayout>
+
+        <!-- Comment text -->
+        <TextView
+            android:id="@+id/tv_comment_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins"
+            android:textColor="#DDFFFFFF"
+            android:textSize="13sp"
+            android:layout_marginBottom="6dp"
+            android:text="Comment text" />
+
+        <!-- Actions: Like · Reply · Delete -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <LinearLayout
+                android:id="@+id/btn_like_comment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingEnd="14dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp">
+
+                <TextView
+                    android:id="@+id/tv_like_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="♥"
+                    android:textColor="#88FFFFFF"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/btn_like"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="3dp"
+                    android:fontFamily="@font/poppins"
+                    android:textColor="#88FFFFFF"
+                    android:textSize="11sp"
+                    android:text="0" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/btn_reply"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins"
+                android:textColor="#88FFFFFF"
+                android:textSize="11sp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:paddingEnd="14dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="↩ Reply" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/btn_delete_comment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins"
+                android:textColor="#66FF6B6B"
+                android:textSize="11sp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:visibility="gone"
+                android:text="Delete" />
+        </LinearLayout>
+
+        <!-- Replies list (populated programmatically) -->
+        <LinearLayout
+            android:id="@+id/layout_replies"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="8dp"
+            android:paddingTop="4dp"
+            android:visibility="gone" />
+
+        <!-- Inline reply input -->
+        <LinearLayout
+            android:id="@+id/layout_reply_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="8dp"
+            android:visibility="gone">
+
+            <EditText
+                android:id="@+id/et_reply"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/glass_card"
+                android:fontFamily="@font/poppins"
+                android:textColor="@color/white"
+                android:textColorHint="#66FFFFFF"
+                android:textSize="12sp"
+                android:hint="Write a reply…"
+                android:padding="8dp"
+                android:inputType="textMultiLine"
+                android:maxLines="3" />
+
+            <TextView
+                android:id="@+id/btn_send_reply"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/glass_card"
+                android:fontFamily="@font/poppins_bold"
+                android:textColor="@color/yellowDark"
+                android:textSize="12sp"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="Send" />
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

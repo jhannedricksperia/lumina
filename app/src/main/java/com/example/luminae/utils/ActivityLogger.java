@@ -19,7 +19,7 @@ import java.util.Map;
  *   subject    — identifier of the affected record (see rules below)
  *   timestamp  — Firestore Timestamp
  *   module     — "Student" | "Staff" | "Campus" | "College" | "Course"
- *                | "Announcement" | "Event"
+ *                | "Announcement" | "Event" | "Reports"
  *
  * Subject rules:
  *   Student      → email
@@ -44,6 +44,7 @@ public class ActivityLogger {
     public static final String MODULE_COURSE       = "Course";
     public static final String MODULE_ANNOUNCEMENT = "Announcement";
     public static final String MODULE_EVENT        = "Event";
+    public static final String MODULE_REPORTS      = "Reports";
 
     /**
      * Core log method. All other helpers delegate to this.
@@ -122,5 +123,10 @@ public class ActivityLogger {
 
     public static void logEvent(String action, String title, String creatorEmail) {
         logPost(MODULE_EVENT, action, title, creatorEmail);
+    }
+
+    /** Reports — subject = export details */
+    public static void logReport(String action, String details) {
+        log(MODULE_REPORTS, action, details);
     }
 }

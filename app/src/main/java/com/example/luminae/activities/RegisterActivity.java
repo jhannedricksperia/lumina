@@ -12,8 +12,8 @@ import com.example.luminae.R;
 import com.example.luminae.databinding.ActivityRegisterBinding;
 import com.example.luminae.models.User;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,10 +30,19 @@ public class RegisterActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private FirebaseFirestore db;
 
-    // Track whether each dropdown loaded successfully
-    private boolean campusLoaded  = false;
-    private boolean collegeLoaded = false;
-    private boolean courseLoaded  = false;
+    // ── Campus state ──────────────────────────────────────────────────────────
+    private final List<String> campusLabels = new ArrayList<>();
+    private final List<String> campusIds    = new ArrayList<>();
+    private String selectedCampusId         = null;
+
+    // ── College state ─────────────────────────────────────────────────────────
+    private final List<String> collegeLabels = new ArrayList<>();
+    private final List<String> collegeIds    = new ArrayList<>();
+    private String selectedCollegeId         = null;
+
+    // ── Course state ──────────────────────────────────────────────────────────
+    private final List<String> courseLabels = new ArrayList<>();
+    private final List<String> courseIds    = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +53,11 @@ public class RegisterActivity extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         db   = FirebaseFirestore.getInstance();
 
-        loadDropdowns();
+        // Lock college and course until parent is selected
+        setDropdownEnabled(binding.tilCollege, binding.etCollege, false);
+        setDropdownEnabled(binding.tilCourse,  binding.etCourse,  false);
+
+        loadCampuses();
 
         // Live email validation
         binding.etEmail.addTextChangedListener(new android.text.TextWatcher() {
@@ -81,152 +94,152 @@ public class RegisterActivity extends AppCompatActivity {
         binding.tvGoToLogin.setOnClickListener(v -> finish());
     }
 
-    // ── Dropdown loaders ─────────────────────────────────────────────────────
-
-    private void loadDropdowns() {
-        loadCampuses();
-        loadColleges();
-        loadCourses();
-    }
+    // =========================================================================
+    // CAMPUS
+    // =========================================================================
 
     private void loadCampuses() {
-        setDropdownLoading(binding.etCampus, binding.tilCampus, "Loading campuses…");
+        binding.tilCampus.setError(null);
 
         db.collection("campuses")
+                .orderBy("name")
                 .get()
-                .addOnSuccessListener(snapshots -> {
-                    List<String> items = new ArrayList<>();
-                    for (QueryDocumentSnapshot doc : snapshots) {
-                        // Adjust "name" to whatever field stores the campus label in your collection
-                        String name = doc.getString("name");
-                        if (name != null && !name.isEmpty()) items.add(name);
+                .addOnSuccessListener(qs -> {
+                    campusLabels.clear();
+                    campusIds.clear();
+
+                    if (qs == null || qs.isEmpty()) {
+                        binding.tilCampus.setError("No campuses found");
+                        return;
                     }
 
-                    if (items.isEmpty()) {
-                        setDropdownError(binding.etCampus, binding.tilCampus,
-                                "No campuses found. Contact your admin.");
-                        campusLoaded = false;
-                    } else {
-                        applyAdapter(binding.etCampus, binding.tilCampus, items);
-                        campusLoaded = true;
+                    for (DocumentSnapshot doc : qs.getDocuments()) {
+                        campusLabels.add(buildLabel(doc));
+                        campusIds.add(doc.getId());
                     }
+
+                    setAdapter(binding.etCampus, campusLabels);
+                    binding.tilCampus.setError(null);
+
+                    binding.etCampus.setOnItemClickListener((parent, view, position, id) -> {
+                        String newCampusId = campusIds.get(position);
+                        if (newCampusId.equals(selectedCampusId)) return;
+                        selectedCampusId = newCampusId;
+                        binding.tilCampus.setError(null);
+                        resetCollege();
+                        resetCourse();
+                        loadColleges(selectedCampusId);
+                    });
                 })
-                .addOnFailureListener(e -> {
-                    setDropdownError(binding.etCampus, binding.tilCampus,
-                            "Failed to load campuses. Check your connection.");
-                    campusLoaded = false;
-                });
+                .addOnFailureListener(e ->
+                        binding.tilCampus.setError("Failed to load campuses. Tap to retry."));
     }
 
-    private void loadColleges() {
-        setDropdownLoading(binding.etCollege, binding.tilCollege, "Loading colleges…");
+    // =========================================================================
+    // COLLEGE
+    // =========================================================================
+
+    private void loadColleges(String campusId) {
+        setDropdownEnabled(binding.tilCollege, binding.etCollege, false);
+        binding.tilCollege.setError(null);
 
         db.collection("colleges")
+                .whereEqualTo("campus", campusId)
+                .orderBy("name")
                 .get()
-                .addOnSuccessListener(snapshots -> {
-                    List<String> items = new ArrayList<>();
-                    for (QueryDocumentSnapshot doc : snapshots) {
-                        String name = doc.getString("name");
-                        if (name != null && !name.isEmpty()) items.add(name);
+                .addOnSuccessListener(qs -> {
+                    collegeLabels.clear();
+                    collegeIds.clear();
+
+                    if (qs == null || qs.isEmpty()) {
+                        binding.tilCollege.setError("No colleges found for this campus");
+                        return;
                     }
 
-                    if (items.isEmpty()) {
-                        setDropdownError(binding.etCollege, binding.tilCollege,
-                                "No colleges found. Contact your admin.");
-                        collegeLoaded = false;
-                    } else {
-                        applyAdapter(binding.etCollege, binding.tilCollege, items);
-                        collegeLoaded = true;
+                    for (DocumentSnapshot doc : qs.getDocuments()) {
+                        collegeLabels.add(buildLabel(doc));
+                        collegeIds.add(doc.getId());
                     }
+
+                    setAdapter(binding.etCollege, collegeLabels);
+                    setDropdownEnabled(binding.tilCollege, binding.etCollege, true);
+                    binding.tilCollege.setError(null);
+
+                    binding.etCollege.setOnItemClickListener((parent, view, position, id) -> {
+                        String newCollegeId = collegeIds.get(position);
+                        if (newCollegeId.equals(selectedCollegeId)) return;
+                        selectedCollegeId = newCollegeId;
+                        binding.tilCollege.setError(null);
+                        resetCourse();
+                        loadCourses(selectedCollegeId);
+                    });
                 })
                 .addOnFailureListener(e -> {
-                    setDropdownError(binding.etCollege, binding.tilCollege,
-                            "Failed to load colleges. Check your connection.");
-                    collegeLoaded = false;
+                    binding.tilCollege.setError("Failed to load colleges.");
+                    setDropdownEnabled(binding.tilCollege, binding.etCollege, false);
                 });
     }
 
-    private void loadCourses() {
-        setDropdownLoading(binding.etCourse, binding.tilCourse, "Loading courses…");
+    // =========================================================================
+    // COURSE
+    // =========================================================================
+
+    private void loadCourses(String collegeId) {
+        setDropdownEnabled(binding.tilCourse, binding.etCourse, false);
+        binding.tilCourse.setError(null);
 
         db.collection("courses")
+                .whereEqualTo("college", collegeId)
+                .orderBy("name")
                 .get()
-                .addOnSuccessListener(snapshots -> {
-                    List<String> items = new ArrayList<>();
-                    for (QueryDocumentSnapshot doc : snapshots) {
-                        String name = doc.getString("name");
-                        if (name != null && !name.isEmpty()) items.add(name);
+                .addOnSuccessListener(qs -> {
+                    courseLabels.clear();
+                    courseIds.clear();
+
+                    if (qs == null || qs.isEmpty()) {
+                        binding.tilCourse.setError("No courses found for this college");
+                        return;
                     }
 
-                    if (items.isEmpty()) {
-                        setDropdownError(binding.etCourse, binding.tilCourse,
-                                "No courses found. Contact your admin.");
-                        courseLoaded = false;
-                    } else {
-                        applyAdapter(binding.etCourse, binding.tilCourse, items);
-                        courseLoaded = true;
+                    for (DocumentSnapshot doc : qs.getDocuments()) {
+                        courseLabels.add(buildLabel(doc));
+                        courseIds.add(doc.getId());
                     }
+
+                    setAdapter(binding.etCourse, courseLabels);
+                    setDropdownEnabled(binding.tilCourse, binding.etCourse, true);
+                    binding.tilCourse.setError(null);
                 })
                 .addOnFailureListener(e -> {
-                    setDropdownError(binding.etCourse, binding.tilCourse,
-                            "Failed to load courses. Check your connection.");
-                    courseLoaded = false;
+                    binding.tilCourse.setError("Failed to load courses.");
+                    setDropdownEnabled(binding.tilCourse, binding.etCourse, false);
                 });
     }
 
-    // ── Dropdown helpers ──────────────────────────────────────────────────────
+    // =========================================================================
+    // RESET HELPERS
+    // =========================================================================
 
-    /**
-     * Show a placeholder hint while data is being fetched and disable the field.
-     */
-    private void setDropdownLoading(AutoCompleteTextView view,
-                                    com.google.android.material.textfield.TextInputLayout layout,
-                                    String hint) {
-        layout.setError(null);
-        layout.setHelperText(hint);
-        view.setEnabled(false);
+    private void resetCollege() {
+        selectedCollegeId = null;
+        collegeLabels.clear();
+        collegeIds.clear();
+        binding.etCollege.setText("", false);
+        binding.tilCollege.setError(null);
+        setDropdownEnabled(binding.tilCollege, binding.etCollege, false);
     }
 
-    /**
-     * Populate the dropdown adapter and re-enable the field.
-     */
-    private void applyAdapter(AutoCompleteTextView view,
-                              com.google.android.material.textfield.TextInputLayout layout,
-                              List<String> items) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_dropdown_item_1line,
-                items
-        );
-        view.setAdapter(adapter);
-        view.setEnabled(true);
-        layout.setHelperText(null);
-        layout.setError(null);
+    private void resetCourse() {
+        courseLabels.clear();
+        courseIds.clear();
+        binding.etCourse.setText("", false);
+        binding.tilCourse.setError(null);
+        setDropdownEnabled(binding.tilCourse, binding.etCourse, false);
     }
 
-    /**
-     * Show an error state and keep the field disabled so the user cannot
-     * type a value that was never validated against the collection.
-     * Tapping the field triggers a retry.
-     */
-    private void setDropdownError(AutoCompleteTextView view,
-                                  com.google.android.material.textfield.TextInputLayout layout,
-                                  String message) {
-        layout.setHelperText(null);
-        layout.setError(message);
-        view.setEnabled(false);
-
-        // Allow the user to tap the field to retry the fetch
-        view.setOnClickListener(v -> {
-            layout.setError(null);
-            String hint = layout.getHint() != null ? layout.getHint().toString() : "";
-            if (hint.equalsIgnoreCase("Campus"))  loadCampuses();
-            else if (hint.equalsIgnoreCase("College")) loadColleges();
-            else if (hint.equalsIgnoreCase("Course"))  loadCourses();
-        });
-    }
-
-    // ── Validation & navigation ───────────────────────────────────────────────
+    // =========================================================================
+    // VALIDATION & NAVIGATION
+    // =========================================================================
 
     private boolean isValidEmail(String email) {
         return BULSU_EMAIL.matcher(email).matches();
@@ -244,33 +257,36 @@ public class RegisterActivity extends AppCompatActivity {
         String confirm   = binding.etConfirmPassword.getText().toString().trim();
 
         if (firstName.isEmpty()) { binding.tilFirstName.setError("Required"); return; }
+        binding.tilFirstName.setError(null);
         if (lastName.isEmpty())  { binding.tilLastName.setError("Required"); return; }
+        binding.tilLastName.setError(null);
         if (username.isEmpty())  { binding.tilUsername.setError("Required"); return; }
+        binding.tilUsername.setError(null);
         if (email.isEmpty())     { binding.tilEmail.setError("Required"); return; }
         if (!isValidEmail(email)){ binding.tilEmail.setError("Must be @ms.bulsu.edu.ph"); return; }
+        binding.tilEmail.setError(null);
 
-        // Dropdown-specific validation
-        if (!campusLoaded) {
-            binding.tilCampus.setError("Campus list unavailable — tap to retry");
-            return;
+        if (campus.isEmpty() || selectedCampusId == null) {
+            binding.tilCampus.setError("Please select a campus"); return;
         }
-        if (campus.isEmpty()) { binding.tilCampus.setError("Please select a campus"); return; }
+        binding.tilCampus.setError(null);
 
-        if (!collegeLoaded) {
-            binding.tilCollege.setError("College list unavailable — tap to retry");
-            return;
+        if (college.isEmpty() || selectedCollegeId == null) {
+            binding.tilCollege.setError("Please select a college"); return;
         }
-        if (college.isEmpty()) { binding.tilCollege.setError("Please select a college"); return; }
+        binding.tilCollege.setError(null);
 
-        if (!courseLoaded) {
-            binding.tilCourse.setError("Course list unavailable — tap to retry");
-            return;
+        int courseIndex = courseLabels.indexOf(course);
+        if (course.isEmpty() || courseIndex < 0) {
+            binding.tilCourse.setError("Please select a course"); return;
         }
-        if (course.isEmpty()) { binding.tilCourse.setError("Please select a course"); return; }
+        binding.tilCourse.setError(null);
 
-        if (password.isEmpty())   { binding.tilPassword.setError("Required"); return; }
-        if (password.length() < 6){ binding.tilPassword.setError("Minimum 6 characters"); return; }
+        if (password.isEmpty())    { binding.tilPassword.setError("Required"); return; }
+        if (password.length() < 6) { binding.tilPassword.setError("Minimum 6 characters"); return; }
+        binding.tilPassword.setError(null);
         if (!password.equals(confirm)) { binding.tilConfirmPassword.setError("Passwords do not match"); return; }
+        binding.tilConfirmPassword.setError(null);
 
         binding.tvReviewName.setText(firstName + " " + lastName);
         binding.tvReviewUsername.setText(username);
@@ -283,7 +299,9 @@ public class RegisterActivity extends AppCompatActivity {
         binding.scrollReview.setVisibility(View.VISIBLE);
     }
 
-    // ── Registration ──────────────────────────────────────────────────────────
+    // =========================================================================
+    // REGISTRATION
+    // =========================================================================
 
     private void attemptRegister() {
         String fName    = binding.etFirstName.getText().toString().trim();
@@ -295,12 +313,16 @@ public class RegisterActivity extends AppCompatActivity {
         String college  = binding.etCollege.getText().toString().trim();
         String course   = binding.etCourse.getText().toString().trim();
 
+        int courseIndex = courseLabels.indexOf(course);
+        String selectedCourseId = (courseIndex >= 0) ? courseIds.get(courseIndex) : "";
+
         setLoading(true);
 
         auth.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
                     String uid = authResult.getUser().getUid();
-                    saveToFirestore(uid, fName, lName, username, email, campus, college, course);
+                    saveToFirestore(uid, fName, lName, username, email,
+                            campus, college, course, selectedCourseId);
                 })
                 .addOnFailureListener(e -> {
                     setLoading(false);
@@ -309,13 +331,22 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void saveToFirestore(String uid, String fName, String lName, String username,
-                                 String email, String campus, String college, String course) {
-        User newUser = new User(fName, lName, username, email, campus, college, course, "student", "Active");
+                                 String email, String campus, String college, String course,
+                                 String courseId) {
+        User newUser = new User(fName, lName, username, email,
+                campus, college, course, "student", "Active");
 
         db.collection("users")
                 .document(uid)
                 .set(newUser)
                 .addOnSuccessListener(v -> {
+                    // Persist IDs for future filtering
+                    db.collection("users").document(uid)
+                            .update(
+                                    "campusId",  selectedCampusId,
+                                    "collegeId", selectedCollegeId,
+                                    "courseId",  courseId
+                            );
                     setLoading(false);
                     showPendingScreen();
                 })
@@ -327,9 +358,37 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void showPendingScreen() {
         binding.scrollReview.setVisibility(View.GONE);
-        // Navigate to login or a pending-approval screen as needed
         startActivity(new Intent(this, LoginActivity.class));
         finish();
+    }
+
+    // =========================================================================
+    // UTILITIES
+    // =========================================================================
+
+    /** "Name (Acronym)" or just "Name" if acronym is absent. */
+    private String buildLabel(DocumentSnapshot doc) {
+        String name    = doc.getString("name");
+        String acronym = doc.getString("acronym");
+        if (name == null) name = "(unnamed)";
+        return (acronym != null && !acronym.isEmpty())
+                ? name + " (" + acronym + ")"
+                : name;
+    }
+
+    private void setAdapter(AutoCompleteTextView acv, List<String> items) {
+        acv.setAdapter(new ArrayAdapter<>(this,
+                android.R.layout.simple_dropdown_item_1line,
+                new ArrayList<>(items)));
+    }
+
+    private void setDropdownEnabled(
+            com.google.android.material.textfield.TextInputLayout til,
+            AutoCompleteTextView acv,
+            boolean enabled) {
+        til.setEnabled(enabled);
+        acv.setEnabled(enabled);
+        acv.setFocusable(false);
     }
 
     private void showError(String msg) {

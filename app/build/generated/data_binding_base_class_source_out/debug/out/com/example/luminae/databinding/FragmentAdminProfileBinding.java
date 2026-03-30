@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
 import com.example.luminae.R;
+import com.google.android.material.imageview.ShapeableImageView;
 import java.lang.NullPointerException;
 import java.lang.Override;
 import java.lang.String;
@@ -34,7 +35,7 @@ public final class FragmentAdminProfileBinding implements ViewBinding {
   public final LinearLayout btnViewActivityLog;
 
   @NonNull
-  public final ImageView ivProfilePhoto;
+  public final ShapeableImageView ivProfilePhoto;
 
   @NonNull
   public final ProgressBar progressPhoto;
@@ -54,7 +55,7 @@ public final class FragmentAdminProfileBinding implements ViewBinding {
   private FragmentAdminProfileBinding(@NonNull LinearLayout rootView,
       @NonNull LinearLayout btnChangePassword, @NonNull ImageView btnEditPhoto,
       @NonNull LinearLayout btnLogout, @NonNull LinearLayout btnViewActivityLog,
-      @NonNull ImageView ivProfilePhoto, @NonNull ProgressBar progressPhoto,
+      @NonNull ShapeableImageView ivProfilePhoto, @NonNull ProgressBar progressPhoto,
       @NonNull TextView tvEmail, @NonNull TextView tvFullName, @NonNull TextView tvInitials,
       @NonNull TextView tvRole) {
     this.rootView = rootView;
@@ -122,7 +123,7 @@ public final class FragmentAdminProfileBinding implements ViewBinding {
       }
 
       id = R.id.iv_profile_photo;
-      ImageView ivProfilePhoto = ViewBindings.findChildViewById(rootView, id);
+      ShapeableImageView ivProfilePhoto = ViewBindings.findChildViewById(rootView, id);
       if (ivProfilePhoto == null) {
         break missingId;
       }

@@ -69,6 +69,9 @@ public final class ActivityActivityLogBinding implements ViewBinding {
   public final Chip chipModuleEvent;
 
   @NonNull
+  public final Chip chipModuleReports;
+
+  @NonNull
   public final Chip chipModuleStaff;
 
   @NonNull
@@ -96,7 +99,8 @@ public final class ActivityActivityLogBinding implements ViewBinding {
       @NonNull ChipGroup chipGroupAction, @NonNull ChipGroup chipGroupModule,
       @NonNull Chip chipModuleAll, @NonNull Chip chipModuleAnnouncement,
       @NonNull Chip chipModuleCampus, @NonNull Chip chipModuleCollege,
-      @NonNull Chip chipModuleCourse, @NonNull Chip chipModuleEvent, @NonNull Chip chipModuleStaff,
+      @NonNull Chip chipModuleCourse, @NonNull Chip chipModuleEvent,
+      @NonNull Chip chipModuleReports, @NonNull Chip chipModuleStaff,
       @NonNull Chip chipModuleStudent, @NonNull TextInputEditText etSearch,
       @NonNull RecyclerView recyclerLogs, @NonNull TextInputLayout tilSearch,
       @NonNull MaterialToolbar toolbar, @NonNull TextView tvCount) {
@@ -115,6 +119,7 @@ public final class ActivityActivityLogBinding implements ViewBinding {
     this.chipModuleCollege = chipModuleCollege;
     this.chipModuleCourse = chipModuleCourse;
     this.chipModuleEvent = chipModuleEvent;
+    this.chipModuleReports = chipModuleReports;
     this.chipModuleStaff = chipModuleStaff;
     this.chipModuleStudent = chipModuleStudent;
     this.etSearch = etSearch;
@@ -235,6 +240,12 @@ public final class ActivityActivityLogBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.chip_module_reports;
+      Chip chipModuleReports = ViewBindings.findChildViewById(rootView, id);
+      if (chipModuleReports == null) {
+        break missingId;
+      }
+
       id = R.id.chip_module_staff;
       Chip chipModuleStaff = ViewBindings.findChildViewById(rootView, id);
       if (chipModuleStaff == null) {
@@ -280,8 +291,8 @@ public final class ActivityActivityLogBinding implements ViewBinding {
       return new ActivityActivityLogBinding((LinearLayout) rootView, btnExportPdf, chipActionAll,
           chipActionCreate, chipActionDelete, chipActionModified, chipActionViewed, chipGroupAction,
           chipGroupModule, chipModuleAll, chipModuleAnnouncement, chipModuleCampus,
-          chipModuleCollege, chipModuleCourse, chipModuleEvent, chipModuleStaff, chipModuleStudent,
-          etSearch, recyclerLogs, tilSearch, toolbar, tvCount);
+          chipModuleCollege, chipModuleCourse, chipModuleEvent, chipModuleReports, chipModuleStaff,
+          chipModuleStudent, etSearch, recyclerLogs, tilSearch, toolbar, tvCount);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

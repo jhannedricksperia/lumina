@@ -70,7 +70,11 @@
         <item name="startIconMinSize">24dp</item>
     </style>
     <style name="LuminaToolbar" parent="Widget.MaterialComponents.Toolbar">
-        <item name="android:paddingTop">15dp</item>
+        <item name="android:paddingTop">25dp</item>
+    </style>
+    <style name="ShapeAppearanceOverlayLuminaCircle">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
     </style>
     <style name="Theme.Luminae" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/maroon</item>

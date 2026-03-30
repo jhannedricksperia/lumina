@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/b_background"
+    android:orientation="vertical">
+
+    <!-- Toolbar -->
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/maroonDark"
+        app:navigationIcon="@drawable/back"
+        app:navigationIconTint="@color/white"
+        app:title="Add Course"
+        app:titleTextColor="@color/white" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <!-- Glass card container -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/glass_card"
+                android:elevation="8dp"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:fontFamily="@font/poppins_bold"
+                    android:text="Course Information"
+                    android:textColor="@color/white"
+                    android:textSize="15sp" />
+
+                <!-- ── Campus (always unlocked, loaded on start) ─────────── -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_campus"
+                    style="@style/LuminaField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:hint="Campus"
+                    app:endIconMode="dropdown_menu">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/acv_campus"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:fontFamily="@font/poppins"
+                        android:inputType="textAutoComplete"
+                        android:paddingStart="12dp"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/textHint" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_campus_loading"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+                    <ProgressBar
+                        style="?android:attr/progressBarStyleSmall"
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:layout_marginEnd="6dp"
+                        android:indeterminateTint="@color/yellow" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins"
+                        android:text="Loading campuses…"
+                        android:textColor="#55FFFFFF"
+                        android:textSize="10sp" />
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/spacer_campus"
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp" />
+
+                <!-- ── College (locked until campus selected) ────────────── -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_college"
+                    style="@style/LuminaField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:hint="College"
+                    android:enabled="false"
+                    app:endIconMode="dropdown_menu">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/acv_college"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:fontFamily="@font/poppins"
+                        android:inputType="textAutoComplete"
+                        android:paddingStart="12dp"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/textHint" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_college_loading"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+                    <ProgressBar
+                        style="?android:attr/progressBarStyleSmall"
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:layout_marginEnd="6dp"
+                        android:indeterminateTint="@color/yellow" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins"
+                        android:text="Loading colleges…"
+                        android:textColor="#55FFFFFF"
+                        android:textSize="10sp" />
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/spacer_college"
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp" />
+
+                <!-- Course Name -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_name"
+                    style="@style/LuminaField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    android:hint="Course Name">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins"
+                        android:inputType="textCapWords"
+                        android:imeOptions="actionNext"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/textHint" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Acronym -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_acronym"
+                    style="@style/LuminaField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    android:hint="Acronym (e.g. BSIT)">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_acronym"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins"
+                        android:inputType="textCapCharacters"
+                        android:imeOptions="actionNext"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/textHint" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Description -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_description"
+                    style="@style/LuminaField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:hint="Description (optional)">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins"
+                        android:gravity="top|start"
+                        android:inputType="textMultiLine"
+                        android:minLines="3"
+                        android:scrollbars="vertical"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/textHint" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Error -->
+                <TextView
+                    android:id="@+id/tv_error"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:fontFamily="@font/poppins"
+                    android:gravity="center"
+                    android:textColor="#FF6B6B"
+                    android:textSize="11sp"
+                    android:visibility="gone" />
+
+                <!-- Progress -->
+                <ProgressBar
+                    android:id="@+id/progress_bar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="8dp"
+                    android:indeterminateTint="@color/yellow"
+                    android:visibility="gone" />
+
+                <!-- Buttons -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_cancel"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/poppins_bold"
+                        android:text="CANCEL"
+                        android:textColor="@color/white"
+                        android:textSize="13sp"
+                        app:cornerRadius="12dp"
+                        app:strokeColor="#44FFFFFF" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_save"
+                        android:layout_width="0dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="2"
+                        android:fontFamily="@font/poppins_bold"
+                        android:text="SAVE"
+                        android:textColor="@color/white"
+                        android:textSize="13sp"
+                        app:backgroundTint="@color/maroon"
+                        app:cornerRadius="12dp"
+                        app:elevation="6dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

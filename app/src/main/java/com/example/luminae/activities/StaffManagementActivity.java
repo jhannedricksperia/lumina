@@ -1,11 +1,14 @@
 package com.example.luminae.activities;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.*;
 import android.widget.TextView;
+import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -180,12 +183,14 @@ public class StaffManagementActivity extends AppCompatActivity {
     private class StaffAdapter extends RecyclerView.Adapter<StaffAdapter.VH> {
 
         class VH extends RecyclerView.ViewHolder {
+            ImageView ivProfilePhoto;
             TextView tvInitials, tvFullName, tvDesignation, tvStatus,
                     tvDateCreated, tvCreatedBy, tvDateModified, tvModifiedBy,
                     btnToggle, btnEdit, btnDelete;
 
             VH(View v) {
                 super(v);
+                ivProfilePhoto  = v.findViewById(R.id.iv_profile_photo);
                 tvInitials     = v.findViewById(R.id.tv_initials);
                 tvFullName     = v.findViewById(R.id.tv_full_name);
                 tvDesignation  = v.findViewById(R.id.tv_designation);
@@ -214,9 +219,12 @@ public class StaffManagementActivity extends AppCompatActivity {
             String fName  = orDash(doc.getString("fName"));
             String lName  = orDash(doc.getString("lName"));
             String status = orDash(doc.getString("status"));
+            String photoB64 = doc.getString("photoBase64");
 
             // Bind basic fields.
             h.tvInitials.setText(initials(fName, lName));
+            loadProfileImage(photoB64, h.ivProfilePhoto);
+            h.tvInitials.setVisibility(android.view.View.GONE);
             h.tvFullName.setText(fName + " " + lName);
             h.tvDesignation.setText(orDash(doc.getString("designation")));
             h.tvStatus.setText(status);
@@ -293,5 +301,18 @@ public class StaffManagementActivity extends AppCompatActivity {
         String a = f.length() > 0 ? String.valueOf(f.charAt(0)).toUpperCase() : "";
         String b = l.length() > 0 ? String.valueOf(l.charAt(0)).toUpperCase() : "";
         return a + b;
+    }
+
+    private void loadProfileImage(String base64, ImageView imageView) {
+        if (base64 == null || base64.trim().isEmpty()) {
+            imageView.setImageResource(R.drawable.profile_pic);
+            return;
+        }
+        try {
+            byte[] bytes = Base64.decode(base64, Base64.DEFAULT);
+            imageView.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+        } catch (Exception e) {
+            imageView.setImageResource(R.drawable.profile_pic);
+        }
     }
 }

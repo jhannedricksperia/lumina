@@ -1,5 +1,6 @@
 package com.example.luminae.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -73,7 +74,9 @@ public class CollegeManagementActivity extends AppCompatActivity {
         });
 
         // Open the add-college dialog when the FAB / add button is tapped.
-        b.btnAdd.setOnClickListener(v -> showFormDialog(null));
+        b.btnAdd.setOnClickListener(v -> {
+            startActivity(new Intent(this, CollegeFormActivity.class));
+        });
 
         // Listen for real-time updates from the colleges collection.
         db.collection("colleges")
@@ -99,96 +102,13 @@ public class CollegeManagementActivity extends AppCompatActivity {
         for (DocumentSnapshot doc : all) {
             String name    = doc.getString("name")    != null ? doc.getString("name").toLowerCase()    : "";
             String acronym = doc.getString("acronym") != null ? doc.getString("acronym").toLowerCase() : "";
-            if (q.isEmpty() || name.contains(q) || acronym.contains(q)) filtered.add(doc);
+            String campus  = resolveCampusName(doc).toLowerCase();
+            if (q.isEmpty() || name.contains(q) || acronym.contains(q) || campus.contains(q)) filtered.add(doc);
         }
         b.tvCount.setText(filtered.size() + " college(s)");
         adapter.notifyDataSetChanged();
     }
 
-    // ---------------------------------------------------------------------------
-    // Add / Edit dialog
-    // ---------------------------------------------------------------------------
-
-    /**
-     * Shows the college form dialog.
-     *
-     * @param existing Pass null to create a new college, or a DocumentSnapshot
-     *                 to edit an existing one.
-     */
-    private void showFormDialog(DocumentSnapshot existing) {
-        // Build the form layout programmatically.
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.VERTICAL);
-        layout.setPadding(48, 16, 48, 0);
-
-        EditText etName    = new EditText(this); etName.setHint("College Name");
-        EditText etAcronym = new EditText(this); etAcronym.setHint("Acronym (e.g. CITE)");
-        EditText etDesc    = new EditText(this); etDesc.setHint("Description"); etDesc.setMinLines(2);
-
-        // Pre-fill fields when editing.
-        if (existing != null) {
-            etName.setText(existing.getString("name"));
-            etAcronym.setText(existing.getString("acronym"));
-            etDesc.setText(existing.getString("description"));
-        }
-
-        layout.addView(etName);
-        layout.addView(etAcronym);
-        layout.addView(etDesc);
-
-        new MaterialAlertDialogBuilder(this)
-                .setTitle(existing == null ? "Add College" : "Edit College")
-                .setView(layout)
-                .setPositiveButton("Save", (d, w) -> {
-                    String name    = etName.getText().toString().trim();
-                    String acronym = etAcronym.getText().toString().trim();
-                    String desc    = etDesc.getText().toString().trim();
-
-                    if (name.isEmpty()) {
-                        Toast.makeText(this, "Name required", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-
-                    // Use acronym as the activity-log subject; fall back to name if blank.
-                    String logSubject = !acronym.isEmpty() ? acronym : name;
-
-                    // Fetch the current admin's full name before saving so that
-                    // createdBy / modifiedBy shows a readable name, not a UID.
-                    getActorFullName(fullName -> {
-                        String uid = FirebaseAuth.getInstance().getUid();
-
-                        if (existing == null) {
-                            // Create new college document.
-                            Map<String, Object> data = new HashMap<>();
-                            data.put("name",        name);
-                            data.put("acronym",     acronym);
-                            data.put("description", desc);
-                            data.put("status",      "Active");
-                            data.put("createdAt",   Timestamp.now());
-                            data.put("createdBy",   fullName);   // full name, not UID
-                            data.put("createdById", uid);        // keep UID for reference
-                            db.collection("colleges").add(data)
-                                    .addOnSuccessListener(ref ->
-                                            ActivityLogger.logCollege(
-                                                    ActivityLogger.ACTION_CREATE, logSubject));
-                        } else {
-                            // Update existing college document.
-                            existing.getReference().update(
-                                            "name",         name,
-                                            "acronym",      acronym,
-                                            "description",  desc,
-                                            "modifiedAt",   Timestamp.now(),
-                                            "modifiedBy",   fullName,   // full name, not UID
-                                            "modifiedById", uid)
-                                    .addOnSuccessListener(v ->
-                                            ActivityLogger.logCollege(
-                                                    ActivityLogger.ACTION_MODIFIED, logSubject));
-                        }
-                    });
-                })
-                .setNegativeButton("Cancel", null)
-                .show();
-    }
 
     // ---------------------------------------------------------------------------
     // Helper: resolve the currently logged-in user's full name from Firestore
@@ -260,7 +180,12 @@ public class CollegeManagementActivity extends AppCompatActivity {
 
             // Bind basic fields.
             h.tvName.setText(orDash(doc.getString("name")));
-            h.tvDesc.setText(orDash(doc.getString("description")));
+            String campus = resolveCampusName(doc);
+            String desc = orDash(doc.getString("description"));
+            if (!"—".equals(campus)) {
+                desc = desc + "\nCampus: " + campus;
+            }
+            h.tvDesc.setText(desc);
             h.tvStatus.setText(status);
 
             // Show the acronym badge only when one exists.
@@ -287,7 +212,11 @@ public class CollegeManagementActivity extends AppCompatActivity {
             h.tvModifiedBy.setText(orDash(doc.getString("modifiedBy")));
 
             // Edit button opens the form pre-filled with existing data.
-            h.btnEdit.setOnClickListener(v -> showFormDialog(doc));
+            h.btnEdit.setOnClickListener(v -> {
+                Intent i = new Intent(CollegeManagementActivity.this, CollegeFormActivity.class);
+                i.putExtra(CollegeFormActivity.EXTRA_DOC_ID, doc.getId());
+                startActivity(i);
+            });
 
             // Toggle status button resolves the actor name before updating.
             h.btnToggle.setOnClickListener(v -> {
@@ -331,5 +260,12 @@ public class CollegeManagementActivity extends AppCompatActivity {
     /** Returns the value if non-null and non-empty, otherwise an em dash. */
     private String orDash(String s) {
         return (s != null && !s.isEmpty()) ? s : "—";
+    }
+
+    private String resolveCampusName(DocumentSnapshot doc) {
+        String name = doc.getString("campusName");
+        if (name == null || name.isEmpty()) name = doc.getString("campusLabel");
+        if (name == null || name.isEmpty()) name = doc.getString("campus");
+        return orDash(name);
     }
 }

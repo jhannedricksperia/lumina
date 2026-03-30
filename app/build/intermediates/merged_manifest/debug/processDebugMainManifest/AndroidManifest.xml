@@ -59,6 +59,15 @@
             android:name="com.example.luminae.activities.CourseManagementActivity"
             android:exported="false" />
         <activity
+            android:name="com.example.luminae.activities.CampusFormActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.luminae.activities.CollegeFormActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.luminae.activities.CourseFormActivity"
+            android:exported="false" />
+        <activity
             android:name="com.example.luminae.activities.EventParticipantsActivity"
             android:exported="false" />
         <activity
@@ -86,6 +95,25 @@
         <activity
             android:name="com.example.luminae.activities.UserProfileActivity"
             android:exported="false" />
+        <activity
+            android:name="com.example.luminae.activities.StudentFormActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.luminae.activities.AnnouncementFormActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.luminae.activities.EventFormActivity"
+            android:exported="false" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.example.luminae.provider"
+            android:exported="false"
+            android:grantUriPermissions="true" >
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
 
         <meta-data
             android:name="preloaded_fonts"

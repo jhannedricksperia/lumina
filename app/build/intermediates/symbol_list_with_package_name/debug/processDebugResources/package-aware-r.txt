@@ -3042,6 +3042,7 @@ drawable btn_radio_off_mtrl
 drawable btn_radio_off_to_on_mtrl_animation
 drawable btn_radio_on_mtrl
 drawable btn_radio_on_to_off_mtrl_animation
+drawable camera
 drawable campus
 drawable circle_maroon
 drawable college
@@ -3195,6 +3196,7 @@ drawable notify_panel_notification_icon_bg
 drawable password
 drawable person
 drawable person_add
+drawable profile_pic
 drawable right
 drawable send
 drawable splash_overlay
@@ -3277,6 +3279,9 @@ id action_more
 id action_text
 id actions
 id activity_chooser_view_content
+id acv_campus
+id acv_college
+id acv_course
 id add
 id adjust_height
 id adjust_width
@@ -3332,10 +3337,12 @@ id btn_like_post
 id btn_login
 id btn_logout
 id btn_mark_all_read
+id btn_more
 id btn_next
 id btn_pick_audience
 id btn_pick_date
 id btn_pick_image
+id btn_pick_photo
 id btn_pick_time
 id btn_register
 id btn_reply
@@ -3397,6 +3404,7 @@ id chip_module_campus
 id chip_module_college
 id chip_module_course
 id chip_module_event
+id chip_module_reports
 id chip_module_staff
 id chip_module_student
 id chip_month
@@ -3476,6 +3484,7 @@ id end
 id endToStart
 id enterAlways
 id enterAlwaysCollapsed
+id et_acronym
 id et_campus
 id et_college
 id et_comment
@@ -3483,16 +3492,19 @@ id et_confirm_password
 id et_course
 id et_current_password
 id et_description
-id et_designation
 id et_email
+id et_end_date
 id et_first_name
 id et_last_name
+id et_location
+id et_max
 id et_max_participants
 id et_name
 id et_new_password
 id et_password
 id et_reply
 id et_search
+id et_start_date
 id et_title
 id et_username
 id et_where
@@ -3559,6 +3571,7 @@ id label_course
 id labeled
 id layout
 id layout_add_bar
+id layout_audience_picker
 id layout_event_extras
 id layout_event_info
 id layout_form
@@ -3575,6 +3588,9 @@ id line3
 id linear
 id listMode
 id list_item
+id ll_campus_loading
+id ll_college_loading
+id ll_course_loading
 id m3_side_sheet
 id marquee
 id masked
@@ -3706,6 +3722,8 @@ id progress_horizontal
 id progress_photo
 id radio
 id ratio
+id rb_pdf
+id rb_spreadsheet
 id rectangles
 id recycler_comments
 id recycler_feed
@@ -3718,6 +3736,7 @@ id recycler_staff
 id recycler_students
 id report_drawn
 id reverseSawtooth
+id rg_format
 id right
 id rightToLeft
 id right_icon
@@ -3765,6 +3784,8 @@ id snap
 id snapMargins
 id south
 id spacer
+id spacer_campus
+id spacer_college
 id special_effects_controller_view_tag
 id spinner_campus
 id spinner_college
@@ -3825,18 +3846,23 @@ id textinput_helper_text
 id textinput_placeholder
 id textinput_prefix_text
 id textinput_suffix_text
+id til_acronym
 id til_campus
 id til_college
 id til_confirm_password
 id til_course
 id til_description
-id til_designation
 id til_email
+id til_end_date
 id til_first_name
 id til_last_name
+id til_location
+id til_max
 id til_name
 id til_password
 id til_search
+id til_start_date
+id til_title
 id til_username
 id time
 id title
@@ -4084,6 +4110,11 @@ layout abc_select_dialog_material
 layout abc_tooltip
 layout activity_activity_log
 layout activity_admin
+layout activity_announcement_form
+layout activity_campus_form
+layout activity_college_form
+layout activity_course_form
+layout activity_event_form
 layout activity_event_participants
 layout activity_forgot_password
 layout activity_generic_management
@@ -4095,6 +4126,7 @@ layout activity_staff
 layout activity_staff_form
 layout activity_staff_management
 layout activity_student
+layout activity_student_form
 layout activity_student_management
 layout activity_user_profile
 layout browser_actions_context_menu_page
@@ -4115,11 +4147,10 @@ layout design_navigation_menu
 layout design_navigation_menu_item
 layout design_text_input_end_icon
 layout design_text_input_start_icon
-layout dialog_add_student
 layout dialog_audience_picker
-layout dialog_campus_form
 layout dialog_change_password
 layout dialog_event_form
+layout dialog_export_report
 layout dialog_post_announcement
 layout dialog_post_event
 layout fragment_admin_dashboard
@@ -4810,6 +4841,7 @@ style ShapeAppearanceOverlay_MaterialComponents_MaterialCalendar_Day
 style ShapeAppearanceOverlay_MaterialComponents_MaterialCalendar_Window_Fullscreen
 style ShapeAppearanceOverlay_MaterialComponents_MaterialCalendar_Year
 style ShapeAppearanceOverlay_MaterialComponents_TextInputLayout_FilledBox
+style ShapeAppearanceOverlayLuminaCircle
 style TextAppearance_AppCompat
 style TextAppearance_AppCompat_Body1
 style TextAppearance_AppCompat_Body2
@@ -5679,4 +5711,5 @@ styleable ViewPager2 android_orientation
 styleable ViewStubCompat android_id android_layout android_inflatedId
 styleable ViewTransition android_id SharedValue SharedValueId clearsTag duration ifTagNotSet ifTagSet motionInterpolator motionTarget onStateTransition pathMotionArc setsTag transitionDisable upDuration viewTransitionMode
 styleable include constraintSet
+xml file_paths
 xml image_share_filepaths

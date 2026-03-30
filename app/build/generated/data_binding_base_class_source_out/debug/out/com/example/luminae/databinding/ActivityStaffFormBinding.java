@@ -4,6 +4,7 @@ package com.example.luminae.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AutoCompleteTextView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -14,6 +15,7 @@ import androidx.viewbinding.ViewBindings;
 import com.example.luminae.R;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import java.lang.NullPointerException;
@@ -25,13 +27,22 @@ public final class ActivityStaffFormBinding implements ViewBinding {
   private final LinearLayout rootView;
 
   @NonNull
+  public final AutoCompleteTextView acvCampus;
+
+  @NonNull
+  public final AutoCompleteTextView acvCollege;
+
+  @NonNull
+  public final AutoCompleteTextView acvCourse;
+
+  @NonNull
   public final MaterialButton btnCancel;
 
   @NonNull
-  public final MaterialButton btnSave;
+  public final MaterialButton btnPickPhoto;
 
   @NonNull
-  public final TextInputEditText etDesignation;
+  public final MaterialButton btnSave;
 
   @NonNull
   public final TextInputEditText etEmail;
@@ -43,10 +54,34 @@ public final class ActivityStaffFormBinding implements ViewBinding {
   public final TextInputEditText etLastName;
 
   @NonNull
+  public final ShapeableImageView ivProfilePhoto;
+
+  @NonNull
+  public final LinearLayout llCampusLoading;
+
+  @NonNull
+  public final LinearLayout llCollegeLoading;
+
+  @NonNull
+  public final LinearLayout llCourseLoading;
+
+  @NonNull
   public final ProgressBar progressBar;
 
   @NonNull
-  public final TextInputLayout tilDesignation;
+  public final View spacerCampus;
+
+  @NonNull
+  public final View spacerCollege;
+
+  @NonNull
+  public final TextInputLayout tilCampus;
+
+  @NonNull
+  public final TextInputLayout tilCollege;
+
+  @NonNull
+  public final TextInputLayout tilCourse;
 
   @NonNull
   public final TextInputLayout tilEmail;
@@ -64,22 +99,38 @@ public final class ActivityStaffFormBinding implements ViewBinding {
   public final TextView tvError;
 
   private ActivityStaffFormBinding(@NonNull LinearLayout rootView,
-      @NonNull MaterialButton btnCancel, @NonNull MaterialButton btnSave,
-      @NonNull TextInputEditText etDesignation, @NonNull TextInputEditText etEmail,
-      @NonNull TextInputEditText etFirstName, @NonNull TextInputEditText etLastName,
-      @NonNull ProgressBar progressBar, @NonNull TextInputLayout tilDesignation,
+      @NonNull AutoCompleteTextView acvCampus, @NonNull AutoCompleteTextView acvCollege,
+      @NonNull AutoCompleteTextView acvCourse, @NonNull MaterialButton btnCancel,
+      @NonNull MaterialButton btnPickPhoto, @NonNull MaterialButton btnSave,
+      @NonNull TextInputEditText etEmail, @NonNull TextInputEditText etFirstName,
+      @NonNull TextInputEditText etLastName, @NonNull ShapeableImageView ivProfilePhoto,
+      @NonNull LinearLayout llCampusLoading, @NonNull LinearLayout llCollegeLoading,
+      @NonNull LinearLayout llCourseLoading, @NonNull ProgressBar progressBar,
+      @NonNull View spacerCampus, @NonNull View spacerCollege, @NonNull TextInputLayout tilCampus,
+      @NonNull TextInputLayout tilCollege, @NonNull TextInputLayout tilCourse,
       @NonNull TextInputLayout tilEmail, @NonNull TextInputLayout tilFirstName,
       @NonNull TextInputLayout tilLastName, @NonNull MaterialToolbar toolbar,
       @NonNull TextView tvError) {
     this.rootView = rootView;
+    this.acvCampus = acvCampus;
+    this.acvCollege = acvCollege;
+    this.acvCourse = acvCourse;
     this.btnCancel = btnCancel;
+    this.btnPickPhoto = btnPickPhoto;
     this.btnSave = btnSave;
-    this.etDesignation = etDesignation;
     this.etEmail = etEmail;
     this.etFirstName = etFirstName;
     this.etLastName = etLastName;
+    this.ivProfilePhoto = ivProfilePhoto;
+    this.llCampusLoading = llCampusLoading;
+    this.llCollegeLoading = llCollegeLoading;
+    this.llCourseLoading = llCourseLoading;
     this.progressBar = progressBar;
-    this.tilDesignation = tilDesignation;
+    this.spacerCampus = spacerCampus;
+    this.spacerCollege = spacerCollege;
+    this.tilCampus = tilCampus;
+    this.tilCollege = tilCollege;
+    this.tilCourse = tilCourse;
     this.tilEmail = tilEmail;
     this.tilFirstName = tilFirstName;
     this.tilLastName = tilLastName;
@@ -114,21 +165,39 @@ public final class ActivityStaffFormBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
+      id = R.id.acv_campus;
+      AutoCompleteTextView acvCampus = ViewBindings.findChildViewById(rootView, id);
+      if (acvCampus == null) {
+        break missingId;
+      }
+
+      id = R.id.acv_college;
+      AutoCompleteTextView acvCollege = ViewBindings.findChildViewById(rootView, id);
+      if (acvCollege == null) {
+        break missingId;
+      }
+
+      id = R.id.acv_course;
+      AutoCompleteTextView acvCourse = ViewBindings.findChildViewById(rootView, id);
+      if (acvCourse == null) {
+        break missingId;
+      }
+
       id = R.id.btn_cancel;
       MaterialButton btnCancel = ViewBindings.findChildViewById(rootView, id);
       if (btnCancel == null) {
         break missingId;
       }
 
-      id = R.id.btn_save;
-      MaterialButton btnSave = ViewBindings.findChildViewById(rootView, id);
-      if (btnSave == null) {
+      id = R.id.btn_pick_photo;
+      MaterialButton btnPickPhoto = ViewBindings.findChildViewById(rootView, id);
+      if (btnPickPhoto == null) {
         break missingId;
       }
 
-      id = R.id.et_designation;
-      TextInputEditText etDesignation = ViewBindings.findChildViewById(rootView, id);
-      if (etDesignation == null) {
+      id = R.id.btn_save;
+      MaterialButton btnSave = ViewBindings.findChildViewById(rootView, id);
+      if (btnSave == null) {
         break missingId;
       }
 
@@ -150,15 +219,63 @@ public final class ActivityStaffFormBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.iv_profile_photo;
+      ShapeableImageView ivProfilePhoto = ViewBindings.findChildViewById(rootView, id);
+      if (ivProfilePhoto == null) {
+        break missingId;
+      }
+
+      id = R.id.ll_campus_loading;
+      LinearLayout llCampusLoading = ViewBindings.findChildViewById(rootView, id);
+      if (llCampusLoading == null) {
+        break missingId;
+      }
+
+      id = R.id.ll_college_loading;
+      LinearLayout llCollegeLoading = ViewBindings.findChildViewById(rootView, id);
+      if (llCollegeLoading == null) {
+        break missingId;
+      }
+
+      id = R.id.ll_course_loading;
+      LinearLayout llCourseLoading = ViewBindings.findChildViewById(rootView, id);
+      if (llCourseLoading == null) {
+        break missingId;
+      }
+
       id = R.id.progress_bar;
       ProgressBar progressBar = ViewBindings.findChildViewById(rootView, id);
       if (progressBar == null) {
         break missingId;
       }
 
-      id = R.id.til_designation;
-      TextInputLayout tilDesignation = ViewBindings.findChildViewById(rootView, id);
-      if (tilDesignation == null) {
+      id = R.id.spacer_campus;
+      View spacerCampus = ViewBindings.findChildViewById(rootView, id);
+      if (spacerCampus == null) {
+        break missingId;
+      }
+
+      id = R.id.spacer_college;
+      View spacerCollege = ViewBindings.findChildViewById(rootView, id);
+      if (spacerCollege == null) {
+        break missingId;
+      }
+
+      id = R.id.til_campus;
+      TextInputLayout tilCampus = ViewBindings.findChildViewById(rootView, id);
+      if (tilCampus == null) {
+        break missingId;
+      }
+
+      id = R.id.til_college;
+      TextInputLayout tilCollege = ViewBindings.findChildViewById(rootView, id);
+      if (tilCollege == null) {
+        break missingId;
+      }
+
+      id = R.id.til_course;
+      TextInputLayout tilCourse = ViewBindings.findChildViewById(rootView, id);
+      if (tilCourse == null) {
         break missingId;
       }
 
@@ -192,9 +309,11 @@ public final class ActivityStaffFormBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ActivityStaffFormBinding((LinearLayout) rootView, btnCancel, btnSave,
-          etDesignation, etEmail, etFirstName, etLastName, progressBar, tilDesignation, tilEmail,
-          tilFirstName, tilLastName, toolbar, tvError);
+      return new ActivityStaffFormBinding((LinearLayout) rootView, acvCampus, acvCollege, acvCourse,
+          btnCancel, btnPickPhoto, btnSave, etEmail, etFirstName, etLastName, ivProfilePhoto,
+          llCampusLoading, llCollegeLoading, llCourseLoading, progressBar, spacerCampus,
+          spacerCollege, tilCampus, tilCollege, tilCourse, tilEmail, tilFirstName, tilLastName,
+          toolbar, tvError);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

@@ -60,7 +60,7 @@ public class NotificationHelper {
 
         String shortTitle = title != null && title.length() > 40
                 ? title.substring(0, 40) + "…" : title;
-        String pushTitle   = postCollection.equals("announcements") ? "📢 New Announcement" : "🎉 New Event";
+        String pushTitle   = postCollection.equals("announcements") ? "New Announcement" : "New Event";
         String pushBody    = postedByName + ": " + shortTitle;
 
         // 1. Write FCM trigger doc — your Cloud Function picks this up and sends FCM
@@ -98,9 +98,9 @@ public class NotificationHelper {
     public static void notifyLike(String posterUid, String likerName,
                                   String postTitle, String postId, String postCollection) {
         if (posterUid == null || posterUid.isEmpty()) return;
-        String msg = "❤️ " + likerName + " liked your post: " + postTitle;
+        String msg = likerName + " liked your post: " + postTitle;
         sendInApp(posterUid, msg, postTitle, postId, postCollection);
-        sendPushToUser(posterUid, "❤️ New Like", likerName + " liked your post", postId, postCollection);
+        sendPushToUser(posterUid, "New Like", likerName + " liked your post", postId, postCollection);
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -109,9 +109,9 @@ public class NotificationHelper {
     public static void notifyComment(String posterUid, String commenterName,
                                      String postTitle, String postId, String postCollection) {
         if (posterUid == null || posterUid.isEmpty()) return;
-        String msg = "💬 " + commenterName + " commented on your post: " + postTitle;
+        String msg = commenterName + " commented on your post: " + postTitle;
         sendInApp(posterUid, msg, postTitle, postId, postCollection);
-        sendPushToUser(posterUid, "💬 New Comment", commenterName + " commented on your post", postId, postCollection);
+        sendPushToUser(posterUid, "New Comment", commenterName + " commented on your post", postId, postCollection);
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -120,9 +120,9 @@ public class NotificationHelper {
     public static void notifyReply(String commentAuthorUid, String replierName,
                                    String postTitle, String postId, String postCollection) {
         if (commentAuthorUid == null || commentAuthorUid.isEmpty()) return;
-        String msg = "↩️ " + replierName + " replied to your comment on: " + postTitle;
+        String msg = replierName + " replied to your comment on: " + postTitle;
         sendInApp(commentAuthorUid, msg, postTitle, postId, postCollection);
-        sendPushToUser(commentAuthorUid, "↩️ New Reply", replierName + " replied to your comment", postId, postCollection);
+        sendPushToUser(commentAuthorUid, "New Reply", replierName + " replied to your comment", postId, postCollection);
     }
 
     // ─────────────────────────────────────────────────────────────────────────
