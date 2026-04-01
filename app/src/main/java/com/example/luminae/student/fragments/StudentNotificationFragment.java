@@ -19,6 +19,7 @@ import java.util.*;
 public class StudentNotificationFragment extends Fragment {
 
     private FragmentStudentNotificationBinding b;
+    private ListenerRegistration notificationsReg;
     private FirebaseFirestore db;
     private FirebaseAuth auth;
     private NotifAdapter adapter;
@@ -53,15 +54,20 @@ public class StudentNotificationFragment extends Fragment {
 
         // Get current user's college/campus/course to match targeted notifications
         db.collection("users").document(uid).get().addOnSuccessListener(userDoc -> {
+            if (!isAdded() || b == null) return;
             String campus  = userDoc.getString("campus");
             String college = userDoc.getString("college");
             String course  = userDoc.getString("course");
 
+            if (notificationsReg != null) {
+                notificationsReg.remove();
+                notificationsReg = null;
+            }
             // Listen to notifications targeted at this user OR their segments
-            db.collection("notifications")
+            notificationsReg = db.collection("notifications")
                     .orderBy("timestamp", Query.Direction.DESCENDING)
                     .addSnapshotListener((snap, e) -> {
-                        if (snap == null) return;
+                        if (snap == null || !isAdded() || b == null) return;
                         all.clear();
                         for (DocumentSnapshot doc : snap.getDocuments()) {
                             String targetUid    = doc.getString("targetUid");
@@ -84,6 +90,7 @@ public class StudentNotificationFragment extends Fragment {
     }
 
     private void applyFilter() {
+        if (b == null) return;
         filtered.clear();
         for (DocumentSnapshot doc : all) {
             Boolean read = doc.getBoolean("read");
@@ -176,5 +183,12 @@ public class StudentNotificationFragment extends Fragment {
         @Override public int getItemCount() { return filtered.size(); }
     }
 
-    @Override public void onDestroyView() { super.onDestroyView(); b = null; }
+    @Override public void onDestroyView() {
+        if (notificationsReg != null) {
+            notificationsReg.remove();
+            notificationsReg = null;
+        }
+        super.onDestroyView();
+        b = null;
+    }
 }

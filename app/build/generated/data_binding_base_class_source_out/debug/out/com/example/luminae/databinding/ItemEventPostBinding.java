@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
+import androidx.viewpager2.widget.ViewPager2;
 import com.example.luminae.R;
 import java.lang.NullPointerException;
 import java.lang.Override;
@@ -27,7 +28,13 @@ public final class ItemEventPostBinding implements ViewBinding {
   public final LinearLayout cardRoot;
 
   @NonNull
-  public final ImageView ivPostImage;
+  public final LinearLayout dotsPostImages;
+
+  @NonNull
+  public final LinearLayout layoutPostMedia;
+
+  @NonNull
+  public final LinearLayout rowGoing;
 
   @NonNull
   public final TextView tvCreatedDate;
@@ -50,15 +57,21 @@ public final class ItemEventPostBinding implements ViewBinding {
   @NonNull
   public final TextView tvTitle;
 
+  @NonNull
+  public final ViewPager2 vpPostImages;
+
   private ItemEventPostBinding(@NonNull LinearLayout rootView, @NonNull ImageView btnMore,
-      @NonNull LinearLayout cardRoot, @NonNull ImageView ivPostImage,
+      @NonNull LinearLayout cardRoot, @NonNull LinearLayout dotsPostImages,
+      @NonNull LinearLayout layoutPostMedia, @NonNull LinearLayout rowGoing,
       @NonNull TextView tvCreatedDate, @NonNull TextView tvDescription,
       @NonNull TextView tvEventDate, @NonNull TextView tvLocation, @NonNull TextView tvParticipants,
-      @NonNull TextView tvPostedBy, @NonNull TextView tvTitle) {
+      @NonNull TextView tvPostedBy, @NonNull TextView tvTitle, @NonNull ViewPager2 vpPostImages) {
     this.rootView = rootView;
     this.btnMore = btnMore;
     this.cardRoot = cardRoot;
-    this.ivPostImage = ivPostImage;
+    this.dotsPostImages = dotsPostImages;
+    this.layoutPostMedia = layoutPostMedia;
+    this.rowGoing = rowGoing;
     this.tvCreatedDate = tvCreatedDate;
     this.tvDescription = tvDescription;
     this.tvEventDate = tvEventDate;
@@ -66,6 +79,7 @@ public final class ItemEventPostBinding implements ViewBinding {
     this.tvParticipants = tvParticipants;
     this.tvPostedBy = tvPostedBy;
     this.tvTitle = tvTitle;
+    this.vpPostImages = vpPostImages;
   }
 
   @Override
@@ -103,9 +117,21 @@ public final class ItemEventPostBinding implements ViewBinding {
 
       LinearLayout cardRoot = (LinearLayout) rootView;
 
-      id = R.id.iv_post_image;
-      ImageView ivPostImage = ViewBindings.findChildViewById(rootView, id);
-      if (ivPostImage == null) {
+      id = R.id.dots_post_images;
+      LinearLayout dotsPostImages = ViewBindings.findChildViewById(rootView, id);
+      if (dotsPostImages == null) {
+        break missingId;
+      }
+
+      id = R.id.layout_post_media;
+      LinearLayout layoutPostMedia = ViewBindings.findChildViewById(rootView, id);
+      if (layoutPostMedia == null) {
+        break missingId;
+      }
+
+      id = R.id.row_going;
+      LinearLayout rowGoing = ViewBindings.findChildViewById(rootView, id);
+      if (rowGoing == null) {
         break missingId;
       }
 
@@ -151,9 +177,15 @@ public final class ItemEventPostBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ItemEventPostBinding((LinearLayout) rootView, btnMore, cardRoot, ivPostImage,
-          tvCreatedDate, tvDescription, tvEventDate, tvLocation, tvParticipants, tvPostedBy,
-          tvTitle);
+      id = R.id.vp_post_images;
+      ViewPager2 vpPostImages = ViewBindings.findChildViewById(rootView, id);
+      if (vpPostImages == null) {
+        break missingId;
+      }
+
+      return new ItemEventPostBinding((LinearLayout) rootView, btnMore, cardRoot, dotsPostImages,
+          layoutPostMedia, rowGoing, tvCreatedDate, tvDescription, tvEventDate, tvLocation,
+          tvParticipants, tvPostedBy, tvTitle, vpPostImages);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

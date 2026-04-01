@@ -12,12 +12,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.*;
 import com.example.luminae.R;
 import com.example.luminae.databinding.ActivityPostDetailBinding;
+import com.example.luminae.utils.EventDisplayUtils;
+import com.example.luminae.utils.FullscreenImageGallery;
+import com.example.luminae.utils.LikeIconHelper;
+import com.example.luminae.utils.PostImageCarouselBinder;
+import com.example.luminae.utils.PostImageList;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
 import com.example.luminae.admin.fragments.ActivityLogger;
 import com.example.luminae.utils.NotificationHelper;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -35,6 +41,10 @@ public class PostDetailActivity extends AppCompatActivity {
 
     private boolean postLikedByMe = false;
     private long    postLikeCount = 0;
+
+    private long   eventMaxParticipants   = 0;
+    private long   eventParticipantCount  = 0;
+    private boolean eventGoingByMe        = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +108,8 @@ public class PostDetailActivity extends AppCompatActivity {
 
             postTitle     = doc.getString("title")    != null ? doc.getString("title")    : "";
             postPosterUid = doc.getString("postedBy") != null ? doc.getString("postedBy") : "";
+            if (postPosterUid.isEmpty())
+                postPosterUid = doc.getString("createdById") != null ? doc.getString("createdById") : "";
 
             postAuthorUid = !postPosterUid.isEmpty() ? postPosterUid
                     : (doc.getString("createdById") != null ? doc.getString("createdById") : "");
@@ -137,46 +149,53 @@ public class PostDetailActivity extends AppCompatActivity {
 
             b.btnLikePost.setOnClickListener(v -> togglePostLike());
 
-            // Image
-            String img = doc.getString("imageBase64");
-            if (img != null && !img.isEmpty()) {
-                b.ivPostImage.setVisibility(View.VISIBLE);
-                try {
-                    byte[] bytes = Base64.decode(img, Base64.DEFAULT);
-                    b.ivPostImage.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
-                } catch (Exception ignored) {}
-                b.ivPostImage.setOnClickListener(v -> {
-                    try {
-                        byte[] bytes2 = Base64.decode(img, Base64.DEFAULT);
-                        android.graphics.Bitmap bmp2 =
-                                BitmapFactory.decodeByteArray(bytes2, 0, bytes2.length);
-                        if (bmp2 != null) openFullscreenImage(bmp2);
-                    } catch (Exception ignored) {}
-                });
+            // Images (rounded carousel; tap opens fullscreen gallery)
+            java.util.List<String> imgs = PostImageList.fromDocument(doc);
+            if (!imgs.isEmpty()) {
+                b.layoutPostMedia.setVisibility(View.VISIBLE);
+                PostImageCarouselBinder.bind(
+                        b.vpPostImages,
+                        b.dotsPostImages,
+                        imgs,
+                        this,
+                        pos -> FullscreenImageGallery.show(PostDetailActivity.this, imgs, pos));
+            } else {
+                b.layoutPostMedia.setVisibility(View.GONE);
             }
 
             // Event extras
             if ("Event".equals(type)) {
                 b.layoutEventExtras.setVisibility(View.VISIBLE);
-                String loc = doc.getString("location") != null ? doc.getString("location")
-                        : (doc.getString("where") != null ? doc.getString("where") : "");
-                b.tvEventLocation.setText(loc);
-                String eventDate = doc.getString("eventDate") != null
-                        ? doc.getString("eventDate") : "";
-                if (eventDate.isEmpty()) {
-                    String d = doc.getString("date") != null ? doc.getString("date") : "";
-                    String t = doc.getString("time") != null ? doc.getString("time") : "";
-                    eventDate = (d + (t.isEmpty() ? "" : "  " + t)).trim();
-                }
-                b.tvEventDate.setText(eventDate);
+                String loc = EventDisplayUtils.formatLocation(doc);
+                b.tvEventLocation.setText(loc.isEmpty() ? "—" : loc);
+                b.tvEventDate.setText(EventDisplayUtils.formatEventDate(doc));
                 Long max = doc.getLong("maxParticipants");
-                Long cnt = doc.getLong("participantCount") != null
-                        ? doc.getLong("participantCount") : doc.getLong("goingCount");
-                if (cnt == null) cnt = 0L;
+                long cnt = EventDisplayUtils.countGoing(doc);
+                eventMaxParticipants  = max != null ? max : 0;
+                eventParticipantCount = cnt;
                 b.tvParticipantsCount.setText((max != null && max > 0)
                         ? cnt + " / " + max + " going" : cnt + " going");
+                b.rowGoingDetail.setOnClickListener(v -> {
+                    Intent gi = new Intent(PostDetailActivity.this, EventParticipantsActivity.class);
+                    gi.putExtra("eventId", docId);
+                    gi.putExtra("eventTitle", postTitle);
+                    startActivity(gi);
+                });
+                b.btnGoingPost.setVisibility(View.VISIBLE);
+                String uidGoing = auth.getUid();
+                if (uidGoing != null) {
+                    db.collection("events").document(docId)
+                            .collection("participants").document(uidGoing).get()
+                            .addOnSuccessListener(p -> {
+                                eventGoingByMe = p.exists();
+                                updateGoingButtonUi();
+                            });
+                }
+                updateGoingButtonUi();
+                b.btnGoingPost.setOnClickListener(v -> toggleEventGoing());
             } else {
                 b.layoutEventExtras.setVisibility(View.GONE);
+                if (b.btnGoingPost != null) b.btnGoingPost.setVisibility(View.GONE);
             }
 
             // Poster photo
@@ -261,9 +280,79 @@ public class PostDetailActivity extends AppCompatActivity {
     }
 
     private void updatePostLikeUI() {
-        if (b.btnLikePost == null) return;
-        b.btnLikePost.setText("♥ " + postLikeCount);
-        b.btnLikePost.setTextColor(postLikedByMe ? 0xFFEF5350 : 0x88FFFFFF);
+        if (b.tvLikePostCount != null)
+            b.tvLikePostCount.setText(String.valueOf(postLikeCount));
+        if (b.ivLikePost != null) {
+            LikeIconHelper.setHeartTint(b.ivLikePost, postLikedByMe);
+        }
+    }
+
+    private void updateGoingButtonUi() {
+        if (b.btnGoingPost == null) return;
+        boolean full = eventMaxParticipants > 0
+                && eventParticipantCount >= eventMaxParticipants && !eventGoingByMe;
+        b.btnGoingPost.setText(eventGoingByMe ? "Going ✓" : "Going");
+        b.btnGoingPost.setAlpha(full ? 0.45f : 1f);
+        b.btnGoingPost.setEnabled(!full || eventGoingByMe);
+    }
+
+    private void toggleEventGoing() {
+        String uid = auth.getUid();
+        if (uid == null || docId == null) return;
+        boolean full = eventMaxParticipants > 0
+                && eventParticipantCount >= eventMaxParticipants && !eventGoingByMe;
+        if (full) {
+            Toast.makeText(this, "Event is full!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(eventGoingByMe ? "Cancel RSVP?" : "Join Event?")
+                .setMessage(eventGoingByMe
+                        ? "Remove yourself from this event?"
+                        : "Confirm you are going to this event?")
+                .setPositiveButton("Confirm", (d, w) -> {
+                    DocumentReference partRef = db.collection("events").document(docId)
+                            .collection("participants").document(uid);
+                    DocumentReference eventRef = db.collection("events").document(docId);
+                    if (eventGoingByMe) {
+                        partRef.delete();
+                        eventRef.update("participantCount", FieldValue.increment(-1));
+                        eventGoingByMe = false;
+                        eventParticipantCount = Math.max(0, eventParticipantCount - 1);
+                    } else {
+                        db.collection("users").document(uid).get()
+                                .addOnSuccessListener(userDoc -> {
+                                    Map<String, Object> data = new HashMap<>();
+                                    data.put("uid", uid);
+                                    data.put("fName",   userDoc.getString("fName"));
+                                    data.put("lName",   userDoc.getString("lName"));
+                                    data.put("email",   userDoc.getString("email"));
+                                    data.put("campus",  userDoc.getString("campus"));
+                                    data.put("college", userDoc.getString("college"));
+                                    data.put("course",  userDoc.getString("course"));
+                                    data.put("joinedAt", Timestamp.now());
+                                    partRef.set(data);
+                                    eventRef.update("participantCount", FieldValue.increment(1));
+                                    eventGoingByMe = true;
+                                    eventParticipantCount++;
+                                    updateGoingButtonUi();
+                                    if (b.tvParticipantsCount != null) {
+                                        b.tvParticipantsCount.setText((eventMaxParticipants > 0)
+                                                ? eventParticipantCount + " / " + eventMaxParticipants + " going"
+                                                : eventParticipantCount + " going");
+                                    }
+                                });
+                        return;
+                    }
+                    updateGoingButtonUi();
+                    if (b.tvParticipantsCount != null) {
+                        b.tvParticipantsCount.setText((eventMaxParticipants > 0)
+                                ? eventParticipantCount + " / " + eventMaxParticipants + " going"
+                                : eventParticipantCount + " going");
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -352,7 +441,7 @@ public class PostDetailActivity extends AppCompatActivity {
                     if (snap == null) return;
                     comments = snap.getDocuments();
                     b.tvCommentCount.setText(comments.size() + " comment(s)");
-                    b.tvCommentCountInline.setText("Comments: " + comments.size());
+                    b.tvCommentCountInline.setText(String.valueOf(comments.size()));
                     adapter.notifyDataSetChanged();
                 });
     }

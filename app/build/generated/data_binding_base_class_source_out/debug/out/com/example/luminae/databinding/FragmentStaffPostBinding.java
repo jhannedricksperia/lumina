@@ -4,6 +4,7 @@ package com.example.luminae.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,6 +15,7 @@ import androidx.viewbinding.ViewBindings;
 import com.example.luminae.R;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputEditText;
 import java.lang.NullPointerException;
 import java.lang.Override;
 import java.lang.String;
@@ -21,6 +23,9 @@ import java.lang.String;
 public final class FragmentStaffPostBinding implements ViewBinding {
   @NonNull
   private final CoordinatorLayout rootView;
+
+  @NonNull
+  public final ImageButton btnSearch;
 
   @NonNull
   public final Chip chipAll;
@@ -38,6 +43,9 @@ public final class FragmentStaffPostBinding implements ViewBinding {
   public final Chip chipEvent;
 
   @NonNull
+  public final TextInputEditText etSearch;
+
+  @NonNull
   public final FloatingActionButton fabPost;
 
   @NonNull
@@ -46,16 +54,19 @@ public final class FragmentStaffPostBinding implements ViewBinding {
   @NonNull
   public final RecyclerView recyclerFeed;
 
-  private FragmentStaffPostBinding(@NonNull CoordinatorLayout rootView, @NonNull Chip chipAll,
-      @NonNull Chip chipAnnouncement, @NonNull Chip chipAsc, @NonNull Chip chipDesc,
-      @NonNull Chip chipEvent, @NonNull FloatingActionButton fabPost,
+  private FragmentStaffPostBinding(@NonNull CoordinatorLayout rootView,
+      @NonNull ImageButton btnSearch, @NonNull Chip chipAll, @NonNull Chip chipAnnouncement,
+      @NonNull Chip chipAsc, @NonNull Chip chipDesc, @NonNull Chip chipEvent,
+      @NonNull TextInputEditText etSearch, @NonNull FloatingActionButton fabPost,
       @NonNull ProgressBar progressFeed, @NonNull RecyclerView recyclerFeed) {
     this.rootView = rootView;
+    this.btnSearch = btnSearch;
     this.chipAll = chipAll;
     this.chipAnnouncement = chipAnnouncement;
     this.chipAsc = chipAsc;
     this.chipDesc = chipDesc;
     this.chipEvent = chipEvent;
+    this.etSearch = etSearch;
     this.fabPost = fabPost;
     this.progressFeed = progressFeed;
     this.recyclerFeed = recyclerFeed;
@@ -88,6 +99,12 @@ public final class FragmentStaffPostBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
+      id = R.id.btn_search;
+      ImageButton btnSearch = ViewBindings.findChildViewById(rootView, id);
+      if (btnSearch == null) {
+        break missingId;
+      }
+
       id = R.id.chip_all;
       Chip chipAll = ViewBindings.findChildViewById(rootView, id);
       if (chipAll == null) {
@@ -118,6 +135,12 @@ public final class FragmentStaffPostBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.et_search;
+      TextInputEditText etSearch = ViewBindings.findChildViewById(rootView, id);
+      if (etSearch == null) {
+        break missingId;
+      }
+
       id = R.id.fab_post;
       FloatingActionButton fabPost = ViewBindings.findChildViewById(rootView, id);
       if (fabPost == null) {
@@ -136,8 +159,9 @@ public final class FragmentStaffPostBinding implements ViewBinding {
         break missingId;
       }
 
-      return new FragmentStaffPostBinding((CoordinatorLayout) rootView, chipAll, chipAnnouncement,
-          chipAsc, chipDesc, chipEvent, fabPost, progressFeed, recyclerFeed);
+      return new FragmentStaffPostBinding((CoordinatorLayout) rootView, btnSearch, chipAll,
+          chipAnnouncement, chipAsc, chipDesc, chipEvent, etSearch, fabPost, progressFeed,
+          recyclerFeed);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

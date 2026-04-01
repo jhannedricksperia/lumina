@@ -4,6 +4,7 @@ package com.example.luminae.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -28,6 +29,9 @@ public final class ActivityActivityLogBinding implements ViewBinding {
 
   @NonNull
   public final MaterialButton btnExportPdf;
+
+  @NonNull
+  public final ImageButton btnSearch;
 
   @NonNull
   public final Chip chipActionAll;
@@ -93,8 +97,8 @@ public final class ActivityActivityLogBinding implements ViewBinding {
   public final TextView tvCount;
 
   private ActivityActivityLogBinding(@NonNull LinearLayout rootView,
-      @NonNull MaterialButton btnExportPdf, @NonNull Chip chipActionAll,
-      @NonNull Chip chipActionCreate, @NonNull Chip chipActionDelete,
+      @NonNull MaterialButton btnExportPdf, @NonNull ImageButton btnSearch,
+      @NonNull Chip chipActionAll, @NonNull Chip chipActionCreate, @NonNull Chip chipActionDelete,
       @NonNull Chip chipActionModified, @NonNull Chip chipActionViewed,
       @NonNull ChipGroup chipGroupAction, @NonNull ChipGroup chipGroupModule,
       @NonNull Chip chipModuleAll, @NonNull Chip chipModuleAnnouncement,
@@ -106,6 +110,7 @@ public final class ActivityActivityLogBinding implements ViewBinding {
       @NonNull MaterialToolbar toolbar, @NonNull TextView tvCount) {
     this.rootView = rootView;
     this.btnExportPdf = btnExportPdf;
+    this.btnSearch = btnSearch;
     this.chipActionAll = chipActionAll;
     this.chipActionCreate = chipActionCreate;
     this.chipActionDelete = chipActionDelete;
@@ -159,6 +164,12 @@ public final class ActivityActivityLogBinding implements ViewBinding {
       id = R.id.btn_export_pdf;
       MaterialButton btnExportPdf = ViewBindings.findChildViewById(rootView, id);
       if (btnExportPdf == null) {
+        break missingId;
+      }
+
+      id = R.id.btn_search;
+      ImageButton btnSearch = ViewBindings.findChildViewById(rootView, id);
+      if (btnSearch == null) {
         break missingId;
       }
 
@@ -288,9 +299,9 @@ public final class ActivityActivityLogBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ActivityActivityLogBinding((LinearLayout) rootView, btnExportPdf, chipActionAll,
-          chipActionCreate, chipActionDelete, chipActionModified, chipActionViewed, chipGroupAction,
-          chipGroupModule, chipModuleAll, chipModuleAnnouncement, chipModuleCampus,
+      return new ActivityActivityLogBinding((LinearLayout) rootView, btnExportPdf, btnSearch,
+          chipActionAll, chipActionCreate, chipActionDelete, chipActionModified, chipActionViewed,
+          chipGroupAction, chipGroupModule, chipModuleAll, chipModuleAnnouncement, chipModuleCampus,
           chipModuleCollege, chipModuleCourse, chipModuleEvent, chipModuleReports, chipModuleStaff,
           chipModuleStudent, etSearch, recyclerLogs, tilSearch, toolbar, tvCount);
     }

@@ -10,6 +10,7 @@ import com.example.luminae.databinding.FragmentStaffDashboardBinding;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.*;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
@@ -25,6 +26,14 @@ public class StaffDashboardFragment extends Fragment {
     private Date customDate = null;
     private String staffUid = "";
     private String staffFirstName = "";
+
+    // Ensures dashboard chart labels show whole numbers only (no ".00")
+    private final ValueFormatter wholeNumberValueFormatter = new ValueFormatter() {
+        @Override
+        public String getFormattedValue(float value) {
+            return String.valueOf(Math.round(value));
+        }
+    };
 
     @Nullable @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle saved) {
@@ -270,11 +279,13 @@ public class StaffDashboardFragment extends Fragment {
         aDs.setColor(0xFFFFD700); aDs.setCircleColor(0xFFFFD700);
         aDs.setValueTextColor(Color.WHITE); aDs.setLineWidth(2f);
         aDs.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+        aDs.setValueFormatter(wholeNumberValueFormatter);
 
         LineDataSet eDs = new LineDataSet(eEntries, "Events");
         eDs.setColor(0xFFEF9A9A); eDs.setCircleColor(0xFFEF9A9A);
         eDs.setValueTextColor(Color.WHITE); eDs.setLineWidth(2f);
         eDs.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+        eDs.setValueFormatter(wholeNumberValueFormatter);
 
         b.chartMyPosts.setData(new LineData(aDs, eDs));
         b.chartMyPosts.setBackgroundColor(Color.TRANSPARENT);
@@ -284,6 +295,8 @@ public class StaffDashboardFragment extends Fragment {
         b.chartMyPosts.getAxisRight().setEnabled(false);
         b.chartMyPosts.getAxisLeft().setTextColor(Color.WHITE);
         b.chartMyPosts.getAxisLeft().setGridColor(0x22FFFFFF);
+        b.chartMyPosts.getAxisLeft().setGranularity(1f);
+        b.chartMyPosts.getAxisLeft().setValueFormatter(wholeNumberValueFormatter);
         XAxis x = b.chartMyPosts.getXAxis();
         x.setPosition(XAxis.XAxisPosition.BOTTOM);
         x.setTextColor(Color.WHITE);

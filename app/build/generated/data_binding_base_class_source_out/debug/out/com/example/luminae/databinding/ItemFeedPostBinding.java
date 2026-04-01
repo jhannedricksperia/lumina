@@ -11,7 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
+import androidx.viewpager2.widget.ViewPager2;
 import com.example.luminae.R;
+import com.google.android.material.imageview.ShapeableImageView;
 import java.lang.NullPointerException;
 import java.lang.Override;
 import java.lang.String;
@@ -21,13 +23,13 @@ public final class ItemFeedPostBinding implements ViewBinding {
   private final LinearLayout rootView;
 
   @NonNull
-  public final TextView btnComment;
+  public final LinearLayout btnComment;
 
   @NonNull
   public final TextView btnGoing;
 
   @NonNull
-  public final TextView btnLike;
+  public final LinearLayout btnLike;
 
   @NonNull
   public final ImageView btnMore;
@@ -36,10 +38,16 @@ public final class ItemFeedPostBinding implements ViewBinding {
   public final LinearLayout cardRoot;
 
   @NonNull
-  public final ImageView ivPostImage;
+  public final LinearLayout dotsPostImages;
 
   @NonNull
-  public final ImageView ivPosterPhoto;
+  public final ImageView ivComment;
+
+  @NonNull
+  public final ImageView ivLike;
+
+  @NonNull
+  public final ShapeableImageView ivPosterPhoto;
 
   @NonNull
   public final LinearLayout layoutEventInfo;
@@ -48,7 +56,16 @@ public final class ItemFeedPostBinding implements ViewBinding {
   public final LinearLayout layoutGoingRow;
 
   @NonNull
+  public final LinearLayout layoutPostMedia;
+
+  @NonNull
+  public final LinearLayout rowFeedGoing;
+
+  @NonNull
   public final TextView tvAudience;
+
+  @NonNull
+  public final TextView tvCommentCount;
 
   @NonNull
   public final TextView tvDescription;
@@ -57,10 +74,16 @@ public final class ItemFeedPostBinding implements ViewBinding {
   public final TextView tvEventDate;
 
   @NonNull
+  public final TextView tvFeedGoingCount;
+
+  @NonNull
   public final TextView tvGoingCount;
 
   @NonNull
   public final TextView tvGoingInfo;
+
+  @NonNull
+  public final TextView tvLikeCount;
 
   @NonNull
   public final TextView tvLocation;
@@ -83,31 +106,45 @@ public final class ItemFeedPostBinding implements ViewBinding {
   @NonNull
   public final TextView tvTypeBadge;
 
-  private ItemFeedPostBinding(@NonNull LinearLayout rootView, @NonNull TextView btnComment,
-      @NonNull TextView btnGoing, @NonNull TextView btnLike, @NonNull ImageView btnMore,
-      @NonNull LinearLayout cardRoot, @NonNull ImageView ivPostImage,
-      @NonNull ImageView ivPosterPhoto, @NonNull LinearLayout layoutEventInfo,
-      @NonNull LinearLayout layoutGoingRow, @NonNull TextView tvAudience,
-      @NonNull TextView tvDescription, @NonNull TextView tvEventDate,
-      @NonNull TextView tvGoingCount, @NonNull TextView tvGoingInfo, @NonNull TextView tvLocation,
-      @NonNull TextView tvMyPostBadge, @NonNull TextView tvPosterDesignation,
-      @NonNull TextView tvPosterName, @NonNull TextView tvTime, @NonNull TextView tvTitle,
-      @NonNull TextView tvTypeBadge) {
+  @NonNull
+  public final ViewPager2 vpPostImages;
+
+  private ItemFeedPostBinding(@NonNull LinearLayout rootView, @NonNull LinearLayout btnComment,
+      @NonNull TextView btnGoing, @NonNull LinearLayout btnLike, @NonNull ImageView btnMore,
+      @NonNull LinearLayout cardRoot, @NonNull LinearLayout dotsPostImages,
+      @NonNull ImageView ivComment, @NonNull ImageView ivLike,
+      @NonNull ShapeableImageView ivPosterPhoto, @NonNull LinearLayout layoutEventInfo,
+      @NonNull LinearLayout layoutGoingRow, @NonNull LinearLayout layoutPostMedia,
+      @NonNull LinearLayout rowFeedGoing, @NonNull TextView tvAudience,
+      @NonNull TextView tvCommentCount, @NonNull TextView tvDescription,
+      @NonNull TextView tvEventDate, @NonNull TextView tvFeedGoingCount,
+      @NonNull TextView tvGoingCount, @NonNull TextView tvGoingInfo, @NonNull TextView tvLikeCount,
+      @NonNull TextView tvLocation, @NonNull TextView tvMyPostBadge,
+      @NonNull TextView tvPosterDesignation, @NonNull TextView tvPosterName,
+      @NonNull TextView tvTime, @NonNull TextView tvTitle, @NonNull TextView tvTypeBadge,
+      @NonNull ViewPager2 vpPostImages) {
     this.rootView = rootView;
     this.btnComment = btnComment;
     this.btnGoing = btnGoing;
     this.btnLike = btnLike;
     this.btnMore = btnMore;
     this.cardRoot = cardRoot;
-    this.ivPostImage = ivPostImage;
+    this.dotsPostImages = dotsPostImages;
+    this.ivComment = ivComment;
+    this.ivLike = ivLike;
     this.ivPosterPhoto = ivPosterPhoto;
     this.layoutEventInfo = layoutEventInfo;
     this.layoutGoingRow = layoutGoingRow;
+    this.layoutPostMedia = layoutPostMedia;
+    this.rowFeedGoing = rowFeedGoing;
     this.tvAudience = tvAudience;
+    this.tvCommentCount = tvCommentCount;
     this.tvDescription = tvDescription;
     this.tvEventDate = tvEventDate;
+    this.tvFeedGoingCount = tvFeedGoingCount;
     this.tvGoingCount = tvGoingCount;
     this.tvGoingInfo = tvGoingInfo;
+    this.tvLikeCount = tvLikeCount;
     this.tvLocation = tvLocation;
     this.tvMyPostBadge = tvMyPostBadge;
     this.tvPosterDesignation = tvPosterDesignation;
@@ -115,6 +152,7 @@ public final class ItemFeedPostBinding implements ViewBinding {
     this.tvTime = tvTime;
     this.tvTitle = tvTitle;
     this.tvTypeBadge = tvTypeBadge;
+    this.vpPostImages = vpPostImages;
   }
 
   @Override
@@ -145,7 +183,7 @@ public final class ItemFeedPostBinding implements ViewBinding {
     int id;
     missingId: {
       id = R.id.btn_comment;
-      TextView btnComment = ViewBindings.findChildViewById(rootView, id);
+      LinearLayout btnComment = ViewBindings.findChildViewById(rootView, id);
       if (btnComment == null) {
         break missingId;
       }
@@ -157,7 +195,7 @@ public final class ItemFeedPostBinding implements ViewBinding {
       }
 
       id = R.id.btn_like;
-      TextView btnLike = ViewBindings.findChildViewById(rootView, id);
+      LinearLayout btnLike = ViewBindings.findChildViewById(rootView, id);
       if (btnLike == null) {
         break missingId;
       }
@@ -170,14 +208,26 @@ public final class ItemFeedPostBinding implements ViewBinding {
 
       LinearLayout cardRoot = (LinearLayout) rootView;
 
-      id = R.id.iv_post_image;
-      ImageView ivPostImage = ViewBindings.findChildViewById(rootView, id);
-      if (ivPostImage == null) {
+      id = R.id.dots_post_images;
+      LinearLayout dotsPostImages = ViewBindings.findChildViewById(rootView, id);
+      if (dotsPostImages == null) {
+        break missingId;
+      }
+
+      id = R.id.iv_comment;
+      ImageView ivComment = ViewBindings.findChildViewById(rootView, id);
+      if (ivComment == null) {
+        break missingId;
+      }
+
+      id = R.id.iv_like;
+      ImageView ivLike = ViewBindings.findChildViewById(rootView, id);
+      if (ivLike == null) {
         break missingId;
       }
 
       id = R.id.iv_poster_photo;
-      ImageView ivPosterPhoto = ViewBindings.findChildViewById(rootView, id);
+      ShapeableImageView ivPosterPhoto = ViewBindings.findChildViewById(rootView, id);
       if (ivPosterPhoto == null) {
         break missingId;
       }
@@ -194,9 +244,27 @@ public final class ItemFeedPostBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.layout_post_media;
+      LinearLayout layoutPostMedia = ViewBindings.findChildViewById(rootView, id);
+      if (layoutPostMedia == null) {
+        break missingId;
+      }
+
+      id = R.id.row_feed_going;
+      LinearLayout rowFeedGoing = ViewBindings.findChildViewById(rootView, id);
+      if (rowFeedGoing == null) {
+        break missingId;
+      }
+
       id = R.id.tv_audience;
       TextView tvAudience = ViewBindings.findChildViewById(rootView, id);
       if (tvAudience == null) {
+        break missingId;
+      }
+
+      id = R.id.tv_comment_count;
+      TextView tvCommentCount = ViewBindings.findChildViewById(rootView, id);
+      if (tvCommentCount == null) {
         break missingId;
       }
 
@@ -212,6 +280,12 @@ public final class ItemFeedPostBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.tv_feed_going_count;
+      TextView tvFeedGoingCount = ViewBindings.findChildViewById(rootView, id);
+      if (tvFeedGoingCount == null) {
+        break missingId;
+      }
+
       id = R.id.tv_going_count;
       TextView tvGoingCount = ViewBindings.findChildViewById(rootView, id);
       if (tvGoingCount == null) {
@@ -221,6 +295,12 @@ public final class ItemFeedPostBinding implements ViewBinding {
       id = R.id.tv_going_info;
       TextView tvGoingInfo = ViewBindings.findChildViewById(rootView, id);
       if (tvGoingInfo == null) {
+        break missingId;
+      }
+
+      id = R.id.tv_like_count;
+      TextView tvLikeCount = ViewBindings.findChildViewById(rootView, id);
+      if (tvLikeCount == null) {
         break missingId;
       }
 
@@ -266,10 +346,18 @@ public final class ItemFeedPostBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.vp_post_images;
+      ViewPager2 vpPostImages = ViewBindings.findChildViewById(rootView, id);
+      if (vpPostImages == null) {
+        break missingId;
+      }
+
       return new ItemFeedPostBinding((LinearLayout) rootView, btnComment, btnGoing, btnLike,
-          btnMore, cardRoot, ivPostImage, ivPosterPhoto, layoutEventInfo, layoutGoingRow,
-          tvAudience, tvDescription, tvEventDate, tvGoingCount, tvGoingInfo, tvLocation,
-          tvMyPostBadge, tvPosterDesignation, tvPosterName, tvTime, tvTitle, tvTypeBadge);
+          btnMore, cardRoot, dotsPostImages, ivComment, ivLike, ivPosterPhoto, layoutEventInfo,
+          layoutGoingRow, layoutPostMedia, rowFeedGoing, tvAudience, tvCommentCount, tvDescription,
+          tvEventDate, tvFeedGoingCount, tvGoingCount, tvGoingInfo, tvLikeCount, tvLocation,
+          tvMyPostBadge, tvPosterDesignation, tvPosterName, tvTime, tvTitle, tvTypeBadge,
+          vpPostImages);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

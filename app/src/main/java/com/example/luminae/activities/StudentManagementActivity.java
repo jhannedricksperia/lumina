@@ -1,5 +1,6 @@
 package com.example.luminae.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
@@ -9,6 +10,8 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -59,6 +62,18 @@ public class StudentManagementActivity extends AppCompatActivity {
             @Override public void afterTextChanged(Editable s) {}
             @Override public void onTextChanged(CharSequence s, int a, int bc, int c) { applyFilter(); }
         });
+        b.btnSearch.setOnClickListener(v -> {
+            hideKeyboard();
+            applyFilter();
+        });
+        b.etSearch.setOnEditorActionListener((tv, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                hideKeyboard();
+                applyFilter();
+                return true;
+            }
+            return false;
+        });
 
         b.chipGroupStatus.setOnCheckedStateChangeListener((g, ids) -> {
             if      (b.chipActive.isChecked())  filterStatus = "Active";
@@ -72,6 +87,11 @@ public class StudentManagementActivity extends AppCompatActivity {
                 startActivity(new Intent(this, StudentFormActivity.class)));
 
         loadStudents();
+    }
+
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) imm.hideSoftInputFromWindow(b.etSearch.getWindowToken(), 0);
     }
 
     // ── Data loading ──────────────────────────────────────────────────────────

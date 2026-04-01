@@ -31,6 +31,51 @@
                 android:textColor="@color/white"
                 android:textSize="20sp" />
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    app:boxCornerRadiusTopStart="24dp"
+                    app:boxCornerRadiusTopEnd="24dp"
+                    app:boxCornerRadiusBottomStart="24dp"
+                    app:boxCornerRadiusBottomEnd="24dp"
+                    app:boxStrokeColor="@color/yellowDark"
+                    app:hintTextColor="@color/white"
+                    app:endIconMode="none">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_search"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:hint="Search posts…"
+                        android:textColor="@color/white"
+                        android:textColorHint="#88FFFFFF"
+                        android:fontFamily="@font/poppins"
+                        android:textSize="13sp"
+                        android:imeOptions="actionSearch"
+                        android:inputType="text" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <ImageButton
+                    android:id="@+id/btn_search"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="8dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Search"
+                    android:padding="10dp"
+                    android:src="@drawable/search"
+                    app:tint="@color/yellow" />
+            </LinearLayout>
+
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -109,7 +154,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="20dp"
-        android:src="@drawable/ic_add"
+        android:src="@drawable/add"
         app:backgroundTint="@color/yellowDark"
         app:tint="@color/maroonDark" />
 

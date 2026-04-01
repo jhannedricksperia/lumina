@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.luminae.app-mergeDebugResources-37:/values-kn/values-kn.xml",
+            "outputFile": "com.example.luminae.app-mergeDebugResources-39:/values-kn/values-kn.xml",
             "map": [
                 {
                     "source": "C:\\Users\\jhann\\.gradle\\caches\\8.13\\transforms\\7876fca21c50c68d63bdc9346f1acc9b\\transformed\\material-1.11.0\\res\\values-kn\\values-kn.xml",

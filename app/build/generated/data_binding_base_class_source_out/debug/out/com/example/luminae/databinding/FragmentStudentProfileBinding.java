@@ -22,13 +22,19 @@ public final class FragmentStudentProfileBinding implements ViewBinding {
   private final LinearLayout rootView;
 
   @NonNull
-  public final TextView btnChangePassword;
+  public final LinearLayout btnChangePassword;
+
+  @NonNull
+  public final LinearLayout btnConfigurations;
 
   @NonNull
   public final TextView btnEditPhoto;
 
   @NonNull
-  public final TextView btnLogout;
+  public final LinearLayout btnLogout;
+
+  @NonNull
+  public final LinearLayout btnViewActivityLog;
 
   @NonNull
   public final ShapeableImageView ivProfilePhoto;
@@ -58,15 +64,18 @@ public final class FragmentStudentProfileBinding implements ViewBinding {
   public final TextView tvRole;
 
   private FragmentStudentProfileBinding(@NonNull LinearLayout rootView,
-      @NonNull TextView btnChangePassword, @NonNull TextView btnEditPhoto,
-      @NonNull TextView btnLogout, @NonNull ShapeableImageView ivProfilePhoto,
+      @NonNull LinearLayout btnChangePassword, @NonNull LinearLayout btnConfigurations,
+      @NonNull TextView btnEditPhoto, @NonNull LinearLayout btnLogout,
+      @NonNull LinearLayout btnViewActivityLog, @NonNull ShapeableImageView ivProfilePhoto,
       @NonNull ProgressBar progressPhoto, @NonNull TextView tvCampus, @NonNull TextView tvCollege,
       @NonNull TextView tvCourse, @NonNull TextView tvEmail, @NonNull TextView tvFullName,
       @NonNull TextView tvInitials, @NonNull TextView tvRole) {
     this.rootView = rootView;
     this.btnChangePassword = btnChangePassword;
+    this.btnConfigurations = btnConfigurations;
     this.btnEditPhoto = btnEditPhoto;
     this.btnLogout = btnLogout;
+    this.btnViewActivityLog = btnViewActivityLog;
     this.ivProfilePhoto = ivProfilePhoto;
     this.progressPhoto = progressPhoto;
     this.tvCampus = tvCampus;
@@ -106,8 +115,14 @@ public final class FragmentStudentProfileBinding implements ViewBinding {
     int id;
     missingId: {
       id = R.id.btn_change_password;
-      TextView btnChangePassword = ViewBindings.findChildViewById(rootView, id);
+      LinearLayout btnChangePassword = ViewBindings.findChildViewById(rootView, id);
       if (btnChangePassword == null) {
+        break missingId;
+      }
+
+      id = R.id.btn_configurations;
+      LinearLayout btnConfigurations = ViewBindings.findChildViewById(rootView, id);
+      if (btnConfigurations == null) {
         break missingId;
       }
 
@@ -118,8 +133,14 @@ public final class FragmentStudentProfileBinding implements ViewBinding {
       }
 
       id = R.id.btn_logout;
-      TextView btnLogout = ViewBindings.findChildViewById(rootView, id);
+      LinearLayout btnLogout = ViewBindings.findChildViewById(rootView, id);
       if (btnLogout == null) {
+        break missingId;
+      }
+
+      id = R.id.btn_view_activity_log;
+      LinearLayout btnViewActivityLog = ViewBindings.findChildViewById(rootView, id);
+      if (btnViewActivityLog == null) {
         break missingId;
       }
 
@@ -178,8 +199,8 @@ public final class FragmentStudentProfileBinding implements ViewBinding {
       }
 
       return new FragmentStudentProfileBinding((LinearLayout) rootView, btnChangePassword,
-          btnEditPhoto, btnLogout, ivProfilePhoto, progressPhoto, tvCampus, tvCollege, tvCourse,
-          tvEmail, tvFullName, tvInitials, tvRole);
+          btnConfigurations, btnEditPhoto, btnLogout, btnViewActivityLog, ivProfilePhoto,
+          progressPhoto, tvCampus, tvCollege, tvCourse, tvEmail, tvFullName, tvInitials, tvRole);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

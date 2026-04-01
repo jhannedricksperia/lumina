@@ -2,18 +2,29 @@ package com.example.luminae.staff.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.*;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import androidx.annotation.*;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.*;
+import androidx.viewpager2.widget.ViewPager2;
 import com.example.luminae.R;
 import com.example.luminae.activities.AnnouncementFormActivity;
 import com.example.luminae.activities.EventFormActivity;
+import com.example.luminae.activities.EventParticipantsActivity;
 import com.example.luminae.activities.PostDetailActivity;
+import com.example.luminae.utils.EventDisplayUtils;
 import com.example.luminae.activities.UserProfileActivity;
 import com.example.luminae.admin.fragments.ActivityLogger;
+import com.example.luminae.utils.FullscreenImageGallery;
+import com.example.luminae.utils.LikeIconHelper;
 import com.example.luminae.utils.NotificationHelper;
+import com.example.luminae.utils.PostImageCarouselBinder;
+import com.example.luminae.utils.PostImageList;
 import com.example.luminae.databinding.FragmentStaffPostBinding;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.Timestamp;
@@ -46,6 +57,7 @@ public class StaffPostFragment extends Fragment {
 
         loadStaffInfo();
         setupFilters();
+        setupSearch();
         loadFeed();
 
         b.fabPost.setOnClickListener(v -> {
@@ -93,6 +105,33 @@ public class StaffPostFragment extends Fragment {
         b.chipAsc.setOnClickListener(v          -> { currentOrder = "asc";          applyFilter(); });
     }
 
+    private void setupSearch() {
+        b.etSearch.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int a, int bc, int c) {}
+            @Override public void afterTextChanged(Editable s) {}
+            @Override public void onTextChanged(CharSequence s, int a, int bc, int c) { applyFilter(); }
+        });
+        b.btnSearch.setOnClickListener(v -> {
+            hideKeyboard();
+            applyFilter();
+        });
+        b.etSearch.setOnEditorActionListener((tv, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                hideKeyboard();
+                applyFilter();
+                return true;
+            }
+            return false;
+        });
+    }
+
+    private void hideKeyboard() {
+        if (getContext() == null || b == null) return;
+        InputMethodManager imm = (InputMethodManager) getContext()
+                .getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
+        if (imm != null) imm.hideSoftInputFromWindow(b.etSearch.getWindowToken(), 0);
+    }
+
     // ─────────────────────────────────────────────────────────────────────────
     // Feed loading
     // ─────────────────────────────────────────────────────────────────────────
@@ -117,16 +156,23 @@ public class StaffPostFragment extends Fragment {
                         if ("Event".equals(allItems.get(j).type)) allItems.remove(j);
                     for (DocumentSnapshot doc : snap.getDocuments()) {
                         FeedItem f = docToItem(doc, "Event");
-                        f.location         = doc.getString("location")  != null ? doc.getString("location")  : "";
-                        f.eventDate        = doc.getString("eventDate") != null ? doc.getString("eventDate") : "";
+                        f.location         = EventDisplayUtils.formatLocation(doc);
+                        f.eventDate        = EventDisplayUtils.formatEventDate(doc);
                         Long max = doc.getLong("maxParticipants");
-                        Long cnt = doc.getLong("participantCount");
                         f.maxParticipants  = max != null ? max : 0;
-                        f.participantCount = cnt != null ? cnt : 0;
+                        f.participantCount = EventDisplayUtils.countGoing(doc);
                         allItems.add(f);
                     }
                     if (++done[0] >= 2) { b.progressFeed.setVisibility(View.GONE); applyFilter(); }
                 });
+    }
+
+    private static String coalesce(String... parts) {
+        if (parts == null) return "";
+        for (String p : parts) {
+            if (p != null && !p.trim().isEmpty()) return p.trim();
+        }
+        return "";
     }
 
     private FeedItem docToItem(DocumentSnapshot doc, String type) {
@@ -135,11 +181,13 @@ public class StaffPostFragment extends Fragment {
         f.type         = type;
         f.title        = doc.getString("title")        != null ? doc.getString("title")        : "";
         f.description  = doc.getString("description")  != null ? doc.getString("description")  : "";
-        f.postedBy     = doc.getString("postedBy")     != null ? doc.getString("postedBy")     : "";
-        f.postedByName = doc.getString("postedByName") != null ? doc.getString("postedByName") : "";
+        f.postedBy     = coalesce(doc.getString("postedBy"), doc.getString("createdById"));
+        f.postedByName = coalesce(doc.getString("postedByName"), doc.getString("createdByName"),
+                doc.getString("createdBy"));
         f.audienceLabel= doc.getString("audienceLabel")!= null ? doc.getString("audienceLabel"): "Everyone";
         f.postedByPhoto = doc.getString("postedByPhoto");
-        f.imageBase64  = doc.getString("imageBase64");
+        f.imagesBase64 = new ArrayList<>(PostImageList.fromDocument(doc));
+        f.imageBase64  = f.imagesBase64.isEmpty() ? null : f.imagesBase64.get(0);
         Timestamp ts   = doc.getTimestamp("createdAt");
         f.createdAt    = ts != null ? ts.toDate() : new Date(0);
         Long l = doc.getLong("likeCount");
@@ -152,8 +200,15 @@ public class StaffPostFragment extends Fragment {
 
     private void applyFilter() {
         filtered.clear();
-        for (FeedItem item : allItems)
-            if (currentType.equals("All") || currentType.equals(item.type)) filtered.add(item);
+        String q = b.etSearch.getText() != null
+                ? b.etSearch.getText().toString().trim().toLowerCase() : "";
+        for (FeedItem item : allItems) {
+            if (!(currentType.equals("All") || currentType.equals(item.type))) continue;
+            boolean matchSearch = q.isEmpty()
+                    || item.title.toLowerCase().contains(q)
+                    || item.description.toLowerCase().contains(q);
+            if (matchSearch) filtered.add(item);
+        }
         filtered.sort((a, c) -> {
             if (a.createdAt == null || c.createdAt == null) return 0;
             return "desc".equals(currentOrder)
@@ -177,6 +232,7 @@ public class StaffPostFragment extends Fragment {
     static class FeedItem {
         String  docId, type, title, description, postedBy, postedByName, postedByPhoto;
         String  location, eventDate, audienceLabel, imageBase64;
+        ArrayList<String> imagesBase64 = new ArrayList<>();
         long    maxParticipants, participantCount;
         Date    createdAt;
         int     likeCount, commentCount;
@@ -192,28 +248,43 @@ public class StaffPostFragment extends Fragment {
         class VH extends RecyclerView.ViewHolder {
             TextView  tvTypeBadge, tvPosterName, tvTime, tvTitle, tvDescription;
             TextView  tvLikeCount, tvCommentCount, tvGoingInfo, tvMyPostBadge, tvAudience;
-            TextView  btnLike;   // R.id.btn_like is a TextView in the layout
-            ImageView ivPosterPhoto, ivPostImage, btnMore;
-            View      cardRoot, btnComment;
+            TextView  tvLocation, tvEventDate, tvFeedGoingCount;
+            ImageView ivLike, ivComment;
+            ImageView ivPosterPhoto, btnMore;
+            View      layoutPostMedia;
+            ViewPager2 vpPostImages;
+            LinearLayout dotsPostImages;
+            View      cardRoot, btnLike, btnComment, layoutEventInfo, rowFeedGoing;
+            String    boundCarouselDocId;
+            String    boundCarouselSig;
 
             VH(View v) {
                 super(v);
                 cardRoot       = v.findViewById(R.id.card_root);
                 tvTypeBadge    = v.findViewById(R.id.tv_type_badge);
                 ivPosterPhoto  = v.findViewById(R.id.iv_poster_photo);
-                ivPostImage    = v.findViewById(R.id.iv_post_image);
+                layoutPostMedia = v.findViewById(R.id.layout_post_media);
+                vpPostImages   = v.findViewById(R.id.vp_post_images);
+                dotsPostImages = v.findViewById(R.id.dots_post_images);
                 btnMore        = v.findViewById(R.id.btn_more);
                 tvPosterName   = v.findViewById(R.id.tv_poster_name);
                 tvTime         = v.findViewById(R.id.tv_time);
                 tvTitle        = v.findViewById(R.id.tv_title);
                 tvDescription  = v.findViewById(R.id.tv_description);
-                tvLikeCount    = v.findViewById(R.id.btn_like);   // same view as btnLike
+                tvLikeCount    = v.findViewById(R.id.tv_like_count);
+                ivLike         = v.findViewById(R.id.iv_like);
+                ivComment      = v.findViewById(R.id.iv_comment);
                 btnLike        = v.findViewById(R.id.btn_like);
-                tvCommentCount = v.findViewById(R.id.btn_comment);
+                tvCommentCount = v.findViewById(R.id.tv_comment_count);
                 btnComment     = v.findViewById(R.id.btn_comment);
                 tvGoingInfo    = v.findViewById(R.id.tv_going_info);
                 tvMyPostBadge  = v.findViewById(R.id.tv_my_post_badge);
                 tvAudience     = v.findViewById(R.id.tv_audience);
+                layoutEventInfo = v.findViewById(R.id.layout_event_info);
+                tvLocation     = v.findViewById(R.id.tv_location);
+                tvEventDate    = v.findViewById(R.id.tv_event_date);
+                rowFeedGoing   = v.findViewById(R.id.row_feed_going);
+                tvFeedGoingCount = v.findViewById(R.id.tv_feed_going_count);
             }
         }
 
@@ -234,20 +305,8 @@ public class StaffPostFragment extends Fragment {
             h.tvTime.setText(item.createdAt != null ? sdf.format(item.createdAt) : "");
             h.tvTitle.setText(item.title);
             h.tvDescription.setText(item.description);
-            if (h.ivPostImage != null) {
-                if (item.imageBase64 != null && !item.imageBase64.isEmpty()) {
-                    try {
-                        byte[] bytes = android.util.Base64.decode(item.imageBase64, android.util.Base64.DEFAULT);
-                        android.graphics.Bitmap bmp = android.graphics.BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                        if (bmp != null) {
-                            h.ivPostImage.setImageBitmap(bmp);
-                            h.ivPostImage.setVisibility(View.VISIBLE);
-                        } else h.ivPostImage.setVisibility(View.GONE);
-                    } catch (Exception ignored) { h.ivPostImage.setVisibility(View.GONE); }
-                } else {
-                    h.ivPostImage.setVisibility(View.GONE);
-                }
-            }
+            bindPostImages(item, h);
+            if (h.ivComment != null) LikeIconHelper.setCommentTint(h.ivComment);
 
             // ── Like: check Firestore on bind so likedByMe is always accurate ──
             String uid  = auth.getUid();
@@ -302,18 +361,29 @@ public class StaffPostFragment extends Fragment {
             }
 
             // Comment count
-            if (h.tvCommentCount != null) h.tvCommentCount.setText("Comments: " + item.commentCount);
+            if (h.tvCommentCount != null) h.tvCommentCount.setText(String.valueOf(item.commentCount));
 
-            // Going info (events only)
+            // Event details + going row (icons in layout_event_info)
             if ("Event".equals(item.type)) {
-                if (h.tvGoingInfo != null) {
-                    h.tvGoingInfo.setVisibility(View.VISIBLE);
-                    String going = item.maxParticipants > 0
-                            ? item.participantCount + " / " + item.maxParticipants + " going"
-                            : item.participantCount + " going";
-                    h.tvGoingInfo.setText("Going: " + going);
+                if (h.layoutEventInfo != null) h.layoutEventInfo.setVisibility(View.VISIBLE);
+                if (h.tvLocation != null)
+                    h.tvLocation.setText(item.location.isEmpty() ? "—" : item.location);
+                if (h.tvEventDate != null) h.tvEventDate.setText(item.eventDate);
+                String going = item.maxParticipants > 0
+                        ? item.participantCount + " / " + item.maxParticipants + " going"
+                        : item.participantCount + " going";
+                if (h.tvFeedGoingCount != null) h.tvFeedGoingCount.setText(going);
+                if (h.rowFeedGoing != null) {
+                    h.rowFeedGoing.setOnClickListener(v -> {
+                        Intent gi = new Intent(getActivity(), EventParticipantsActivity.class);
+                        gi.putExtra("eventId", item.docId);
+                        gi.putExtra("eventTitle", item.title);
+                        startActivity(gi);
+                    });
                 }
+                if (h.tvGoingInfo != null) h.tvGoingInfo.setVisibility(View.GONE);
             } else {
+                if (h.layoutEventInfo != null) h.layoutEventInfo.setVisibility(View.GONE);
                 if (h.tvGoingInfo != null) h.tvGoingInfo.setVisibility(View.GONE);
             }
 
@@ -419,10 +489,30 @@ public class StaffPostFragment extends Fragment {
         }
 
         private void updateLikeUI(VH h, FeedItem item) {
-            if (h.tvLikeCount == null) return;
-            h.tvLikeCount.setText("♥ " + item.likeCount);
-            int color = item.likedByMe ? 0xFFEF5350 : 0x88FFFFFF;
-            h.tvLikeCount.setTextColor(color);
+            if (h.tvLikeCount != null) h.tvLikeCount.setText(String.valueOf(item.likeCount));
+            LikeIconHelper.setHeartTint(h.ivLike, item.likedByMe);
+        }
+
+        private void bindPostImages(FeedItem item, VH h) {
+            if (h.layoutPostMedia == null || h.vpPostImages == null) return;
+            List<String> imgs = item.imagesBase64;
+            if (imgs == null || imgs.isEmpty()) {
+                h.layoutPostMedia.setVisibility(View.GONE);
+                h.boundCarouselDocId = null;
+                h.boundCarouselSig = null;
+                return;
+            }
+            h.layoutPostMedia.setVisibility(View.VISIBLE);
+            String sig = item.docId + ":" + PostImageList.signature(imgs);
+            if (java.util.Objects.equals(item.docId, h.boundCarouselDocId)
+                    && java.util.Objects.equals(sig, h.boundCarouselSig)) {
+                return;
+            }
+            h.boundCarouselDocId = item.docId;
+            h.boundCarouselSig = sig;
+            android.content.Context ctx = requireContext();
+            PostImageCarouselBinder.bind(h.vpPostImages, h.dotsPostImages, imgs, ctx,
+                    pageIdx -> FullscreenImageGallery.show(ctx, imgs, pageIdx));
         }
 
         @Override public int getItemCount() { return filtered.size(); }

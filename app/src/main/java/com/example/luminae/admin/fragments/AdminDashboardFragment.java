@@ -13,6 +13,7 @@ import com.example.luminae.databinding.FragmentAdminDashboardBinding;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.data.*;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.*;
 import java.text.SimpleDateFormat;
@@ -27,6 +28,14 @@ public class AdminDashboardFragment extends Fragment {
 
     // Keep references to all active listeners so we can remove them on destroy
     private final List<ListenerRegistration> listeners = new ArrayList<>();
+
+    // Ensures dashboard chart labels show whole numbers only (no ".00")
+    private final ValueFormatter wholeNumberValueFormatter = new ValueFormatter() {
+        @Override
+        public String getFormattedValue(float value) {
+            return String.valueOf(Math.round(value));
+        }
+    };
 
     @Nullable @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle saved) {
@@ -194,6 +203,7 @@ public class AdminDashboardFragment extends Fragment {
             ds.setColor(0xFFB71C1C);
             ds.setValueTextColor(Color.WHITE);
             ds.setValueTextSize(10f);
+            ds.setValueFormatter(wholeNumberValueFormatter);
 
             BarData data = new BarData(ds);
             data.setBarWidth(0.6f);
@@ -211,6 +221,8 @@ public class AdminDashboardFragment extends Fragment {
         b.chartUsersCampus.getAxisRight().setEnabled(false);
         b.chartUsersCampus.getAxisLeft().setTextColor(Color.WHITE);
         b.chartUsersCampus.getAxisLeft().setGridColor(0x22FFFFFF);
+        b.chartUsersCampus.getAxisLeft().setGranularity(1f);
+        b.chartUsersCampus.getAxisLeft().setValueFormatter(wholeNumberValueFormatter);
         XAxis x = b.chartUsersCampus.getXAxis();
         x.setPosition(XAxis.XAxisPosition.BOTTOM);
         x.setTextColor(Color.WHITE);
@@ -284,6 +296,7 @@ public class AdminDashboardFragment extends Fragment {
         aDs.setValueTextColor(Color.WHITE);
         aDs.setLineWidth(2f);
         aDs.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+        aDs.setValueFormatter(wholeNumberValueFormatter);
 
         LineDataSet eDs = new LineDataSet(eEntries, "Events");
         eDs.setColor(0xFFEF9A9A);
@@ -291,6 +304,7 @@ public class AdminDashboardFragment extends Fragment {
         eDs.setValueTextColor(Color.WHITE);
         eDs.setLineWidth(2f);
         eDs.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+        eDs.setValueFormatter(wholeNumberValueFormatter);
 
         b.chartPostsTimeline.setData(new LineData(aDs, eDs));
         b.chartPostsTimeline.setBackgroundColor(Color.TRANSPARENT);
@@ -300,6 +314,8 @@ public class AdminDashboardFragment extends Fragment {
         b.chartPostsTimeline.getAxisRight().setEnabled(false);
         b.chartPostsTimeline.getAxisLeft().setTextColor(Color.WHITE);
         b.chartPostsTimeline.getAxisLeft().setGridColor(0x22FFFFFF);
+        b.chartPostsTimeline.getAxisLeft().setGranularity(1f);
+        b.chartPostsTimeline.getAxisLeft().setValueFormatter(wholeNumberValueFormatter);
         XAxis x = b.chartPostsTimeline.getXAxis();
         x.setPosition(XAxis.XAxisPosition.BOTTOM);
         x.setTextColor(Color.WHITE);
@@ -331,6 +347,7 @@ public class AdminDashboardFragment extends Fragment {
             ds.setColors(0xFFB71C1C, 0xFFFFD700, 0xFF90CAF9);
             ds.setValueTextColor(Color.WHITE);
             ds.setValueTextSize(11f);
+            ds.setValueFormatter(wholeNumberValueFormatter);
 
             b.chartUserRoles.setData(new PieData(ds));
             b.chartUserRoles.setBackgroundColor(Color.TRANSPARENT);

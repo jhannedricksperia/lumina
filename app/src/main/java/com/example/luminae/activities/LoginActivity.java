@@ -7,6 +7,7 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.luminae.databinding.ActivityLoginBinding;
+import com.example.luminae.utils.FcmRegistrationHelper;
 import com.example.luminae.utils.SessionManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -114,6 +115,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void routeByRole(String role) {
+        FcmRegistrationHelper.register(this);
         Intent intent;
         if (role == null) role = "";
         switch (role.toLowerCase()) {

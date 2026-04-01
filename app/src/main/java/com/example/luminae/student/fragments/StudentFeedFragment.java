@@ -7,13 +7,23 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.view.*;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import androidx.annotation.*;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.*;
+import androidx.viewpager2.widget.ViewPager2;
+
 import com.example.luminae.R;
+import com.example.luminae.activities.EventParticipantsActivity;
 import com.example.luminae.activities.PostDetailActivity;
 import com.example.luminae.activities.UserProfileActivity;
+import com.example.luminae.utils.EventDisplayUtils;
+import com.example.luminae.utils.FullscreenImageGallery;
+import com.example.luminae.utils.LikeIconHelper;
+import com.example.luminae.utils.PostImageCarouselBinder;
+import com.example.luminae.utils.PostImageList;
 import com.example.luminae.databinding.FragmentStudentFeedBinding;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -59,8 +69,30 @@ public class StudentFeedFragment extends Fragment {
         b.chipDesc.setOnClickListener(v -> { currentOrder = "desc"; applyFilter(); });
         b.chipAsc.setOnClickListener(v -> { currentOrder = "asc"; applyFilter(); });
 
+        if (b.btnSearch != null) {
+            b.btnSearch.setOnClickListener(v -> {
+                hideKeyboard();
+                applyFilter();
+            });
+        }
+        b.etSearch.setOnEditorActionListener((tv, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                hideKeyboard();
+                applyFilter();
+                return true;
+            }
+            return false;
+        });
+
         loadFeed();
         return b.getRoot();
+    }
+
+    private void hideKeyboard() {
+        if (getContext() == null || b == null) return;
+        InputMethodManager imm = (InputMethodManager) getContext()
+                .getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
+        if (imm != null) imm.hideSoftInputFromWindow(b.etSearch.getWindowToken(), 0);
     }
 
     private void loadFeed() {
@@ -70,7 +102,7 @@ public class StudentFeedFragment extends Fragment {
         db.collection("announcements")
                 .orderBy("createdAt", Query.Direction.DESCENDING)
                 .addSnapshotListener((snap, e) -> {
-                    if (snap == null) return;
+                    if (snap == null || b == null) return;
                     // Remove old announcements
                     for (int i = allItems.size() - 1; i >= 0; i--)
                         if ("Announcement".equals(allItems.get(i).type)) allItems.remove(i);
@@ -86,7 +118,7 @@ public class StudentFeedFragment extends Fragment {
         db.collection("events")
                 .orderBy("createdAt", Query.Direction.DESCENDING)
                 .addSnapshotListener((snap, e) -> {
-                    if (snap == null) return;
+                    if (snap == null || b == null) return;
                     for (int i = allItems.size() - 1; i >= 0; i--)
                         if ("Event".equals(allItems.get(i).type)) allItems.remove(i);
                     for (DocumentSnapshot doc : snap.getDocuments()) {
@@ -100,6 +132,7 @@ public class StudentFeedFragment extends Fragment {
     }
 
     private void applyFilter() {
+        if (b == null) return;
         String q = b.etSearch.getText() != null
                 ? b.etSearch.getText().toString().trim().toLowerCase() : "";
 
@@ -126,7 +159,8 @@ public class StudentFeedFragment extends Fragment {
     // ── Feed Item model ───────────────────────────────────────────────────────
     public static class FeedItem {
         public String  docId, type, title, description, imageBase64;
-        public String  postedBy, postedByName, postedByDesignation;
+        public ArrayList<String> imagesBase64 = new ArrayList<>();
+        public String  postedBy, postedByName, postedByDesignation, postedByPhoto;
         public Date    createdAt;
         public int     likeCount, commentCount;
         public boolean likedByMe;
@@ -135,17 +169,28 @@ public class StudentFeedFragment extends Fragment {
         public long    maxParticipants, participantCount;
         public boolean goingByMe;
 
+        private static String coalesce(String... parts) {
+            if (parts == null) return "";
+            for (String p : parts) {
+                if (p != null && !p.trim().isEmpty()) return p.trim();
+            }
+            return "";
+        }
+
         static FeedItem fromAnnouncement(DocumentSnapshot doc) {
             FeedItem f = new FeedItem();
             f.docId       = doc.getId();
             f.type        = "Announcement";
             f.title       = doc.getString("title")       != null ? doc.getString("title")       : "";
             f.description = doc.getString("description") != null ? doc.getString("description") : "";
-            f.imageBase64 = doc.getString("imageBase64");
-            f.postedBy    = doc.getString("postedBy")    != null ? doc.getString("postedBy")    : "";
-            f.postedByName= doc.getString("postedByName")!= null ? doc.getString("postedByName"): f.postedBy;
+            f.imagesBase64 = new ArrayList<>(PostImageList.fromDocument(doc));
+            f.imageBase64 = f.imagesBase64.isEmpty() ? null : f.imagesBase64.get(0);
+            f.postedBy    = coalesce(doc.getString("postedBy"), doc.getString("createdById"));
+            f.postedByName = coalesce(doc.getString("postedByName"), doc.getString("createdByName"),
+                    doc.getString("createdBy"));
             f.postedByDesignation = doc.getString("postedByDesignation") != null
                     ? doc.getString("postedByDesignation") : "";
+            f.postedByPhoto = doc.getString("postedByPhoto");
             Timestamp ts  = doc.getTimestamp("createdAt");
             f.createdAt   = ts != null ? ts.toDate() : new Date(0);
             Long likes    = doc.getLong("likeCount");
@@ -161,17 +206,19 @@ public class StudentFeedFragment extends Fragment {
             f.type         = "Event";
             f.title        = doc.getString("title")       != null ? doc.getString("title")       : "";
             f.description  = doc.getString("description") != null ? doc.getString("description") : "";
-            f.imageBase64  = doc.getString("imageBase64");
-            f.postedBy     = doc.getString("postedBy")    != null ? doc.getString("postedBy")    : "";
-            f.postedByName = doc.getString("postedByName")!= null ? doc.getString("postedByName"): f.postedBy;
+            f.imagesBase64 = new ArrayList<>(PostImageList.fromDocument(doc));
+            f.imageBase64  = f.imagesBase64.isEmpty() ? null : f.imagesBase64.get(0);
+            f.postedBy     = coalesce(doc.getString("postedBy"), doc.getString("createdById"));
+            f.postedByName = coalesce(doc.getString("postedByName"), doc.getString("createdByName"),
+                    doc.getString("createdBy"));
             f.postedByDesignation = doc.getString("postedByDesignation") != null
                     ? doc.getString("postedByDesignation") : "";
-            f.location     = doc.getString("location")   != null ? doc.getString("location")   : "";
-            f.eventDate    = doc.getString("eventDate")  != null ? doc.getString("eventDate")  : "";
+            f.postedByPhoto = doc.getString("postedByPhoto");
+            f.location = EventDisplayUtils.formatLocation(doc);
+            f.eventDate = EventDisplayUtils.formatEventDate(doc);
             Long max       = doc.getLong("maxParticipants");
-            Long pCount    = doc.getLong("participantCount");
             f.maxParticipants  = max    != null ? max    : 0;
-            f.participantCount = pCount != null ? pCount : 0;
+            f.participantCount = EventDisplayUtils.countGoing(doc);
             Timestamp ts   = doc.getTimestamp("createdAt");
             f.createdAt    = ts != null ? ts.toDate() : new Date(0);
             Long likes     = doc.getLong("likeCount");
@@ -188,11 +235,16 @@ public class StudentFeedFragment extends Fragment {
         class VH extends RecyclerView.ViewHolder {
             TextView tvTypeBadge, tvPosterName, tvPosterDesig, tvTime;
             TextView tvTitle, tvDescription, tvLocation, tvEventDate;
-            TextView tvLikeCount, tvCommentCount, tvGoingCount;
-            ImageView ivPosterPhoto, ivPostImage;
+            TextView tvLikeCount, tvCommentCount, tvGoingCount, tvFeedGoingCount;
+            ImageView ivPosterPhoto, ivLike, ivComment;
             View btnLike, btnComment, btnGoing;
-            View layoutEventInfo, layoutGoingRow;
+            View layoutEventInfo, layoutGoingRow, rowFeedGoing;
+            View layoutPostMedia;
+            ViewPager2 vpPostImages;
+            LinearLayout dotsPostImages;
             View cardRoot;
+            String boundCarouselDocId;
+            String boundCarouselSig;
 
             VH(View v) {
                 super(v);
@@ -205,16 +257,22 @@ public class StudentFeedFragment extends Fragment {
                 tvDescription     = v.findViewById(R.id.tv_description);
                 tvLocation        = v.findViewById(R.id.tv_location);
                 tvEventDate       = v.findViewById(R.id.tv_event_date);
-                tvLikeCount       = v.findViewById(R.id.btn_like);
+                tvLikeCount       = v.findViewById(R.id.tv_like_count);
                 tvCommentCount    = v.findViewById(R.id.tv_comment_count);
+                ivLike            = v.findViewById(R.id.iv_like);
+                ivComment         = v.findViewById(R.id.iv_comment);
                 tvGoingCount      = v.findViewById(R.id.tv_going_count);
+                tvFeedGoingCount  = v.findViewById(R.id.tv_feed_going_count);
                 ivPosterPhoto     = v.findViewById(R.id.iv_poster_photo);
-                ivPostImage       = v.findViewById(R.id.iv_post_image);
+                layoutPostMedia   = v.findViewById(R.id.layout_post_media);
+                vpPostImages      = v.findViewById(R.id.vp_post_images);
+                dotsPostImages    = v.findViewById(R.id.dots_post_images);
                 btnLike           = v.findViewById(R.id.btn_like);
                 btnComment        = v.findViewById(R.id.btn_comment);
                 btnGoing          = v.findViewById(R.id.btn_going);
                 layoutEventInfo   = v.findViewById(R.id.layout_event_info);
                 layoutGoingRow    = v.findViewById(R.id.layout_going_row);
+                rowFeedGoing      = v.findViewById(R.id.row_feed_going);
             }
         }
 
@@ -231,25 +289,34 @@ public class StudentFeedFragment extends Fragment {
             h.tvTypeBadge.setBackgroundResource(
                     "Announcement".equals(item.type) ? R.drawable.badge_announcement : R.drawable.badge_event);
 
-            h.tvPosterName.setText(item.postedByName);
             h.tvPosterDesig.setText(item.postedByDesignation);
             h.tvTime.setText(item.createdAt != null ? sdf.format(item.createdAt) : "");
+            bindPosterRow(item, h);
             h.tvTitle.setText(item.title);
             h.tvDescription.setText(item.description);
-            h.tvLikeCount.setText(String.valueOf(item.likeCount));
-            h.tvCommentCount.setText(String.valueOf(item.commentCount));
+            if (h.tvLikeCount != null) h.tvLikeCount.setText(String.valueOf(item.likeCount));
+            if (h.tvCommentCount != null) h.tvCommentCount.setText(String.valueOf(item.commentCount));
 
             // Event-specific
             if ("Event".equals(item.type)) {
                 h.layoutEventInfo.setVisibility(View.VISIBLE);
                 h.layoutGoingRow.setVisibility(View.VISIBLE);
-                h.tvLocation.setText(item.location);
+                h.tvLocation.setText(item.location.isEmpty() ? "—" : item.location);
                 h.tvEventDate.setText(item.eventDate);
                 long goingCount = item.participantCount;
                 String goingText = item.maxParticipants > 0
                         ? goingCount + " / " + item.maxParticipants + " going"
                         : goingCount + " going";
                 h.tvGoingCount.setText(goingText);
+                if (h.tvFeedGoingCount != null) h.tvFeedGoingCount.setText(goingText);
+                if (h.rowFeedGoing != null) {
+                    h.rowFeedGoing.setOnClickListener(v -> {
+                        Intent gi = new Intent(getActivity(), EventParticipantsActivity.class);
+                        gi.putExtra("eventId", item.docId);
+                        gi.putExtra("eventTitle", item.title);
+                        startActivity(gi);
+                    });
+                }
 
                 // Check if full
                 boolean isFull = item.maxParticipants > 0
@@ -261,16 +328,8 @@ public class StudentFeedFragment extends Fragment {
                 h.layoutGoingRow.setVisibility(View.GONE);
             }
 
-            // Post image
-            if (item.imageBase64 != null && !item.imageBase64.isEmpty()) {
-                h.ivPostImage.setVisibility(View.VISIBLE);
-                try {
-                    byte[] bytes = Base64.decode(item.imageBase64, Base64.DEFAULT);
-                    h.ivPostImage.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
-                } catch (Exception ignored) { h.ivPostImage.setVisibility(View.GONE); }
-            } else {
-                h.ivPostImage.setVisibility(View.GONE);
-            }
+            bindPostImages(item, h);
+            if (h.ivComment != null) LikeIconHelper.setCommentTint(h.ivComment);
 
             // Like action
             checkLiked(item, h);
@@ -335,8 +394,30 @@ public class StudentFeedFragment extends Fragment {
         }
 
         private void updateLikeUI(VH h, FeedItem item) {
-            h.tvLikeCount.setText(String.valueOf(item.likeCount));
-            h.btnLike.setAlpha(item.likedByMe ? 1f : 0.5f);
+            if (h.tvLikeCount != null) h.tvLikeCount.setText(String.valueOf(item.likeCount));
+            LikeIconHelper.setHeartTint(h.ivLike, item.likedByMe);
+        }
+
+        private void bindPostImages(FeedItem item, VH h) {
+            if (h.layoutPostMedia == null || h.vpPostImages == null) return;
+            List<String> imgs = item.imagesBase64;
+            if (imgs == null || imgs.isEmpty()) {
+                h.layoutPostMedia.setVisibility(View.GONE);
+                h.boundCarouselDocId = null;
+                h.boundCarouselSig = null;
+                return;
+            }
+            h.layoutPostMedia.setVisibility(View.VISIBLE);
+            String sig = item.docId + ":" + PostImageList.signature(imgs);
+            if (java.util.Objects.equals(item.docId, h.boundCarouselDocId)
+                    && java.util.Objects.equals(sig, h.boundCarouselSig)) {
+                return;
+            }
+            h.boundCarouselDocId = item.docId;
+            h.boundCarouselSig = sig;
+            android.content.Context ctx = requireContext();
+            PostImageCarouselBinder.bind(h.vpPostImages, h.dotsPostImages, imgs, ctx,
+                    pageIdx -> FullscreenImageGallery.show(ctx, imgs, pageIdx));
         }
 
         private void checkGoing(FeedItem item, VH h) {
@@ -415,7 +496,52 @@ public class StudentFeedFragment extends Fragment {
                     ? goingCount + " / " + item.maxParticipants + " going"
                     : goingCount + " going";
             h.tvGoingCount.setText(goingText);
+            if (h.tvFeedGoingCount != null) h.tvFeedGoingCount.setText(goingText);
             h.btnGoing.setAlpha(item.goingByMe ? 1f : 0.6f);
+        }
+
+        private void bindPosterRow(FeedItem item, VH h) {
+            String label = item.postedByName != null && !item.postedByName.isEmpty()
+                    ? item.postedByName : "…";
+            h.tvPosterName.setText(label);
+
+            if (item.postedByPhoto != null && !item.postedByPhoto.isEmpty()) {
+                try {
+                    byte[] bytes = Base64.decode(item.postedByPhoto, Base64.DEFAULT);
+                    h.ivPosterPhoto.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+                    h.ivPosterPhoto.setVisibility(View.VISIBLE);
+                } catch (Exception ignored) {
+                    h.ivPosterPhoto.setVisibility(View.GONE);
+                }
+            } else {
+                h.ivPosterPhoto.setImageDrawable(null);
+            }
+
+            if (item.postedBy != null && !item.postedBy.isEmpty()) {
+                db.collection("users").document(item.postedBy).get()
+                        .addOnSuccessListener(doc -> {
+                            if (doc == null || !doc.exists() || h.getAdapterPosition() == RecyclerView.NO_POSITION)
+                                return;
+                            FeedItem cur = filtered.get(h.getAdapterPosition());
+                            if (cur == null || !item.docId.equals(cur.docId)) return;
+
+                            if (item.postedByName == null || item.postedByName.isEmpty()) {
+                                String f = doc.getString("fName") != null ? doc.getString("fName") : "";
+                                String l = doc.getString("lName") != null ? doc.getString("lName") : "";
+                                String full = (f + " " + l).trim();
+                                if (!full.isEmpty()) h.tvPosterName.setText(full);
+                            }
+                            String b64 = doc.getString("photoBase64");
+                            if (b64 != null && !b64.isEmpty()) {
+                                try {
+                                    byte[] bytes = Base64.decode(b64, Base64.DEFAULT);
+                                    h.ivPosterPhoto.setImageBitmap(
+                                            BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+                                    h.ivPosterPhoto.setVisibility(View.VISIBLE);
+                                } catch (Exception ignored) {}
+                            }
+                        });
+            }
         }
 
         private void openDetail(FeedItem item) {

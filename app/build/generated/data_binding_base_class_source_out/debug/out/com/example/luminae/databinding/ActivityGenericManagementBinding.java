@@ -4,6 +4,7 @@ package com.example.luminae.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -28,6 +29,9 @@ public final class ActivityGenericManagementBinding implements ViewBinding {
   public final MaterialButton btnAdd;
 
   @NonNull
+  public final ImageButton btnSearch;
+
+  @NonNull
   public final TextInputEditText etSearch;
 
   @NonNull
@@ -43,11 +47,13 @@ public final class ActivityGenericManagementBinding implements ViewBinding {
   public final TextView tvCount;
 
   private ActivityGenericManagementBinding(@NonNull LinearLayout rootView,
-      @NonNull MaterialButton btnAdd, @NonNull TextInputEditText etSearch,
-      @NonNull RecyclerView recyclerItems, @NonNull TextInputLayout tilSearch,
-      @NonNull MaterialToolbar toolbar, @NonNull TextView tvCount) {
+      @NonNull MaterialButton btnAdd, @NonNull ImageButton btnSearch,
+      @NonNull TextInputEditText etSearch, @NonNull RecyclerView recyclerItems,
+      @NonNull TextInputLayout tilSearch, @NonNull MaterialToolbar toolbar,
+      @NonNull TextView tvCount) {
     this.rootView = rootView;
     this.btnAdd = btnAdd;
+    this.btnSearch = btnSearch;
     this.etSearch = etSearch;
     this.recyclerItems = recyclerItems;
     this.tilSearch = tilSearch;
@@ -88,6 +94,12 @@ public final class ActivityGenericManagementBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.btn_search;
+      ImageButton btnSearch = ViewBindings.findChildViewById(rootView, id);
+      if (btnSearch == null) {
+        break missingId;
+      }
+
       id = R.id.et_search;
       TextInputEditText etSearch = ViewBindings.findChildViewById(rootView, id);
       if (etSearch == null) {
@@ -118,8 +130,8 @@ public final class ActivityGenericManagementBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ActivityGenericManagementBinding((LinearLayout) rootView, btnAdd, etSearch,
-          recyclerItems, tilSearch, toolbar, tvCount);
+      return new ActivityGenericManagementBinding((LinearLayout) rootView, btnAdd, btnSearch,
+          etSearch, recyclerItems, tilSearch, toolbar, tvCount);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

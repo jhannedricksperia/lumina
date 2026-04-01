@@ -1,19 +1,24 @@
 package com.example.luminae.admin.fragments;
 
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Base64;
 import android.view.*;
 import android.widget.*;
 import androidx.annotation.*;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.ViewPager2;
 import com.example.luminae.R;
 import com.example.luminae.activities.AnnouncementFormActivity;
 import com.example.luminae.activities.EventFormActivity;
+import com.example.luminae.activities.EventParticipantsActivity;
 import com.example.luminae.activities.PostDetailActivity;
+import com.example.luminae.utils.EventDisplayUtils;
+import com.example.luminae.utils.FullscreenImageGallery;
+import com.example.luminae.utils.LikeIconHelper;
+import com.example.luminae.utils.PostImageCarouselBinder;
+import com.example.luminae.utils.PostImageList;
 import com.example.luminae.databinding.FragmentAdminFeedBinding;
 import com.example.luminae.utils.ActivityLogger;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -173,14 +178,6 @@ public class AdminFeedFragment extends Fragment {
 
     // ── image helpers ─────────────────────────────────────────────────────────
 
-    private void loadBase64Image(String base64, ImageView iv) {
-        try {
-            byte[] bytes = Base64.decode(base64, Base64.DEFAULT);
-            iv.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
-            iv.setVisibility(View.VISIBLE);
-        } catch (Exception e) { iv.setVisibility(View.GONE); }
-    }
-
     // ── full name helper ──────────────────────────────────────────────────────
 
     private void getActorFullName(NameCallback cb) {
@@ -201,10 +198,18 @@ public class AdminFeedFragment extends Fragment {
     private class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.VH> {
 
         class VH extends RecyclerView.ViewHolder {
-            TextView  tvCreatedBy, tvDateCreated, tvTitle, tvDesc, tvHearts;
-            ImageView ivImage, btnMore;
+            TextView  tvCreatedBy, tvDateCreated, tvTitle, tvDesc, tvLikeCount;
+            ImageView ivLike;
+            View      btnLikeRow;
+            View      layoutPostMedia;
+            ViewPager2 vpPostImages;
+            LinearLayout dotsPostImages;
+            ImageView btnMore;
             TextView  tvWhere, tvEventDate, tvGoingCount, tvGoingInfo, btnGoing;
             View      layoutEventInfo;
+            View      rowGoing;
+            String    boundCarouselDocId;
+            String    boundCarouselSig;
 
             VH(View v) {
                 super(v);
@@ -216,15 +221,21 @@ public class AdminFeedFragment extends Fragment {
                         : v.findViewById(R.id.tv_created_date);
                 tvTitle         = v.findViewById(R.id.tv_title);
                 tvDesc          = v.findViewById(R.id.tv_description);
-                tvHearts        = v.findViewById(R.id.btn_like);
-                ivImage         = v.findViewById(R.id.iv_post_image);
+                tvLikeCount     = v.findViewById(R.id.tv_like_count);
+                ivLike          = v.findViewById(R.id.iv_like);
+                btnLikeRow      = v.findViewById(R.id.btn_like);
+                layoutPostMedia = v.findViewById(R.id.layout_post_media);
+                vpPostImages    = v.findViewById(R.id.vp_post_images);
+                dotsPostImages  = v.findViewById(R.id.dots_post_images);
                 btnMore         = v.findViewById(R.id.btn_more);
                 tvWhere         = v.findViewById(R.id.tv_location);
                 tvEventDate     = v.findViewById(R.id.tv_event_date);
                 tvGoingCount    = v.findViewById(R.id.tv_going_count);
+                if (tvGoingCount == null) tvGoingCount = v.findViewById(R.id.tv_participants);
                 tvGoingInfo     = v.findViewById(R.id.tv_going_info);
                 btnGoing        = v.findViewById(R.id.btn_going);
                 layoutEventInfo = v.findViewById(R.id.layout_event_info);
+                rowGoing        = v.findViewById(R.id.row_going);
             }
         }
 
@@ -261,68 +272,92 @@ public class AdminFeedFragment extends Fragment {
             if (h.tvDateCreated != null)
                 h.tvDateCreated.setText(ts != null ? sdf.format(ts.toDate()) : "—");
 
-            // image
-            if (h.ivImage != null) {
-                h.ivImage.setVisibility(View.GONE);
-                String base64 = doc.getString("imageBase64");
-                if (base64 != null && !base64.isEmpty()) loadBase64Image(base64, h.ivImage);
+            // images
+            if (h.layoutPostMedia != null && h.vpPostImages != null) {
+                List<String> imgs = PostImageList.fromDocument(doc);
+                if (imgs.isEmpty()) {
+                    h.layoutPostMedia.setVisibility(View.GONE);
+                    h.boundCarouselDocId = null;
+                    h.boundCarouselSig = null;
+                } else {
+                    h.layoutPostMedia.setVisibility(View.VISIBLE);
+                    String sig = doc.getId() + ":" + PostImageList.signature(imgs);
+                    if (!java.util.Objects.equals(doc.getId(), h.boundCarouselDocId)
+                            || !java.util.Objects.equals(sig, h.boundCarouselSig)) {
+                        h.boundCarouselDocId = doc.getId();
+                        h.boundCarouselSig = sig;
+                        android.content.Context ctx = requireContext();
+                        PostImageCarouselBinder.bind(h.vpPostImages, h.dotsPostImages, imgs, ctx,
+                                pageIdx -> FullscreenImageGallery.show(ctx, imgs, pageIdx));
+                    }
+                }
+            }
+
+            // item_feed_post includes event blocks; hide them on the Announcements tab
+            if (activeTab == TAB_ANNOUNCEMENTS) {
+                View evInfo = h.itemView.findViewById(R.id.layout_event_info);
+                if (evInfo != null) evInfo.setVisibility(View.GONE);
+                View goingRow = h.itemView.findViewById(R.id.layout_going_row);
+                if (goingRow != null) goingRow.setVisibility(View.GONE);
             }
 
             // event-only extras
             if (activeTab == TAB_EVENTS) {
                 if (h.layoutEventInfo != null) h.layoutEventInfo.setVisibility(View.VISIBLE);
-                long going = doc.getLong("goingCount") != null ? doc.getLong("goingCount") : 0;
+                long going = EventDisplayUtils.countGoing(doc);
+                String loc = EventDisplayUtils.formatLocation(doc);
                 if (h.tvWhere != null)
-                    h.tvWhere.setText("Location: " + (doc.getString("where") != null ? doc.getString("where") : "—"));
-                if (h.tvEventDate != null) {
-                    String date = doc.getString("date") != null ? doc.getString("date") : "";
-                    String time = doc.getString("time") != null ? doc.getString("time") : "";
-                    h.tvEventDate.setText("Date: " + date + (time.isEmpty() ? "" : "  " + time));
-                }
+                    h.tvWhere.setText(loc.isEmpty() ? "—" : loc);
+                if (h.tvEventDate != null)
+                    h.tvEventDate.setText(EventDisplayUtils.formatEventDate(doc));
                 if (h.tvGoingCount != null) h.tvGoingCount.setText(going + " going");
                 if (h.tvGoingInfo  != null) {
                     h.tvGoingInfo.setVisibility(View.VISIBLE);
                     h.tvGoingInfo.setText(going + " going");
                 }
+                if (h.rowGoing != null) {
+                    h.rowGoing.setOnClickListener(ev -> {
+                        Intent pi = new Intent(getActivity(), EventParticipantsActivity.class);
+                        pi.putExtra("eventId", doc.getId());
+                        pi.putExtra("eventTitle", title);
+                        startActivity(pi);
+                    });
+                }
             }
 
-            // ── Like logic (mirrors StaffPostFragment exactly) ────────────────
-            if (h.tvHearts != null) {
+            // ── Like logic (announcement cards only — event layout has no like row) ──
+            if (h.tvLikeCount != null && h.btnLikeRow != null) {
                 String col = activeTab == TAB_ANNOUNCEMENTS ? "announcements" : "events";
                 DocumentReference postRef = db.collection(col).document(doc.getId());
                 String uid = auth.getUid();
                 DocumentReference likeRef = uid != null
                         ? postRef.collection("likes").document(uid) : null;
 
-                // Local mutable state for this card
                 final long[]    likeCount = {hearts};
                 final boolean[] likedByMe = {false};
 
-                // Immediate render with default state
-                h.tvHearts.setText("♥ " + likeCount[0]);
-                h.tvHearts.setTextColor(0x88EF9A9A);
+                Runnable refreshLikeUi = () -> {
+                    h.tvLikeCount.setText(String.valueOf(likeCount[0]));
+                    LikeIconHelper.setHeartTint(h.ivLike, likedByMe[0]);
+                };
+                refreshLikeUi.run();
 
-                // Async check: did this admin already like it?
                 if (likeRef != null) {
                     likeRef.get().addOnSuccessListener(likeDoc -> {
                         likedByMe[0] = likeDoc.exists();
-                        h.tvHearts.setText("♥ " + likeCount[0]);
-                        h.tvHearts.setTextColor(likedByMe[0] ? 0xFFEF5350 : 0x88EF9A9A);
+                        refreshLikeUi.run();
                     });
                 }
 
-                // Toggle like / unlike
-                h.tvHearts.setOnClickListener(v -> {
+                h.btnLikeRow.setOnClickListener(v -> {
                     if (uid == null || likeRef == null) return;
                     likeRef.get().addOnSuccessListener(likeDoc -> {
                         if (likeDoc.exists()) {
-                            // Unlike
                             likeRef.delete();
                             postRef.update("likeCount", FieldValue.increment(-1));
                             likedByMe[0]  = false;
                             likeCount[0]  = Math.max(0, likeCount[0] - 1);
                         } else {
-                            // Like
                             Map<String, Object> likeData = new HashMap<>();
                             likeData.put("uid",     uid);
                             likeData.put("likedAt", Timestamp.now());
@@ -331,8 +366,7 @@ public class AdminFeedFragment extends Fragment {
                             likedByMe[0] = true;
                             likeCount[0]++;
                         }
-                        h.tvHearts.setText("♥ " + likeCount[0]);
-                        h.tvHearts.setTextColor(likedByMe[0] ? 0xFFEF5350 : 0x88EF9A9A);
+                        refreshLikeUi.run();
                     });
                 });
             }

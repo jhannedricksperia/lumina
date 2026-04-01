@@ -104,12 +104,14 @@
                     android:id="@+id/tv_role"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
                     android:background="@drawable/badge_active"
+                    android:fontFamily="@font/poppins_bold"
+                    android:paddingHorizontal="20dp"
+                    android:paddingVertical="6dp"
                     android:text="STUDENT"
                     android:textColor="@color/white"
-                    android:textSize="10sp"
-                    android:fontFamily="@font/poppins_bold"
-                    android:layout_marginTop="4dp" />
+                    android:textSize="10sp" />
             </LinearLayout>
 
             <!-- Info Card -->
@@ -198,46 +200,182 @@
                     android:text="—" />
             </LinearLayout>
 
-            <!-- Actions -->
+            <!-- Settings -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
                 android:background="@drawable/glass_card"
                 android:orientation="vertical"
-                android:padding="8dp"
-                android:layout_marginBottom="24dp">
+                android:padding="16dp">
 
                 <TextView
-                    android:id="@+id/btn_change_password"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:fontFamily="@font/poppins"
-                    android:gravity="center_vertical"
-                    android:paddingHorizontal="12dp"
-                    android:text="Change Password"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    android:fontFamily="@font/poppins_bold"
+                    android:text="Settings"
                     android:textColor="@color/white"
                     android:textSize="13sp" />
+
+                <LinearLayout
+                    android:id="@+id/btn_view_activity_log"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginBottom="2dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="4dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginEnd="14dp"
+                        android:src="@drawable/history"
+                        app:tint="@color/yellow" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/poppins"
+                        android:text="Audit Logs"
+                        android:textColor="@color/white"
+                        android:textSize="13sp" />
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/right"
+                        app:tint="#55FFFFFF" />
+                </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:background="#22FFFFFF" />
+                    android:background="#14FFFFFF" />
 
-                <TextView
-                    android:id="@+id/btn_logout"
+                <LinearLayout
+                    android:id="@+id/btn_configurations"
                     android:layout_width="match_parent"
-                    android:layout_height="48dp"
+                    android:layout_height="52dp"
+                    android:layout_marginBottom="2dp"
+                    android:background="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:focusable="true"
-                    android:fontFamily="@font/poppins"
                     android:gravity="center_vertical"
-                    android:paddingHorizontal="12dp"
-                    android:text="Log Out"
-                    android:textColor="#EF9A9A"
-                    android:textSize="13sp" />
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="4dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginEnd="14dp"
+                        android:src="@drawable/settings"
+                        app:tint="@color/yellow" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/poppins"
+                        android:text="Configurations"
+                        android:textColor="@color/white"
+                        android:textSize="13sp" />
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/right"
+                        app:tint="#55FFFFFF" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#14FFFFFF" />
+
+                <LinearLayout
+                    android:id="@+id/btn_change_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginBottom="2dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="4dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginEnd="14dp"
+                        android:src="@drawable/password"
+                        app:tint="@color/yellow" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/poppins"
+                        android:text="Change Password"
+                        android:textColor="@color/white"
+                        android:textSize="13sp" />
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/right"
+                        app:tint="#55FFFFFF" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#14FFFFFF" />
+
+                <LinearLayout
+                    android:id="@+id/btn_logout"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="4dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginEnd="14dp"
+                        android:src="@drawable/logout"
+                        app:tint="#EF5350" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/poppins"
+                        android:text="Log out"
+                        android:textColor="#EF5350"
+                        android:textSize="13sp" />
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/right"
+                        app:tint="#55EF5350" />
+                </LinearLayout>
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="24dp" />
 
         </LinearLayout>
     </ScrollView>

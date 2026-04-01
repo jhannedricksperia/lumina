@@ -1,5 +1,6 @@
 package com.example.luminae.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
@@ -7,6 +8,8 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.*;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
@@ -76,6 +79,18 @@ public class StaffManagementActivity extends AppCompatActivity {
                 applyFilter();
             }
         });
+        b.btnSearch.setOnClickListener(v -> {
+            hideKeyboard();
+            applyFilter();
+        });
+        b.etSearch.setOnEditorActionListener((tv, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                hideKeyboard();
+                applyFilter();
+                return true;
+            }
+            return false;
+        });
 
         // Re-filter whenever a status chip is toggled.
         b.chipGroupStatus.setOnCheckedStateChangeListener((g, ids) -> {
@@ -89,6 +104,11 @@ public class StaffManagementActivity extends AppCompatActivity {
         b.btnAddStaff.setOnClickListener(v -> openStaffForm(null));
 
         loadStaff();
+    }
+
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) imm.hideSoftInputFromWindow(b.etSearch.getWindowToken(), 0);
     }
 
     // ---------------------------------------------------------------------------

@@ -7,7 +7,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Base64;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
@@ -15,8 +17,11 @@ import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.luminae.R;
 import com.example.luminae.utils.ActivityLogger;
@@ -40,6 +45,8 @@ public class AnnouncementFormActivity extends AppCompatActivity {
     public static final String EXTRA_DOC_ID = "doc_id";
     public static final String EXTRA_COLLECTION = "collection";
 
+    private static final int MAX_POST_IMAGES = 10;
+
     private FirebaseFirestore db;
     private FirebaseAuth auth;
 
@@ -49,7 +56,9 @@ public class AnnouncementFormActivity extends AppCompatActivity {
     private AutoCompleteTextView acvCampus, acvCollege, acvCourse;
     private TextInputLayout tilCampus, tilCollege, tilCourse;
     private View layoutAudiencePicker;
-    private ImageView ivPreview;
+    private RecyclerView rvPhotoStrip;
+    private final ArrayList<String> pendingImages = new ArrayList<>();
+    private PhotoStripAdapter photoAdapter;
     private MaterialButton btnSave;
     private View progressBar;
 
@@ -57,8 +66,7 @@ public class AnnouncementFormActivity extends AppCompatActivity {
     private String docId = null;
     private DocumentSnapshot existingDoc = null;
 
-    private String pendingImageBase64 = null;
-    private ActivityResultLauncher<String> imagePicker;
+    private ActivityResultLauncher<String> pickMultipleImages;
 
     private final List<DocumentSnapshot> campusDocs = new ArrayList<>();
     private final List<String> campusNames = new ArrayList<>();
@@ -101,15 +109,19 @@ public class AnnouncementFormActivity extends AppCompatActivity {
         ((com.google.android.material.appbar.MaterialToolbar) findViewById(R.id.toolbar))
                 .setNavigationOnClickListener(v -> finish());
 
-        imagePicker = registerForActivityResult(new ActivityResultContracts.GetContent(), uri -> {
-            if (uri == null) return;
-            String b64 = compressToBase64(uri);
-            if (b64 == null) return;
-            pendingImageBase64 = b64;
-            showBase64Image(b64, ivPreview);
-        });
+        pickMultipleImages = registerForActivityResult(
+                new ActivityResultContracts.GetMultipleContents(),
+                uris -> {
+                    if (uris == null) return;
+                    for (Uri uri : uris) {
+                        if (pendingImages.size() >= MAX_POST_IMAGES) break;
+                        String b64 = compressToBase64(uri);
+                        if (b64 != null) pendingImages.add(b64);
+                    }
+                    refreshPhotoStrip();
+                });
 
-        findViewById(R.id.btn_pick_image).setOnClickListener(v -> imagePicker.launch("image/*"));
+        findViewById(R.id.btn_pick_image).setOnClickListener(v -> pickMultipleImages.launch("image/*"));
         findViewById(R.id.btn_cancel).setOnClickListener(v -> finish());
         btnSave.setOnClickListener(v -> saveAnnouncement());
 
@@ -129,9 +141,60 @@ public class AnnouncementFormActivity extends AppCompatActivity {
         tilCollege = findViewById(R.id.til_college);
         tilCourse = findViewById(R.id.til_course);
         layoutAudiencePicker = findViewById(R.id.layout_audience_picker);
-        ivPreview = findViewById(R.id.iv_preview);
+        rvPhotoStrip = findViewById(R.id.rv_photo_strip);
+        if (rvPhotoStrip != null) {
+            rvPhotoStrip.setLayoutManager(
+                    new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+            photoAdapter = new PhotoStripAdapter();
+            rvPhotoStrip.setAdapter(photoAdapter);
+        }
         btnSave = findViewById(R.id.btn_save);
         progressBar = findViewById(R.id.progress_bar);
+    }
+
+    private void refreshPhotoStrip() {
+        if (photoAdapter != null) photoAdapter.notifyDataSetChanged();
+        if (rvPhotoStrip != null)
+            rvPhotoStrip.setVisibility(pendingImages.isEmpty() ? View.GONE : View.VISIBLE);
+    }
+
+    private class PhotoStripAdapter extends RecyclerView.Adapter<PhotoStripAdapter.VH> {
+
+        class VH extends RecyclerView.ViewHolder {
+            final ImageView thumb;
+            final View btnRemove;
+
+            VH(@NonNull View itemView) {
+                super(itemView);
+                thumb = itemView.findViewById(R.id.thumb);
+                btnRemove = itemView.findViewById(R.id.btn_remove_thumb);
+            }
+        }
+
+        @NonNull
+        @Override
+        public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_form_photo_thumb, parent, false);
+            return new VH(v);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull VH h, int position) {
+            showBase64Image(pendingImages.get(position), h.thumb);
+            h.btnRemove.setOnClickListener(v -> {
+                int pos = h.getBindingAdapterPosition();
+                if (pos == RecyclerView.NO_POSITION || pos >= pendingImages.size()) return;
+                pendingImages.remove(pos);
+                notifyDataSetChanged();
+                refreshPhotoStrip();
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            return pendingImages.size();
+        }
     }
 
     private void loadActorAndScopeThenInit() {
@@ -318,11 +381,19 @@ public class AnnouncementFormActivity extends AppCompatActivity {
             existingDoc = doc;
             etTitle.setText(orEmpty(doc.getString("title")));
             etDescription.setText(orEmpty(doc.getString("description")));
-            String img = doc.getString("imageBase64");
-            if (img != null && !img.isEmpty()) {
-                pendingImageBase64 = img;
-                showBase64Image(img, ivPreview);
+            pendingImages.clear();
+            Object raw = doc.get("imagesBase64");
+            if (raw instanceof List) {
+                for (Object o : (List<?>) raw) {
+                    if (o instanceof String && !((String) o).trim().isEmpty())
+                        pendingImages.add(((String) o).trim());
+                }
             }
+            if (pendingImages.isEmpty()) {
+                String img = doc.getString("imageBase64");
+                if (img != null && !img.isEmpty()) pendingImages.add(img);
+            }
+            refreshPhotoStrip();
             audienceType = orEmpty(doc.getString("audienceType")).isEmpty() ? "All" : doc.getString("audienceType");
             audienceCampusId = orEmpty(doc.getString("audienceCampusId"));
             audienceCollegeId = orEmpty(doc.getString("audienceCollegeId"));
@@ -352,7 +423,13 @@ public class AnnouncementFormActivity extends AppCompatActivity {
         data.put("audienceCollegeId", audienceCollegeId);
         data.put("audienceCourseId", audienceCourseId);
         data.put("audienceLabel", audienceLabel);
-        if (pendingImageBase64 != null) data.put("imageBase64", pendingImageBase64);
+        if (!pendingImages.isEmpty()) {
+            data.put("imagesBase64", new ArrayList<>(pendingImages));
+            data.put("imageBase64", pendingImages.get(0));
+        } else {
+            data.put("imagesBase64", new ArrayList<>());
+            data.put("imageBase64", null);
+        }
 
         String uid = auth.getUid();
         if (uid != null) {

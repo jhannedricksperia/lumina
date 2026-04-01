@@ -39,9 +39,6 @@ public final class ActivityStudentFormBinding implements ViewBinding {
   public final MaterialButton btnCancel;
 
   @NonNull
-  public final MaterialButton btnPickPhoto;
-
-  @NonNull
   public final MaterialButton btnRegister;
 
   @NonNull
@@ -90,26 +87,28 @@ public final class ActivityStudentFormBinding implements ViewBinding {
   public final MaterialToolbar toolbar;
 
   @NonNull
+  public final TextView tvChangePicture;
+
+  @NonNull
   public final TextView tvError;
 
   private ActivityStudentFormBinding(@NonNull LinearLayout rootView,
       @NonNull AutoCompleteTextView acvCampus, @NonNull AutoCompleteTextView acvCollege,
       @NonNull AutoCompleteTextView acvCourse, @NonNull MaterialButton btnCancel,
-      @NonNull MaterialButton btnPickPhoto, @NonNull MaterialButton btnRegister,
-      @NonNull TextInputEditText etEmail, @NonNull TextInputEditText etFirstName,
-      @NonNull TextInputEditText etLastName, @NonNull ShapeableImageView ivProfilePhoto,
-      @NonNull LinearLayout llCampusLoading, @NonNull LinearLayout llCollegeLoading,
-      @NonNull LinearLayout llCourseLoading, @NonNull ProgressBar progressBar,
-      @NonNull TextInputLayout tilCampus, @NonNull TextInputLayout tilCollege,
-      @NonNull TextInputLayout tilCourse, @NonNull TextInputLayout tilEmail,
-      @NonNull TextInputLayout tilFirstName, @NonNull TextInputLayout tilLastName,
-      @NonNull MaterialToolbar toolbar, @NonNull TextView tvError) {
+      @NonNull MaterialButton btnRegister, @NonNull TextInputEditText etEmail,
+      @NonNull TextInputEditText etFirstName, @NonNull TextInputEditText etLastName,
+      @NonNull ShapeableImageView ivProfilePhoto, @NonNull LinearLayout llCampusLoading,
+      @NonNull LinearLayout llCollegeLoading, @NonNull LinearLayout llCourseLoading,
+      @NonNull ProgressBar progressBar, @NonNull TextInputLayout tilCampus,
+      @NonNull TextInputLayout tilCollege, @NonNull TextInputLayout tilCourse,
+      @NonNull TextInputLayout tilEmail, @NonNull TextInputLayout tilFirstName,
+      @NonNull TextInputLayout tilLastName, @NonNull MaterialToolbar toolbar,
+      @NonNull TextView tvChangePicture, @NonNull TextView tvError) {
     this.rootView = rootView;
     this.acvCampus = acvCampus;
     this.acvCollege = acvCollege;
     this.acvCourse = acvCourse;
     this.btnCancel = btnCancel;
-    this.btnPickPhoto = btnPickPhoto;
     this.btnRegister = btnRegister;
     this.etEmail = etEmail;
     this.etFirstName = etFirstName;
@@ -126,6 +125,7 @@ public final class ActivityStudentFormBinding implements ViewBinding {
     this.tilFirstName = tilFirstName;
     this.tilLastName = tilLastName;
     this.toolbar = toolbar;
+    this.tvChangePicture = tvChangePicture;
     this.tvError = tvError;
   }
 
@@ -177,12 +177,6 @@ public final class ActivityStudentFormBinding implements ViewBinding {
       id = R.id.btn_cancel;
       MaterialButton btnCancel = ViewBindings.findChildViewById(rootView, id);
       if (btnCancel == null) {
-        break missingId;
-      }
-
-      id = R.id.btn_pick_photo;
-      MaterialButton btnPickPhoto = ViewBindings.findChildViewById(rootView, id);
-      if (btnPickPhoto == null) {
         break missingId;
       }
 
@@ -282,6 +276,12 @@ public final class ActivityStudentFormBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.tv_change_picture;
+      TextView tvChangePicture = ViewBindings.findChildViewById(rootView, id);
+      if (tvChangePicture == null) {
+        break missingId;
+      }
+
       id = R.id.tv_error;
       TextView tvError = ViewBindings.findChildViewById(rootView, id);
       if (tvError == null) {
@@ -289,9 +289,9 @@ public final class ActivityStudentFormBinding implements ViewBinding {
       }
 
       return new ActivityStudentFormBinding((LinearLayout) rootView, acvCampus, acvCollege,
-          acvCourse, btnCancel, btnPickPhoto, btnRegister, etEmail, etFirstName, etLastName,
-          ivProfilePhoto, llCampusLoading, llCollegeLoading, llCourseLoading, progressBar,
-          tilCampus, tilCollege, tilCourse, tilEmail, tilFirstName, tilLastName, toolbar, tvError);
+          acvCourse, btnCancel, btnRegister, etEmail, etFirstName, etLastName, ivProfilePhoto,
+          llCampusLoading, llCollegeLoading, llCourseLoading, progressBar, tilCampus, tilCollege,
+          tilCourse, tilEmail, tilFirstName, tilLastName, toolbar, tvChangePicture, tvError);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

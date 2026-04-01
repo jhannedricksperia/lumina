@@ -12,6 +12,35 @@
         <item name="colorControlActivated">@color/yellow</item>
         <item name="android:textColorHint">@color/textHint</item>
         <item name="toolbarStyle">@style/LuminaToolbar</item>
+        <!-- Dialogs: Confirm = yellow, Cancel / negative = white -->
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.Luminae.MaterialAlertDialog</item>
+        <item name="android:alertDialogTheme">@style/ThemeOverlay.Luminae.AppCompatAlertDialog</item>
+    </style>
+
+    <style name="ThemeOverlay.Luminae.MaterialAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="colorPrimary">@color/yellow</item>
+        <item name="colorOnPrimary">@color/bgBlack</item>
+        <item name="colorOnSurface">@color/white</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.Luminae.AlertDialog.Button.Positive</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.Luminae.AlertDialog.Button.Negative</item>
+        <item name="buttonBarNeutralButtonStyle">@style/Widget.Luminae.AlertDialog.Button.Negative</item>
+    </style>
+
+    <style name="Widget.Luminae.AlertDialog.Button.Positive" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/yellow</item>
+        <item name="rippleColor">#40F2C94C</item>
+    </style>
+
+    <style name="Widget.Luminae.AlertDialog.Button.Negative" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/white</item>
+        <item name="rippleColor">#33FFFFFF</item>
+    </style>
+
+    <style name="ThemeOverlay.Luminae.AppCompatAlertDialog" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="colorPrimary">@color/yellow</item>
+        <item name="colorAccent">@color/yellow</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/white</item>
     </style>
 
     <!-- Reusable style for all text input fields with rounded corners -->
@@ -37,6 +66,7 @@
         <item name="chipCornerRadius">20dp</item>
         <item name="chipMinHeight">32dp</item>
         <item name="checkedIconVisible">false</item>
+        <item name="android:layout_marginEnd">8dp</item>
     </style>
 
     <style name="LuminaToolbar" parent="Widget.MaterialComponents.Toolbar">
@@ -46,6 +76,12 @@
     <style name="ShapeAppearanceOverlayLuminaCircle">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
+    </style>
+
+    <!-- Rounded rectangle for post media (feed + detail) -->
+    <style name="ShapeAppearanceOverlayLuminaRoundedCard">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
     </style>
 
 </resources>

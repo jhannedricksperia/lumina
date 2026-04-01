@@ -75,10 +75,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
-                    android:fontFamily="@font/poppins"
+                    android:fontFamily="@font/poppins_bold"
                     android:text="Audience: Everyone"
                     android:textColor="#CCFFFFFF"
-                    android:textSize="11sp" />
+                    android:textSize="14sp" />
 
                 <LinearLayout
                     android:id="@+id/layout_audience_picker"
@@ -95,12 +95,15 @@
                         android:layout_marginBottom="10dp"
                         android:hint="Campus"
                         app:endIconMode="dropdown_menu">
+
                         <AutoCompleteTextView
                             android:id="@+id/acv_campus"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:focusable="false"
+                            android:fontFamily="@font/poppins"
                             android:inputType="none"
+                            android:paddingStart="12dp"
                             android:textColor="@color/white"
                             android:textColorHint="@color/textHint" />
                     </com.google.android.material.textfield.TextInputLayout>
@@ -113,12 +116,15 @@
                         android:layout_marginBottom="10dp"
                         android:hint="College"
                         app:endIconMode="dropdown_menu">
+
                         <AutoCompleteTextView
                             android:id="@+id/acv_college"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:focusable="false"
+                            android:fontFamily="@font/poppins"
                             android:inputType="none"
+                            android:paddingStart="12dp"
                             android:textColor="@color/white"
                             android:textColorHint="@color/textHint" />
                     </com.google.android.material.textfield.TextInputLayout>
@@ -130,31 +136,44 @@
                         android:layout_height="wrap_content"
                         android:hint="Course"
                         app:endIconMode="dropdown_menu">
+
                         <AutoCompleteTextView
                             android:id="@+id/acv_course"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:focusable="false"
+                            android:fontFamily="@font/poppins"
                             android:inputType="none"
+                            android:paddingStart="12dp"
                             android:textColor="@color/white"
                             android:textColorHint="@color/textHint" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/iv_preview"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_photo_strip"
                     android:layout_width="match_parent"
-                    android:layout_height="180dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:background="#22000000"
-                    android:scaleType="centerCrop"
+                    android:clipToPadding="false"
                     android:visibility="gone" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:fontFamily="@font/poppins"
+                    android:text="Photos (up to 10, swipe in feed)"
+                    android:textColor="#88FFFFFF"
+                    android:textSize="11sp" />
 
                 <ImageView
                     android:id="@+id/btn_pick_image"
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
                     android:layout_marginBottom="14dp"
+                    android:contentDescription="Add photos"
                     android:src="@drawable/camera"
                     app:tint="@color/yellow" />
 

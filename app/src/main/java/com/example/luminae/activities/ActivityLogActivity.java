@@ -3,6 +3,7 @@ package com.example.luminae.activities;
 import android.Manifest;
 import android.app.DatePickerDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,6 +15,8 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.*;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -107,6 +110,18 @@ public class ActivityLogActivity extends AppCompatActivity {
             @Override public void afterTextChanged(Editable s) {}
             @Override public void onTextChanged(CharSequence s, int a, int bc, int c) { applyFilter(); }
         });
+        b.btnSearch.setOnClickListener(v -> {
+            hideKeyboard();
+            applyFilter();
+        });
+        b.etSearch.setOnEditorActionListener((tv, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                hideKeyboard();
+                applyFilter();
+                return true;
+            }
+            return false;
+        });
 
         // Module chips
         b.chipGroupModule.setOnCheckedStateChangeListener((g, ids) -> {
@@ -136,6 +151,11 @@ public class ActivityLogActivity extends AppCompatActivity {
         b.btnExportPdf.setOnClickListener(v -> showExportDialog());
 
         loadLogs();
+    }
+
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) imm.hideSoftInputFromWindow(b.etSearch.getWindowToken(), 0);
     }
 
     // ── Load Firestore ────────────────────────────────────────────────────────

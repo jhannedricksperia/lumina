@@ -120,8 +120,8 @@
                     android:layout_marginTop="8dp"
                     android:background="@drawable/badge_active"
                     android:fontFamily="@font/poppins_bold"
-                    android:paddingHorizontal="14dp"
-                    android:paddingVertical="4dp"
+                    android:paddingHorizontal="20dp"
+                    android:paddingVertical="6dp"
                     android:text="ADMIN"
                     android:textColor="@color/yellow"
                     android:textSize="11sp" />
@@ -141,53 +141,11 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="14dp"
                     android:fontFamily="@font/poppins_bold"
-                    android:text="Account Settings"
+                    android:text="Settings"
                     android:textColor="@color/white"
                     android:textSize="13sp" />
 
-                <!-- Update Password -->
-                <LinearLayout
-                    android:id="@+id/btn_change_password"
-                    android:layout_width="match_parent"
-                    android:layout_height="52dp"
-                    android:layout_marginBottom="2dp"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingHorizontal="4dp">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginEnd="14dp"
-                        android:src="@drawable/password"
-                        app:tint="@color/yellow" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/poppins"
-                        android:text="Update Password"
-                        android:textColor="@color/white"
-                        android:textSize="13sp" />
-
-                    <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:src="@drawable/right"
-                        app:tint="#55FFFFFF" />
-
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="#14FFFFFF" />
-
-                <!-- View Activity Logs -->
+                <!-- Audit Logs -->
                 <LinearLayout
                     android:id="@+id/btn_view_activity_log"
                     android:layout_width="match_parent"
@@ -212,7 +170,91 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:fontFamily="@font/poppins"
-                        android:text="View Activity Logs"
+                        android:text="Audit Logs"
+                        android:textColor="@color/white"
+                        android:textSize="13sp" />
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/right"
+                        app:tint="#55FFFFFF" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#14FFFFFF" />
+
+                <!-- Configurations -->
+                <LinearLayout
+                    android:id="@+id/btn_configurations"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginBottom="2dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="4dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginEnd="14dp"
+                        android:src="@drawable/settings"
+                        app:tint="@color/yellow" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/poppins"
+                        android:text="Configurations"
+                        android:textColor="@color/white"
+                        android:textSize="13sp" />
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/right"
+                        app:tint="#55FFFFFF" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#14FFFFFF" />
+
+                <!-- Change Password -->
+                <LinearLayout
+                    android:id="@+id/btn_change_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginBottom="2dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="4dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginEnd="14dp"
+                        android:src="@drawable/password"
+                        app:tint="@color/yellow" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/poppins"
+                        android:text="Change Password"
                         android:textColor="@color/white"
                         android:textSize="13sp" />
 

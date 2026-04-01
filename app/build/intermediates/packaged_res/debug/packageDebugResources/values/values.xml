@@ -31,7 +31,6 @@
     <color name="maroon">#6B0F1A</color>
     <color name="maroonDark">#4A0A12</color>
     <color name="maroonDeep">#2D0508</color>
-    <color name="nav_tab_selector">#FFFFFF</color>
     <color name="surface">#1E1E1E</color>
     <color name="textHint">#666666</color>
     <color name="textMuted">#888888</color>
@@ -40,6 +39,8 @@
     <color name="white">#FFFFFF</color>
     <color name="yellow">#F2C94C</color>
     <color name="yellowDark">#D4A017</color>
+    <item name="id_feed_carousel_doc" type="id"/>
+    <item name="id_feed_carousel_sig" type="id"/>
     <string name="app_name">LUMINA</string>
     <string name="gcm_defaultSenderId" translatable="false">885636845696</string>
     <string name="google_api_key" translatable="false">AIzaSyA0IbqY7QU__j2yelHb7xVxsNpD2ipyaKE</string>
@@ -57,6 +58,7 @@
         <item name="chipCornerRadius">20dp</item>
         <item name="chipMinHeight">32dp</item>
         <item name="checkedIconVisible">false</item>
+        <item name="android:layout_marginEnd">8dp</item>
     </style>
     <style name="LuminaField" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="boxStrokeColor">#33FFFFFF</item>
@@ -76,6 +78,10 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
+    <style name="ShapeAppearanceOverlayLuminaRoundedCard">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item>
+    </style>
     <style name="Theme.Luminae" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/maroon</item>
         <item name="colorPrimaryVariant">@color/maroonDark</item>
@@ -88,5 +94,30 @@
         <item name="colorControlActivated">@color/yellow</item>
         <item name="android:textColorHint">@color/textHint</item>
         <item name="toolbarStyle">@style/LuminaToolbar</item>
+        
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.Luminae.MaterialAlertDialog</item>
+        <item name="android:alertDialogTheme">@style/ThemeOverlay.Luminae.AppCompatAlertDialog</item>
+    </style>
+    <style name="ThemeOverlay.Luminae.AppCompatAlertDialog" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="colorPrimary">@color/yellow</item>
+        <item name="colorAccent">@color/yellow</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/white</item>
+    </style>
+    <style name="ThemeOverlay.Luminae.MaterialAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="colorPrimary">@color/yellow</item>
+        <item name="colorOnPrimary">@color/bgBlack</item>
+        <item name="colorOnSurface">@color/white</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Widget.Luminae.AlertDialog.Button.Positive</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Widget.Luminae.AlertDialog.Button.Negative</item>
+        <item name="buttonBarNeutralButtonStyle">@style/Widget.Luminae.AlertDialog.Button.Negative</item>
+    </style>
+    <style name="Widget.Luminae.AlertDialog.Button.Negative" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/white</item>
+        <item name="rippleColor">#33FFFFFF</item>
+    </style>
+    <style name="Widget.Luminae.AlertDialog.Button.Positive" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/yellow</item>
+        <item name="rippleColor">#40F2C94C</item>
     </style>
 </resources>

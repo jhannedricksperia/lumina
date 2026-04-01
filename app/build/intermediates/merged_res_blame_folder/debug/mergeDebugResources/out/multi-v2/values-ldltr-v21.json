@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.luminae.app-mergeDebugResources-37:/values-ldltr-v21/values-ldltr-v21.xml",
+            "outputFile": "com.example.luminae.app-mergeDebugResources-39:/values-ldltr-v21/values-ldltr-v21.xml",
             "map": [
                 {
                     "source": "C:\\Users\\jhann\\.gradle\\caches\\8.13\\transforms\\a0b1e49ad9f56cf330596846df3661c1\\transformed\\appcompat-1.6.1\\res\\values-ldltr-v21\\values-ldltr-v21.xml",

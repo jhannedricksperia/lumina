@@ -49,7 +49,7 @@ public class StaffFormActivity extends AppCompatActivity {
 
         setSupportActionBar(b.toolbar);
         b.toolbar.setNavigationOnClickListener(v -> finish());
-        b.ivProfilePhoto.setImageResource(com.example.luminae.R.drawable.profile_pic);
+        showPhotoPlaceholder();
 
         photoPicker = registerForActivityResult(new ActivityResultContracts.GetContent(),
                 uri -> {
@@ -63,7 +63,7 @@ public class StaffFormActivity extends AppCompatActivity {
                     loadBase64Image(base64);
                 });
         b.ivProfilePhoto.setOnClickListener(v -> photoPicker.launch("image/*"));
-        b.btnPickPhoto.setOnClickListener(v -> photoPicker.launch("image/*"));
+        b.tvChangePicture.setOnClickListener(v -> photoPicker.launch("image/*"));
 
         existingDocId = getIntent().getStringExtra("docId");
 
@@ -256,12 +256,13 @@ public class StaffFormActivity extends AppCompatActivity {
 
                     b.etFirstName.setText(doc.getString("fName"));
                     b.etLastName.setText(doc.getString("lName"));
+                    b.etDesignation.setText(doc.getString("designation"));
                     b.etEmail.setText(doc.getString("email"));
                     selectedPhotoBase64 = doc.getString("photoBase64");
                     if (selectedPhotoBase64 != null && !selectedPhotoBase64.isEmpty()) {
                         loadBase64Image(selectedPhotoBase64);
                     } else {
-                        b.ivProfilePhoto.setImageResource(com.example.luminae.R.drawable.profile_pic);
+                        showPhotoPlaceholder();
                     }
 
                     String savedCampusId  = doc.getString("campusId");
@@ -380,6 +381,7 @@ public class StaffFormActivity extends AppCompatActivity {
     private void saveStaff() {
         String fName = b.etFirstName.getText().toString().trim();
         String lName = b.etLastName.getText().toString().trim();
+        String designation = b.etDesignation.getText().toString().trim();
         String email = b.etEmail.getText().toString().trim();
 
         if (fName.isEmpty()) { b.tilFirstName.setError("Required"); return; }
@@ -387,6 +389,9 @@ public class StaffFormActivity extends AppCompatActivity {
 
         if (lName.isEmpty()) { b.tilLastName.setError("Required"); return; }
         else b.tilLastName.setError(null);
+
+        if (designation.isEmpty()) { b.tilDesignation.setError("Required"); return; }
+        else b.tilDesignation.setError(null);
 
         if (selectedCampusId == null) { b.tilCampus.setError("Please select a campus"); return; }
         else b.tilCampus.setError(null);
@@ -427,6 +432,7 @@ public class StaffFormActivity extends AppCompatActivity {
         Map<String, Object> data = new HashMap<>();
         data.put("fName",        fName);
         data.put("lName",        lName);
+        data.put("designation", b.etDesignation.getText().toString().trim());
         data.put("campusId",     selectedCampusId);
         data.put("campusLabel",  selectedCampusName);
         data.put("collegeId",    selectedCollegeId != null ? selectedCollegeId : "");
@@ -518,9 +524,15 @@ public class StaffFormActivity extends AppCompatActivity {
     private void loadBase64Image(String base64) {
         try {
             byte[] bytes = Base64.decode(base64, Base64.DEFAULT);
+            b.ivProfilePhoto.setImageTintList(null);
             b.ivProfilePhoto.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
         } catch (Exception e) {
-            b.ivProfilePhoto.setImageResource(com.example.luminae.R.drawable.profile_pic);
+            showPhotoPlaceholder();
         }
+    }
+
+    private void showPhotoPlaceholder() {
+        b.ivProfilePhoto.setImageResource(com.example.luminae.R.drawable.profile_pic);
+        b.ivProfilePhoto.setImageTintList(null);
     }
 }

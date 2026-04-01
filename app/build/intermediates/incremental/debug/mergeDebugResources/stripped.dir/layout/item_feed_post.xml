@@ -20,13 +20,14 @@
         android:layout_marginBottom="8dp">
 
         <!-- Poster Photo -->
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/iv_poster_photo"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginEnd="8dp"
             android:background="@drawable/avatar_circle"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlayLuminaCircle" />
 
         <!-- Type Badge -->
 
@@ -145,15 +146,30 @@
         android:layout_marginBottom="8dp"
         android:text="Description" />
 
-    <!-- Post Image -->
-    <ImageView
-        android:id="@+id/iv_post_image"
+    <!-- Post images: swipe + dots when multiple -->
+    <LinearLayout
+        android:id="@+id/layout_post_media"
         android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:scaleType="centerCrop"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:visibility="gone"
-        android:background="#11FFFFFF" />
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/vp_post_images"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:nestedScrollingEnabled="false" />
+
+        <LinearLayout
+            android:id="@+id/dots_post_images"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingTop="6dp"
+            android:visibility="gone" />
+    </LinearLayout>
 
     <!-- Event Info Block (location + date) -->
     <LinearLayout
@@ -164,23 +180,74 @@
         android:layout_marginBottom="6dp"
         android:visibility="gone">
 
-        <TextView
-            android:id="@+id/tv_location"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/poppins"
-            android:textColor="#CCFFFFFF"
-            android:textSize="11sp"
-            android:text="Location" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="4dp">
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginEnd="6dp"
+                android:src="@drawable/location"
+                app:tint="@color/yellow" />
+            <TextView
+                android:id="@+id/tv_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins"
+                android:textColor="#CCFFFFFF"
+                android:textSize="11sp"
+                android:text="Location" />
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/tv_event_date"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/poppins"
-            android:textColor="#CCFFFFFF"
-            android:textSize="11sp"
-            android:text="Date" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="4dp">
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginEnd="6dp"
+                android:src="@drawable/calendar"
+                app:tint="@color/yellow" />
+            <TextView
+                android:id="@+id/tv_event_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins"
+                android:textColor="#CCFFFFFF"
+                android:textSize="11sp"
+                android:text="Date" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/row_feed_going"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground">
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginEnd="6dp"
+                android:src="@drawable/going"
+                app:tint="@color/yellow" />
+            <TextView
+                android:id="@+id/tv_feed_going_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins"
+                android:textColor="#CCFFFFFF"
+                android:textSize="11sp"
+                android:text="0 going" />
+        </LinearLayout>
     </LinearLayout>
 
     <!-- Stats Row -->
@@ -191,31 +258,69 @@
         android:gravity="center_vertical"
         android:layout_marginBottom="8dp">
 
-        <!-- Like button / count -->
-        <TextView
+        <!-- Like: icon + count -->
+        <LinearLayout
             android:id="@+id/btn_like"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/poppins"
-            android:textColor="#EF9A9A"
-            android:textSize="12sp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:clickable="true"
             android:focusable="true"
             android:layout_marginEnd="12dp"
-            android:text="♥ 0" />
+            android:paddingVertical="4dp"
+            android:paddingEnd="4dp">
 
-        <!-- Comment button / count -->
-        <TextView
+            <ImageView
+                android:id="@+id/iv_like"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="6dp"
+                android:contentDescription="@null"
+                android:src="@drawable/heart_outline"
+                app:tint="#EF9A9A" />
+
+            <TextView
+                android:id="@+id/tv_like_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins"
+                android:textColor="#EF9A9A"
+                android:textSize="12sp"
+                android:text="0" />
+        </LinearLayout>
+
+        <!-- Comment: icon + count -->
+        <LinearLayout
             android:id="@+id/btn_comment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/poppins"
-            android:textColor="#90CAF9"
-            android:textSize="12sp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
             android:clickable="true"
             android:focusable="true"
             android:layout_marginEnd="12dp"
-            android:text="Comments: 0" />
+            android:paddingVertical="4dp"
+            android:paddingEnd="4dp">
+
+            <ImageView
+                android:id="@+id/iv_comment"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="6dp"
+                android:contentDescription="@null"
+                android:src="@drawable/comment"
+                app:tint="#90CAF9" />
+
+            <TextView
+                android:id="@+id/tv_comment_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins"
+                android:textColor="#90CAF9"
+                android:textSize="12sp"
+                android:text="0" />
+        </LinearLayout>
 
         <!-- Going info (used by StaffPostFragment; hidden for announcements) -->
         <TextView

@@ -35,12 +35,14 @@
                 android:id="@+id/nav_icon_dashboard"
                 android:layout_width="22dp"
                 android:layout_height="22dp"
+                android:duplicateParentState="true"
                 android:src="@drawable/dashboard"
                 app:tint="@color/nav_tab_selector" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
+                android:duplicateParentState="true"
                 android:fontFamily="@font/poppins"
                 android:text="Dashboard"
                 android:textColor="@color/nav_tab_selector"
@@ -61,12 +63,14 @@
             <ImageView
                 android:layout_width="22dp"
                 android:layout_height="22dp"
+                android:duplicateParentState="true"
                 android:src="@drawable/announcement"
                 app:tint="@color/nav_tab_selector" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
+                android:duplicateParentState="true"
                 android:fontFamily="@font/poppins"
                 android:text="Feed"
                 android:textColor="@color/nav_tab_selector"
@@ -87,12 +91,14 @@
             <ImageView
                 android:layout_width="22dp"
                 android:layout_height="22dp"
+                android:duplicateParentState="true"
                 android:src="@drawable/campus"
                 app:tint="@color/nav_tab_selector" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
+                android:duplicateParentState="true"
                 android:fontFamily="@font/poppins"
                 android:text="Manage"
                 android:textColor="@color/nav_tab_selector"
@@ -113,12 +119,14 @@
             <ImageView
                 android:layout_width="22dp"
                 android:layout_height="22dp"
+                android:duplicateParentState="true"
                 android:src="@drawable/person"
                 app:tint="@color/nav_tab_selector" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
+                android:duplicateParentState="true"
                 android:fontFamily="@font/poppins"
                 android:text="Profile"
                 android:textColor="@color/nav_tab_selector"

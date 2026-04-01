@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/b_background">
+    android:background="@color/bgBlack">
 
     <FrameLayout
         android:id="@+id/staff_fragment_container"
@@ -14,25 +14,37 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="62dp"
-        android:background="@color/maroonDark"
-        android:elevation="8dp"
-        android:orientation="horizontal">
+        android:layout_height="68dp"
+        android:orientation="horizontal"
+        android:background="@drawable/glass_card"
+        android:elevation="16dp"
+        android:paddingHorizontal="8dp">
 
         <LinearLayout
             android:id="@+id/nav_dashboard"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center"
             android:orientation="vertical"
+            android:gravity="center"
             android:clickable="true"
-            android:focusable="true">
-            <ImageView android:layout_width="22dp" android:layout_height="22dp"
-                android:src="@drawable/ic_dashboard" app:tint="@color/nav_tab_selector" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Dashboard" android:textSize="9sp"
-                android:fontFamily="@font/poppins" android:textColor="@color/nav_tab_selector" />
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless">
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:duplicateParentState="true"
+                android:src="@drawable/dashboard"
+                app:tint="@color/nav_tab_selector" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:duplicateParentState="true"
+                android:fontFamily="@font/poppins"
+                android:text="Dashboard"
+                android:textColor="@color/nav_tab_selector"
+                android:textSize="9sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -40,15 +52,26 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center"
             android:orientation="vertical"
+            android:gravity="center"
             android:clickable="true"
-            android:focusable="true">
-            <ImageView android:layout_width="22dp" android:layout_height="22dp"
-                android:src="@drawable/ic_post" app:tint="@color/nav_tab_selector" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Post" android:textSize="10sp"
-                android:fontFamily="@font/poppins" android:textColor="@color/nav_tab_selector" />
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless">
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:duplicateParentState="true"
+                android:src="@drawable/announcement"
+                app:tint="@color/nav_tab_selector" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:duplicateParentState="true"
+                android:fontFamily="@font/poppins"
+                android:text="Post"
+                android:textColor="@color/nav_tab_selector"
+                android:textSize="9sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -56,20 +79,26 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center"
             android:orientation="vertical"
+            android:gravity="center"
             android:clickable="true"
-            android:focusable="true">
-            <ImageView android:layout_width="22dp" android:layout_height="22dp"
-                android:src="@drawable/ic_notification" app:tint="@color/nav_tab_selector" />
-
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless">
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:duplicateParentState="true"
+                android:src="@drawable/notification"
+                app:tint="@color/nav_tab_selector" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:duplicateParentState="true"
                 android:fontFamily="@font/poppins"
                 android:text="Notifications"
                 android:textColor="@color/nav_tab_selector"
-                android:textSize="10sp" />
+                android:textSize="9sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -77,16 +106,26 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center"
             android:orientation="vertical"
+            android:gravity="center"
             android:clickable="true"
-            android:focusable="true">
-            <ImageView android:layout_width="22dp" android:layout_height="22dp"
-                android:src="@drawable/ic_profile" app:tint="@color/nav_tab_selector" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Profile" android:textSize="10sp"
-                android:fontFamily="@font/poppins" android:textColor="@color/nav_tab_selector" />
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless">
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:duplicateParentState="true"
+                android:src="@drawable/person"
+                app:tint="@color/nav_tab_selector" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:duplicateParentState="true"
+                android:fontFamily="@font/poppins"
+                android:text="Profile"
+                android:textColor="@color/nav_tab_selector"
+                android:textSize="9sp" />
         </LinearLayout>
-
     </LinearLayout>
 </LinearLayout>

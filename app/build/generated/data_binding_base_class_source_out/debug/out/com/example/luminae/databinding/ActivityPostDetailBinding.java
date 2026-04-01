@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
+import androidx.viewpager2.widget.ViewPager2;
 import com.example.luminae.R;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.textfield.TextInputEditText;
@@ -24,16 +25,22 @@ public final class ActivityPostDetailBinding implements ViewBinding {
   private final LinearLayout rootView;
 
   @NonNull
-  public final TextView btnLikePost;
+  public final TextView btnGoingPost;
+
+  @NonNull
+  public final LinearLayout btnLikePost;
 
   @NonNull
   public final ImageView btnSendComment;
 
   @NonNull
+  public final LinearLayout dotsPostImages;
+
+  @NonNull
   public final TextInputEditText etComment;
 
   @NonNull
-  public final ImageView ivPostImage;
+  public final ImageView ivLikePost;
 
   @NonNull
   public final ImageView ivPosterPhoto;
@@ -42,7 +49,13 @@ public final class ActivityPostDetailBinding implements ViewBinding {
   public final LinearLayout layoutEventExtras;
 
   @NonNull
+  public final LinearLayout layoutPostMedia;
+
+  @NonNull
   public final RecyclerView recyclerComments;
+
+  @NonNull
+  public final LinearLayout rowGoingDetail;
 
   @NonNull
   public final MaterialToolbar toolbar;
@@ -58,6 +71,9 @@ public final class ActivityPostDetailBinding implements ViewBinding {
 
   @NonNull
   public final TextView tvEventLocation;
+
+  @NonNull
+  public final TextView tvLikePostCount;
 
   @NonNull
   public final TextView tvParticipantsCount;
@@ -77,35 +93,46 @@ public final class ActivityPostDetailBinding implements ViewBinding {
   @NonNull
   public final TextView tvPostedByDesig;
 
-  private ActivityPostDetailBinding(@NonNull LinearLayout rootView, @NonNull TextView btnLikePost,
-      @NonNull ImageView btnSendComment, @NonNull TextInputEditText etComment,
-      @NonNull ImageView ivPostImage, @NonNull ImageView ivPosterPhoto,
-      @NonNull LinearLayout layoutEventExtras, @NonNull RecyclerView recyclerComments,
+  @NonNull
+  public final ViewPager2 vpPostImages;
+
+  private ActivityPostDetailBinding(@NonNull LinearLayout rootView, @NonNull TextView btnGoingPost,
+      @NonNull LinearLayout btnLikePost, @NonNull ImageView btnSendComment,
+      @NonNull LinearLayout dotsPostImages, @NonNull TextInputEditText etComment,
+      @NonNull ImageView ivLikePost, @NonNull ImageView ivPosterPhoto,
+      @NonNull LinearLayout layoutEventExtras, @NonNull LinearLayout layoutPostMedia,
+      @NonNull RecyclerView recyclerComments, @NonNull LinearLayout rowGoingDetail,
       @NonNull MaterialToolbar toolbar, @NonNull TextView tvCommentCount,
       @NonNull TextView tvCommentCountInline, @NonNull TextView tvEventDate,
-      @NonNull TextView tvEventLocation, @NonNull TextView tvParticipantsCount,
-      @NonNull TextView tvPostDescription, @NonNull TextView tvPostTime,
-      @NonNull TextView tvPostTitle, @NonNull TextView tvPostedBy,
-      @NonNull TextView tvPostedByDesig) {
+      @NonNull TextView tvEventLocation, @NonNull TextView tvLikePostCount,
+      @NonNull TextView tvParticipantsCount, @NonNull TextView tvPostDescription,
+      @NonNull TextView tvPostTime, @NonNull TextView tvPostTitle, @NonNull TextView tvPostedBy,
+      @NonNull TextView tvPostedByDesig, @NonNull ViewPager2 vpPostImages) {
     this.rootView = rootView;
+    this.btnGoingPost = btnGoingPost;
     this.btnLikePost = btnLikePost;
     this.btnSendComment = btnSendComment;
+    this.dotsPostImages = dotsPostImages;
     this.etComment = etComment;
-    this.ivPostImage = ivPostImage;
+    this.ivLikePost = ivLikePost;
     this.ivPosterPhoto = ivPosterPhoto;
     this.layoutEventExtras = layoutEventExtras;
+    this.layoutPostMedia = layoutPostMedia;
     this.recyclerComments = recyclerComments;
+    this.rowGoingDetail = rowGoingDetail;
     this.toolbar = toolbar;
     this.tvCommentCount = tvCommentCount;
     this.tvCommentCountInline = tvCommentCountInline;
     this.tvEventDate = tvEventDate;
     this.tvEventLocation = tvEventLocation;
+    this.tvLikePostCount = tvLikePostCount;
     this.tvParticipantsCount = tvParticipantsCount;
     this.tvPostDescription = tvPostDescription;
     this.tvPostTime = tvPostTime;
     this.tvPostTitle = tvPostTitle;
     this.tvPostedBy = tvPostedBy;
     this.tvPostedByDesig = tvPostedByDesig;
+    this.vpPostImages = vpPostImages;
   }
 
   @Override
@@ -135,8 +162,14 @@ public final class ActivityPostDetailBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
+      id = R.id.btn_going_post;
+      TextView btnGoingPost = ViewBindings.findChildViewById(rootView, id);
+      if (btnGoingPost == null) {
+        break missingId;
+      }
+
       id = R.id.btn_like_post;
-      TextView btnLikePost = ViewBindings.findChildViewById(rootView, id);
+      LinearLayout btnLikePost = ViewBindings.findChildViewById(rootView, id);
       if (btnLikePost == null) {
         break missingId;
       }
@@ -147,15 +180,21 @@ public final class ActivityPostDetailBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.dots_post_images;
+      LinearLayout dotsPostImages = ViewBindings.findChildViewById(rootView, id);
+      if (dotsPostImages == null) {
+        break missingId;
+      }
+
       id = R.id.et_comment;
       TextInputEditText etComment = ViewBindings.findChildViewById(rootView, id);
       if (etComment == null) {
         break missingId;
       }
 
-      id = R.id.iv_post_image;
-      ImageView ivPostImage = ViewBindings.findChildViewById(rootView, id);
-      if (ivPostImage == null) {
+      id = R.id.iv_like_post;
+      ImageView ivLikePost = ViewBindings.findChildViewById(rootView, id);
+      if (ivLikePost == null) {
         break missingId;
       }
 
@@ -171,9 +210,21 @@ public final class ActivityPostDetailBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.layout_post_media;
+      LinearLayout layoutPostMedia = ViewBindings.findChildViewById(rootView, id);
+      if (layoutPostMedia == null) {
+        break missingId;
+      }
+
       id = R.id.recycler_comments;
       RecyclerView recyclerComments = ViewBindings.findChildViewById(rootView, id);
       if (recyclerComments == null) {
+        break missingId;
+      }
+
+      id = R.id.row_going_detail;
+      LinearLayout rowGoingDetail = ViewBindings.findChildViewById(rootView, id);
+      if (rowGoingDetail == null) {
         break missingId;
       }
 
@@ -204,6 +255,12 @@ public final class ActivityPostDetailBinding implements ViewBinding {
       id = R.id.tv_event_location;
       TextView tvEventLocation = ViewBindings.findChildViewById(rootView, id);
       if (tvEventLocation == null) {
+        break missingId;
+      }
+
+      id = R.id.tv_like_post_count;
+      TextView tvLikePostCount = ViewBindings.findChildViewById(rootView, id);
+      if (tvLikePostCount == null) {
         break missingId;
       }
 
@@ -243,10 +300,17 @@ public final class ActivityPostDetailBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ActivityPostDetailBinding((LinearLayout) rootView, btnLikePost, btnSendComment,
-          etComment, ivPostImage, ivPosterPhoto, layoutEventExtras, recyclerComments, toolbar,
-          tvCommentCount, tvCommentCountInline, tvEventDate, tvEventLocation, tvParticipantsCount,
-          tvPostDescription, tvPostTime, tvPostTitle, tvPostedBy, tvPostedByDesig);
+      id = R.id.vp_post_images;
+      ViewPager2 vpPostImages = ViewBindings.findChildViewById(rootView, id);
+      if (vpPostImages == null) {
+        break missingId;
+      }
+
+      return new ActivityPostDetailBinding((LinearLayout) rootView, btnGoingPost, btnLikePost,
+          btnSendComment, dotsPostImages, etComment, ivLikePost, ivPosterPhoto, layoutEventExtras,
+          layoutPostMedia, recyclerComments, rowGoingDetail, toolbar, tvCommentCount,
+          tvCommentCountInline, tvEventDate, tvEventLocation, tvLikePostCount, tvParticipantsCount,
+          tvPostDescription, tvPostTime, tvPostTitle, tvPostedBy, tvPostedByDesig, vpPostImages);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

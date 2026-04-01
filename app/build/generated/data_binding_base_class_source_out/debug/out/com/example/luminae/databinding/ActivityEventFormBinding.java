@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
 import com.example.luminae.R;
@@ -63,13 +64,13 @@ public final class ActivityEventFormBinding implements ViewBinding {
   public final TextInputEditText etTitle;
 
   @NonNull
-  public final ImageView ivPreview;
-
-  @NonNull
   public final LinearLayout layoutAudiencePicker;
 
   @NonNull
   public final ProgressBar progressBar;
+
+  @NonNull
+  public final RecyclerView rvPhotoStrip;
 
   @NonNull
   public final TextInputLayout tilCampus;
@@ -114,8 +115,8 @@ public final class ActivityEventFormBinding implements ViewBinding {
       @NonNull MaterialButton btnPickTime, @NonNull MaterialButton btnSave,
       @NonNull TextInputEditText etDescription, @NonNull TextInputEditText etLocation,
       @NonNull TextInputEditText etMax, @NonNull TextInputEditText etTitle,
-      @NonNull ImageView ivPreview, @NonNull LinearLayout layoutAudiencePicker,
-      @NonNull ProgressBar progressBar, @NonNull TextInputLayout tilCampus,
+      @NonNull LinearLayout layoutAudiencePicker, @NonNull ProgressBar progressBar,
+      @NonNull RecyclerView rvPhotoStrip, @NonNull TextInputLayout tilCampus,
       @NonNull TextInputLayout tilCollege, @NonNull TextInputLayout tilCourse,
       @NonNull TextInputLayout tilDescription, @NonNull TextInputLayout tilLocation,
       @NonNull TextInputLayout tilMax, @NonNull TextInputLayout tilTitle,
@@ -134,9 +135,9 @@ public final class ActivityEventFormBinding implements ViewBinding {
     this.etLocation = etLocation;
     this.etMax = etMax;
     this.etTitle = etTitle;
-    this.ivPreview = ivPreview;
     this.layoutAudiencePicker = layoutAudiencePicker;
     this.progressBar = progressBar;
+    this.rvPhotoStrip = rvPhotoStrip;
     this.tilCampus = tilCampus;
     this.tilCollege = tilCollege;
     this.tilCourse = tilCourse;
@@ -250,12 +251,6 @@ public final class ActivityEventFormBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.iv_preview;
-      ImageView ivPreview = ViewBindings.findChildViewById(rootView, id);
-      if (ivPreview == null) {
-        break missingId;
-      }
-
       id = R.id.layout_audience_picker;
       LinearLayout layoutAudiencePicker = ViewBindings.findChildViewById(rootView, id);
       if (layoutAudiencePicker == null) {
@@ -265,6 +260,12 @@ public final class ActivityEventFormBinding implements ViewBinding {
       id = R.id.progress_bar;
       ProgressBar progressBar = ViewBindings.findChildViewById(rootView, id);
       if (progressBar == null) {
+        break missingId;
+      }
+
+      id = R.id.rv_photo_strip;
+      RecyclerView rvPhotoStrip = ViewBindings.findChildViewById(rootView, id);
+      if (rvPhotoStrip == null) {
         break missingId;
       }
 
@@ -342,7 +343,7 @@ public final class ActivityEventFormBinding implements ViewBinding {
 
       return new ActivityEventFormBinding((LinearLayout) rootView, acvCampus, acvCollege, acvCourse,
           btnCancel, btnPickDate, btnPickImage, btnPickTime, btnSave, etDescription, etLocation,
-          etMax, etTitle, ivPreview, layoutAudiencePicker, progressBar, tilCampus, tilCollege,
+          etMax, etTitle, layoutAudiencePicker, progressBar, rvPhotoStrip, tilCampus, tilCollege,
           tilCourse, tilDescription, tilLocation, tilMax, tilTitle, toolbar, tvAudienceLabel,
           tvError, tvPickedDate, tvPickedTime);
     }

@@ -4,6 +4,7 @@ package com.example.luminae.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
@@ -21,6 +22,9 @@ import java.lang.String;
 public final class FragmentStudentFeedBinding implements ViewBinding {
   @NonNull
   private final LinearLayout rootView;
+
+  @NonNull
+  public final ImageButton btnSearch;
 
   @NonNull
   public final Chip chipAll;
@@ -46,11 +50,12 @@ public final class FragmentStudentFeedBinding implements ViewBinding {
   @NonNull
   public final RecyclerView recyclerFeed;
 
-  private FragmentStudentFeedBinding(@NonNull LinearLayout rootView, @NonNull Chip chipAll,
-      @NonNull Chip chipAnnouncement, @NonNull Chip chipAsc, @NonNull Chip chipDesc,
-      @NonNull Chip chipEvent, @NonNull TextInputEditText etSearch,
+  private FragmentStudentFeedBinding(@NonNull LinearLayout rootView, @NonNull ImageButton btnSearch,
+      @NonNull Chip chipAll, @NonNull Chip chipAnnouncement, @NonNull Chip chipAsc,
+      @NonNull Chip chipDesc, @NonNull Chip chipEvent, @NonNull TextInputEditText etSearch,
       @NonNull ProgressBar progressFeed, @NonNull RecyclerView recyclerFeed) {
     this.rootView = rootView;
+    this.btnSearch = btnSearch;
     this.chipAll = chipAll;
     this.chipAnnouncement = chipAnnouncement;
     this.chipAsc = chipAsc;
@@ -88,6 +93,12 @@ public final class FragmentStudentFeedBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
+      id = R.id.btn_search;
+      ImageButton btnSearch = ViewBindings.findChildViewById(rootView, id);
+      if (btnSearch == null) {
+        break missingId;
+      }
+
       id = R.id.chip_all;
       Chip chipAll = ViewBindings.findChildViewById(rootView, id);
       if (chipAll == null) {
@@ -136,8 +147,8 @@ public final class FragmentStudentFeedBinding implements ViewBinding {
         break missingId;
       }
 
-      return new FragmentStudentFeedBinding((LinearLayout) rootView, chipAll, chipAnnouncement,
-          chipAsc, chipDesc, chipEvent, etSearch, progressFeed, recyclerFeed);
+      return new FragmentStudentFeedBinding((LinearLayout) rootView, btnSearch, chipAll,
+          chipAnnouncement, chipAsc, chipDesc, chipEvent, etSearch, progressFeed, recyclerFeed);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import com.example.luminae.R;
 import com.example.luminae.databinding.ActivityStaffBinding;
 import com.example.luminae.staff.fragments.StaffDashboardFragment;
+import com.example.luminae.staff.fragments.StaffNotificationFragment;
 import com.example.luminae.staff.fragments.StaffPostFragment;
 import com.example.luminae.staff.fragments.StaffProfileFragment;
 

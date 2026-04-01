@@ -17,6 +17,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import com.example.luminae.R;
 import com.example.luminae.activities.ActivityLogActivity;
+import com.example.luminae.activities.ConfigurationsActivity;
 import com.example.luminae.activities.LoginActivity;
 import com.example.luminae.databinding.FragmentAdminProfileBinding;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -59,6 +60,9 @@ public class AdminProfileFragment extends Fragment {
                     });
         });
 
+        b.btnConfigurations.setOnClickListener(v ->
+                startActivity(new Intent(getActivity(), ConfigurationsActivity.class)));
+
         b.btnLogout.setOnClickListener(v -> showLogoutDialog());
 
         return b.getRoot();
@@ -71,6 +75,7 @@ public class AdminProfileFragment extends Fragment {
 
         db.collection("users").document(uid).get()
                 .addOnSuccessListener(doc -> {
+                    if (!isAdded() || b == null) return;
                     if (doc == null || !doc.exists()) return;
                     String fName    = doc.getString("fName")      != null ? doc.getString("fName")      : "";
                     String lName    = doc.getString("lName")      != null ? doc.getString("lName")      : "";
@@ -96,6 +101,7 @@ public class AdminProfileFragment extends Fragment {
     private void uploadProfilePhoto(Uri uri) {
         String uid = auth.getUid();
         if (uid == null) return;
+        if (!isAdded() || b == null) return;
 
         b.progressPhoto.setVisibility(View.VISIBLE);
         String base64 = compressToBase64(uri, 200, 70);
@@ -108,12 +114,14 @@ public class AdminProfileFragment extends Fragment {
         db.collection("users").document(uid)
                 .update("photoBase64", base64)
                 .addOnSuccessListener(v -> {
+                    if (!isAdded() || b == null) return;
                     loadBase64Image(base64, b.ivProfilePhoto);
                     b.tvInitials.setVisibility(View.GONE);
                     b.progressPhoto.setVisibility(View.GONE);
                     Toast.makeText(getContext(), "Photo updated!", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> {
+                    if (!isAdded() || b == null) return;
                     b.progressPhoto.setVisibility(View.GONE);
                     Toast.makeText(getContext(), "Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });

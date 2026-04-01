@@ -1,7 +1,10 @@
 package com.example.luminae.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -91,6 +94,16 @@ public class EventParticipantsActivity extends AppCompatActivity {
             h.tvCourse.setText(course);
             h.tvDate.setText(joined != null ? sdf.format(joined.toDate()) : "—");
             h.tvInitials.setText(initials(fName, lName));
+
+            String uid = doc.getString("uid") != null ? doc.getString("uid") : "";
+            View.OnClickListener openProfile = v -> {
+                if (uid.isEmpty()) return;
+                Intent i = new Intent(EventParticipantsActivity.this, UserProfileActivity.class);
+                i.putExtra("uid", uid);
+                startActivity(i);
+            };
+            h.itemView.setOnClickListener(openProfile);
+            h.tvFullName.setOnClickListener(openProfile);
         }
 
         @Override public int getItemCount() { return participants.size(); }

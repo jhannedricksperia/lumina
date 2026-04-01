@@ -26,6 +26,9 @@ public final class FragmentAdminProfileBinding implements ViewBinding {
   public final LinearLayout btnChangePassword;
 
   @NonNull
+  public final LinearLayout btnConfigurations;
+
+  @NonNull
   public final ImageView btnEditPhoto;
 
   @NonNull
@@ -53,13 +56,14 @@ public final class FragmentAdminProfileBinding implements ViewBinding {
   public final TextView tvRole;
 
   private FragmentAdminProfileBinding(@NonNull LinearLayout rootView,
-      @NonNull LinearLayout btnChangePassword, @NonNull ImageView btnEditPhoto,
-      @NonNull LinearLayout btnLogout, @NonNull LinearLayout btnViewActivityLog,
-      @NonNull ShapeableImageView ivProfilePhoto, @NonNull ProgressBar progressPhoto,
-      @NonNull TextView tvEmail, @NonNull TextView tvFullName, @NonNull TextView tvInitials,
-      @NonNull TextView tvRole) {
+      @NonNull LinearLayout btnChangePassword, @NonNull LinearLayout btnConfigurations,
+      @NonNull ImageView btnEditPhoto, @NonNull LinearLayout btnLogout,
+      @NonNull LinearLayout btnViewActivityLog, @NonNull ShapeableImageView ivProfilePhoto,
+      @NonNull ProgressBar progressPhoto, @NonNull TextView tvEmail, @NonNull TextView tvFullName,
+      @NonNull TextView tvInitials, @NonNull TextView tvRole) {
     this.rootView = rootView;
     this.btnChangePassword = btnChangePassword;
+    this.btnConfigurations = btnConfigurations;
     this.btnEditPhoto = btnEditPhoto;
     this.btnLogout = btnLogout;
     this.btnViewActivityLog = btnViewActivityLog;
@@ -101,6 +105,12 @@ public final class FragmentAdminProfileBinding implements ViewBinding {
       id = R.id.btn_change_password;
       LinearLayout btnChangePassword = ViewBindings.findChildViewById(rootView, id);
       if (btnChangePassword == null) {
+        break missingId;
+      }
+
+      id = R.id.btn_configurations;
+      LinearLayout btnConfigurations = ViewBindings.findChildViewById(rootView, id);
+      if (btnConfigurations == null) {
         break missingId;
       }
 
@@ -159,8 +169,8 @@ public final class FragmentAdminProfileBinding implements ViewBinding {
       }
 
       return new FragmentAdminProfileBinding((LinearLayout) rootView, btnChangePassword,
-          btnEditPhoto, btnLogout, btnViewActivityLog, ivProfilePhoto, progressPhoto, tvEmail,
-          tvFullName, tvInitials, tvRole);
+          btnConfigurations, btnEditPhoto, btnLogout, btnViewActivityLog, ivProfilePhoto,
+          progressPhoto, tvEmail, tvFullName, tvInitials, tvRole);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

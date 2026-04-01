@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
 import com.example.luminae.R;
@@ -51,13 +52,13 @@ public final class ActivityAnnouncementFormBinding implements ViewBinding {
   public final TextInputEditText etTitle;
 
   @NonNull
-  public final ImageView ivPreview;
-
-  @NonNull
   public final LinearLayout layoutAudiencePicker;
 
   @NonNull
   public final ProgressBar progressBar;
+
+  @NonNull
+  public final RecyclerView rvPhotoStrip;
 
   @NonNull
   public final TextInputLayout tilCampus;
@@ -88,8 +89,8 @@ public final class ActivityAnnouncementFormBinding implements ViewBinding {
       @NonNull AutoCompleteTextView acvCourse, @NonNull MaterialButton btnCancel,
       @NonNull ImageView btnPickImage, @NonNull MaterialButton btnSave,
       @NonNull TextInputEditText etDescription, @NonNull TextInputEditText etTitle,
-      @NonNull ImageView ivPreview, @NonNull LinearLayout layoutAudiencePicker,
-      @NonNull ProgressBar progressBar, @NonNull TextInputLayout tilCampus,
+      @NonNull LinearLayout layoutAudiencePicker, @NonNull ProgressBar progressBar,
+      @NonNull RecyclerView rvPhotoStrip, @NonNull TextInputLayout tilCampus,
       @NonNull TextInputLayout tilCollege, @NonNull TextInputLayout tilCourse,
       @NonNull TextInputLayout tilDescription, @NonNull TextInputLayout tilTitle,
       @NonNull MaterialToolbar toolbar, @NonNull TextView tvAudienceLabel,
@@ -103,9 +104,9 @@ public final class ActivityAnnouncementFormBinding implements ViewBinding {
     this.btnSave = btnSave;
     this.etDescription = etDescription;
     this.etTitle = etTitle;
-    this.ivPreview = ivPreview;
     this.layoutAudiencePicker = layoutAudiencePicker;
     this.progressBar = progressBar;
+    this.rvPhotoStrip = rvPhotoStrip;
     this.tilCampus = tilCampus;
     this.tilCollege = tilCollege;
     this.tilCourse = tilCourse;
@@ -191,12 +192,6 @@ public final class ActivityAnnouncementFormBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.iv_preview;
-      ImageView ivPreview = ViewBindings.findChildViewById(rootView, id);
-      if (ivPreview == null) {
-        break missingId;
-      }
-
       id = R.id.layout_audience_picker;
       LinearLayout layoutAudiencePicker = ViewBindings.findChildViewById(rootView, id);
       if (layoutAudiencePicker == null) {
@@ -206,6 +201,12 @@ public final class ActivityAnnouncementFormBinding implements ViewBinding {
       id = R.id.progress_bar;
       ProgressBar progressBar = ViewBindings.findChildViewById(rootView, id);
       if (progressBar == null) {
+        break missingId;
+      }
+
+      id = R.id.rv_photo_strip;
+      RecyclerView rvPhotoStrip = ViewBindings.findChildViewById(rootView, id);
+      if (rvPhotoStrip == null) {
         break missingId;
       }
 
@@ -258,9 +259,9 @@ public final class ActivityAnnouncementFormBinding implements ViewBinding {
       }
 
       return new ActivityAnnouncementFormBinding((LinearLayout) rootView, acvCampus, acvCollege,
-          acvCourse, btnCancel, btnPickImage, btnSave, etDescription, etTitle, ivPreview,
-          layoutAudiencePicker, progressBar, tilCampus, tilCollege, tilCourse, tilDescription,
-          tilTitle, toolbar, tvAudienceLabel, tvError);
+          acvCourse, btnCancel, btnPickImage, btnSave, etDescription, etTitle, layoutAudiencePicker,
+          progressBar, rvPhotoStrip, tilCampus, tilCollege, tilCourse, tilDescription, tilTitle,
+          toolbar, tvAudienceLabel, tvError);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

@@ -67,7 +67,7 @@ public class StudentFormActivity extends AppCompatActivity {
 
         setSupportActionBar(b.toolbar);
         b.toolbar.setNavigationOnClickListener(v -> finish());
-        b.ivProfilePhoto.setImageResource(com.example.luminae.R.drawable.profile_pic);
+        showPhotoPlaceholder();
 
         photoPicker = registerForActivityResult(new ActivityResultContracts.GetContent(),
                 uri -> {
@@ -81,7 +81,7 @@ public class StudentFormActivity extends AppCompatActivity {
                     loadBase64Image(base64);
                 });
         b.ivProfilePhoto.setOnClickListener(v -> photoPicker.launch("image/*"));
-        b.btnPickPhoto.setOnClickListener(v -> photoPicker.launch("image/*"));
+        b.tvChangePicture.setOnClickListener(v -> photoPicker.launch("image/*"));
 
         // Lock College and Course until their parent is chosen
         setDropdownEnabled(b.tilCollege, b.acvCollege, false);
@@ -438,9 +438,15 @@ public class StudentFormActivity extends AppCompatActivity {
     private void loadBase64Image(String base64) {
         try {
             byte[] bytes = Base64.decode(base64, Base64.DEFAULT);
+            b.ivProfilePhoto.setImageTintList(null);
             b.ivProfilePhoto.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
         } catch (Exception e) {
-            b.ivProfilePhoto.setImageResource(com.example.luminae.R.drawable.profile_pic);
+            showPhotoPlaceholder();
         }
+    }
+
+    private void showPhotoPlaceholder() {
+        b.ivProfilePhoto.setImageResource(com.example.luminae.R.drawable.profile_pic);
+        b.ivProfilePhoto.setImageTintList(null);
     }
 }

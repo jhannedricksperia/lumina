@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.luminae.app-mergeDebugResources-37:/values-hi/values-hi.xml",
+            "outputFile": "com.example.luminae.app-mergeDebugResources-39:/values-hi/values-hi.xml",
             "map": [
                 {
                     "source": "C:\\Users\\jhann\\.gradle\\caches\\8.13\\transforms\\a0b1e49ad9f56cf330596846df3661c1\\transformed\\appcompat-1.6.1\\res\\values-hi\\values-hi.xml",

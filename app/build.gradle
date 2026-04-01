@@ -49,9 +49,13 @@ dependencies {
 
     // Firestore — stores fullName, username, role, status
     implementation 'com.google.firebase:firebase-firestore'
+
+    // FCM push notifications
+    implementation 'com.google.firebase:firebase-messaging'
     implementation 'com.itextpdf:itext7-core:7.2.5'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     implementation 'androidx.activity:activity:1.12.3'
+    implementation 'androidx.viewpager2:viewpager2:1.1.0'
     implementation 'com.sun.mail:android-mail:1.6.7'
     implementation 'com.sun.mail:android-activation:1.6.7'
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'

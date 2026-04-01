@@ -4,6 +4,7 @@ package com.example.luminae.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -28,6 +29,9 @@ public final class ActivityStaffManagementBinding implements ViewBinding {
 
   @NonNull
   public final MaterialButton btnAddStaff;
+
+  @NonNull
+  public final ImageButton btnSearch;
 
   @NonNull
   public final Chip chipActive;
@@ -57,13 +61,14 @@ public final class ActivityStaffManagementBinding implements ViewBinding {
   public final TextView tvCount;
 
   private ActivityStaffManagementBinding(@NonNull LinearLayout rootView,
-      @NonNull MaterialButton btnAddStaff, @NonNull Chip chipActive, @NonNull Chip chipAll,
-      @NonNull Chip chipBlocked, @NonNull ChipGroup chipGroupStatus,
+      @NonNull MaterialButton btnAddStaff, @NonNull ImageButton btnSearch, @NonNull Chip chipActive,
+      @NonNull Chip chipAll, @NonNull Chip chipBlocked, @NonNull ChipGroup chipGroupStatus,
       @NonNull TextInputEditText etSearch, @NonNull RecyclerView recyclerStaff,
       @NonNull TextInputLayout tilSearch, @NonNull MaterialToolbar toolbar,
       @NonNull TextView tvCount) {
     this.rootView = rootView;
     this.btnAddStaff = btnAddStaff;
+    this.btnSearch = btnSearch;
     this.chipActive = chipActive;
     this.chipAll = chipAll;
     this.chipBlocked = chipBlocked;
@@ -105,6 +110,12 @@ public final class ActivityStaffManagementBinding implements ViewBinding {
       id = R.id.btn_add_staff;
       MaterialButton btnAddStaff = ViewBindings.findChildViewById(rootView, id);
       if (btnAddStaff == null) {
+        break missingId;
+      }
+
+      id = R.id.btn_search;
+      ImageButton btnSearch = ViewBindings.findChildViewById(rootView, id);
+      if (btnSearch == null) {
         break missingId;
       }
 
@@ -162,9 +173,9 @@ public final class ActivityStaffManagementBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ActivityStaffManagementBinding((LinearLayout) rootView, btnAddStaff, chipActive,
-          chipAll, chipBlocked, chipGroupStatus, etSearch, recyclerStaff, tilSearch, toolbar,
-          tvCount);
+      return new ActivityStaffManagementBinding((LinearLayout) rootView, btnAddStaff, btnSearch,
+          chipActive, chipAll, chipBlocked, chipGroupStatus, etSearch, recyclerStaff, tilSearch,
+          toolbar, tvCount);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

@@ -1,10 +1,13 @@
 package com.example.luminae.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.*;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -72,6 +75,18 @@ public class CollegeManagementActivity extends AppCompatActivity {
                 applyFilter();
             }
         });
+        b.btnSearch.setOnClickListener(v -> {
+            hideKeyboard();
+            applyFilter();
+        });
+        b.etSearch.setOnEditorActionListener((tv, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                hideKeyboard();
+                applyFilter();
+                return true;
+            }
+            return false;
+        });
 
         // Open the add-college dialog when the FAB / add button is tapped.
         b.btnAdd.setOnClickListener(v -> {
@@ -86,6 +101,11 @@ public class CollegeManagementActivity extends AppCompatActivity {
                     all = snap.getDocuments();
                     applyFilter();
                 });
+    }
+
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) imm.hideSoftInputFromWindow(b.etSearch.getWindowToken(), 0);
     }
 
     // ---------------------------------------------------------------------------
