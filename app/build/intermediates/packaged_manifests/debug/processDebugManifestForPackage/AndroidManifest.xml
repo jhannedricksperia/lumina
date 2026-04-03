@@ -29,6 +29,7 @@
         android:icon="@drawable/logo"
         android:label="LUMINA"
         android:roundIcon="@drawable/logo"
+        android:testOnly="true"
         android:theme="@style/Theme.Luminae"
         android:usesCleartextTraffic="true" >
         <activity
@@ -45,6 +46,12 @@
             android:exported="false" />
         <activity
             android:name="com.example.luminae.activities.ForgotPasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.luminae.activities.ChangePasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.luminae.activities.SignedInForgotPasswordActivity"
             android:exported="false" />
         <activity
             android:name="com.example.luminae.activities.RegisterActivity"

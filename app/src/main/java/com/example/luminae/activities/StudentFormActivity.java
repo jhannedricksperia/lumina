@@ -40,13 +40,13 @@ public class StudentFormActivity extends AppCompatActivity {
     private FirebaseAuth auth;
 
     // ── Campus state ──────────────────────────────────────────────────────────
+    private final List<DocumentSnapshot> campusDocs  = new ArrayList<>();
     private final List<String> campusLabels = new ArrayList<>();
-    private final List<String> campusIds    = new ArrayList<>();
     private String selectedCampusId         = null;
 
     // ── College state ─────────────────────────────────────────────────────────
+    private final List<DocumentSnapshot> collegeDocs  = new ArrayList<>();
     private final List<String> collegeLabels = new ArrayList<>();
-    private final List<String> collegeIds    = new ArrayList<>();
     private String selectedCollegeId         = null;
 
     // ── Course state ──────────────────────────────────────────────────────────
@@ -114,12 +114,12 @@ public class StudentFormActivity extends AppCompatActivity {
         b.llCampusLoading.setVisibility(View.VISIBLE);
 
         db.collection("campuses")
-                .orderBy("name")
+                .whereEqualTo("status", "Active")
                 .get()
                 .addOnSuccessListener(qs -> {
                     b.llCampusLoading.setVisibility(View.GONE);
+                    campusDocs.clear();
                     campusLabels.clear();
-                    campusIds.clear();
 
                     if (qs == null || qs.isEmpty()) {
                         b.tilCampus.setError("No campuses found");
@@ -127,15 +127,16 @@ public class StudentFormActivity extends AppCompatActivity {
                     }
 
                     for (DocumentSnapshot doc : qs.getDocuments()) {
+                        campusDocs.add(doc);
                         campusLabels.add(buildLabel(doc));
-                        campusIds.add(doc.getId());
                     }
 
                     setAdapter(b.acvCampus, campusLabels);
                     b.tilCampus.setError(null);
 
                     b.acvCampus.setOnItemClickListener((parent, view, position, id) -> {
-                        String newCampusId = campusIds.get(position);
+                        if (position < 0 || position >= campusDocs.size()) return;
+                        String newCampusId = campusDocs.get(position).getId();
                         if (newCampusId.equals(selectedCampusId)) return;
                         selectedCampusId = newCampusId;
                         b.tilCampus.setError(null);
@@ -160,12 +161,12 @@ public class StudentFormActivity extends AppCompatActivity {
 
         db.collection("colleges")
                 .whereEqualTo("campus", campusId)
-                .orderBy("name")
+                .whereEqualTo("status", "Active")
                 .get()
                 .addOnSuccessListener(qs -> {
                     b.llCollegeLoading.setVisibility(View.GONE);
+                    collegeDocs.clear();
                     collegeLabels.clear();
-                    collegeIds.clear();
 
                     if (qs == null || qs.isEmpty()) {
                         b.tilCollege.setError("No colleges found for this campus");
@@ -173,8 +174,8 @@ public class StudentFormActivity extends AppCompatActivity {
                     }
 
                     for (DocumentSnapshot doc : qs.getDocuments()) {
+                        collegeDocs.add(doc);
                         collegeLabels.add(buildLabel(doc));
-                        collegeIds.add(doc.getId());
                     }
 
                     setAdapter(b.acvCollege, collegeLabels);
@@ -182,7 +183,8 @@ public class StudentFormActivity extends AppCompatActivity {
                     b.tilCollege.setError(null);
 
                     b.acvCollege.setOnItemClickListener((parent, view, position, id) -> {
-                        String newCollegeId = collegeIds.get(position);
+                        if (position < 0 || position >= collegeDocs.size()) return;
+                        String newCollegeId = collegeDocs.get(position).getId();
                         if (newCollegeId.equals(selectedCollegeId)) return;
                         selectedCollegeId = newCollegeId;
                         b.tilCollege.setError(null);
@@ -207,7 +209,6 @@ public class StudentFormActivity extends AppCompatActivity {
 
         db.collection("courses")
                 .whereEqualTo("college", collegeId)
-                .orderBy("name")
                 .get()
                 .addOnSuccessListener(qs -> {
                     b.llCourseLoading.setVisibility(View.GONE);
@@ -241,8 +242,8 @@ public class StudentFormActivity extends AppCompatActivity {
 
     private void resetCollege() {
         selectedCollegeId = null;
+        collegeDocs.clear();
         collegeLabels.clear();
-        collegeIds.clear();
         b.acvCollege.setText("", false);
         b.tilCollege.setError(null);
         setDropdownEnabled(b.tilCollege, b.acvCollege, false);

@@ -1,6 +1,5 @@
 package com.example.luminae.staff.fragments;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,10 +12,10 @@ import android.widget.*;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.*;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import com.example.luminae.R;
 import com.example.luminae.activities.ActivityLogActivity;
+import com.example.luminae.activities.ChangePasswordActivity;
 import com.example.luminae.activities.ConfigurationsActivity;
 import com.example.luminae.activities.LoginActivity;
 import com.example.luminae.databinding.FragmentStaffProfileBinding;
@@ -45,7 +44,8 @@ public class StaffProfileFragment extends Fragment {
 
         b.ivProfilePhoto.setOnClickListener(v -> photoPicker.launch("image/*"));
         b.btnEditPhoto.setOnClickListener(v -> photoPicker.launch("image/*"));
-        b.btnChangePassword.setOnClickListener(v -> showChangePasswordDialog());
+        b.btnChangePassword.setOnClickListener(v ->
+                startActivity(new Intent(getActivity(), ChangePasswordActivity.class)));
         b.btnViewActivityLog.setOnClickListener(v -> {
             String uid = auth.getUid();
             if (uid == null) return;
@@ -138,54 +138,6 @@ public class StaffProfileFragment extends Fragment {
             imageView.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
             imageView.setVisibility(View.VISIBLE);
         } catch (Exception e) { imageView.setVisibility(View.GONE); }
-    }
-
-    private void showChangePasswordDialog() {
-        View form = LayoutInflater.from(getContext())
-                .inflate(R.layout.dialog_change_password, null);
-        EditText etCurrent = form.findViewById(R.id.et_current_password);
-        EditText etNew     = form.findViewById(R.id.et_new_password);
-        EditText etConfirm = form.findViewById(R.id.et_confirm_password);
-        TextView tvError   = form.findViewById(R.id.tv_error);
-
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext());
-        builder.setTitle("Change Password");
-        builder.setView(form);
-        builder.setPositiveButton("Update", null);
-        builder.setNegativeButton("Cancel", null);
-        AlertDialog dialog = builder.create();
-        dialog.show();
-
-        dialog.getButton(DialogInterface.BUTTON_POSITIVE).setOnClickListener(v -> {
-            String current = etCurrent.getText().toString().trim();
-            String newPw   = etNew.getText().toString().trim();
-            String confirm = etConfirm.getText().toString().trim();
-            if (current.isEmpty() || newPw.isEmpty() || confirm.isEmpty()) {
-                tvError.setVisibility(View.VISIBLE); tvError.setText("All fields required"); return;
-            }
-            if (!newPw.equals(confirm)) {
-                tvError.setVisibility(View.VISIBLE); tvError.setText("Passwords do not match"); return;
-            }
-            if (newPw.length() < 6) {
-                tvError.setVisibility(View.VISIBLE); tvError.setText("Minimum 6 characters"); return;
-            }
-            dialog.dismiss();
-            reauthAndChangePassword(current, newPw);
-        });
-    }
-
-    private void reauthAndChangePassword(String current, String newPw) {
-        FirebaseUser user = auth.getCurrentUser();
-        if (user == null || user.getEmail() == null) return;
-        AuthCredential cred = EmailAuthProvider.getCredential(user.getEmail(), current);
-        user.reauthenticate(cred)
-                .addOnSuccessListener(a -> user.updatePassword(newPw)
-                        .addOnSuccessListener(v ->
-                                Toast.makeText(getContext(), "Password updated!", Toast.LENGTH_SHORT).show())
-                        .addOnFailureListener(e ->
-                                Toast.makeText(getContext(), "Failed: " + e.getMessage(), Toast.LENGTH_SHORT).show()))
-                .addOnFailureListener(e ->
-                        Toast.makeText(getContext(), "Current password incorrect", Toast.LENGTH_SHORT).show());
     }
 
     private void showLogoutDialog() {

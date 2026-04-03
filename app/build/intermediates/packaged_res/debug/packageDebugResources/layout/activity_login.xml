@@ -121,14 +121,14 @@
                     android:textColor="#55FFFFFF"
                     android:textSize="11sp" />
 
-                <!-- Email field -->
+                <!-- Email / Username field -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_email"
                     style="@style/LuminaField"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="14dp"
-                    android:hint="Institutional Email">
+                    android:hint="Email or Username">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_email"
@@ -139,7 +139,7 @@
                         android:drawablePadding="12dp"
                         android:paddingStart="12dp"
                         android:fontFamily="@font/poppins"
-                        android:inputType="textEmailAddress"
+                        android:inputType="text"
                         android:textColor="@color/white"
                         android:textColorHint="@color/textHint" />
                 </com.google.android.material.textfield.TextInputLayout>

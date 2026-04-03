@@ -405,7 +405,7 @@
                 android:paddingEnd="12dp"
                 android:scrollbars="vertical"
                 android:textColor="@color/maroonDark"
-                android:textColorHint="#88000000"
+                android:textColorHint="#88FFFFFF"
                 android:textSize="13sp" />
 
         </com.google.android.material.textfield.TextInputLayout>

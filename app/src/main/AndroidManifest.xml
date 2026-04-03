@@ -28,6 +28,12 @@
             android:name=".activities.ForgotPasswordActivity"
             android:exported="false" />
         <activity
+            android:name=".activities.ChangePasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.SignedInForgotPasswordActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.RegisterActivity"
             android:exported="false" />
         <activity

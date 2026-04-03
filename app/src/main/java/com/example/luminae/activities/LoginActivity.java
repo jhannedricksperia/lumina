@@ -36,17 +36,7 @@ public class LoginActivity extends AppCompatActivity {
         auth    = FirebaseAuth.getInstance();
         db      = FirebaseFirestore.getInstance();
 
-        binding.etEmail.addTextChangedListener(new android.text.TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int a, int b, int c) {}
-            @Override public void afterTextChanged(android.text.Editable s) {}
-            @Override public void onTextChanged(CharSequence s, int a, int b, int c) {
-                String typed = s.toString().trim();
-                if (!typed.isEmpty() && !isValidEmail(typed))
-                    binding.tilEmail.setError("Must be @ms.bulsu.edu.ph");
-                else
-                    binding.tilEmail.setError(null);
-            }
-        });
+        // Field accepts either email or username, so avoid email-only validation here.
 
         binding.btnLogin.setOnClickListener(v -> attemptLogin());
         binding.tvGoToRegister.setOnClickListener(v ->
@@ -60,17 +50,24 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void attemptLogin() {
-        String email    = binding.etEmail.getText().toString().trim();
+        String rawId    = binding.etEmail.getText().toString().trim();
         String password = binding.etPassword.getText().toString().trim();
 
-        if (email.isEmpty())      { binding.tilEmail.setError("Email is required"); return; }
-        if (!isValidEmail(email)) { binding.tilEmail.setError("Must be @ms.bulsu.edu.ph"); return; }
-        if (password.isEmpty())   { binding.tilPassword.setError("Password is required"); return; }
+        if (rawId.isEmpty())    { binding.tilEmail.setError("Email or username is required"); return; }
+        if (password.isEmpty()) { binding.tilPassword.setError("Password is required"); return; }
 
         binding.tilEmail.setError(null);
         binding.tilPassword.setError(null);
         setLoading(true);
 
+        if (isValidEmail(rawId)) {
+            signInWithEmail(rawId, password);
+        } else {
+            signInWithUsername(rawId, password);
+        }
+    }
+
+    private void signInWithEmail(String email, String password) {
         auth.signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener(authResult -> {
                     String uid = authResult.getUser().getUid();
@@ -78,7 +75,40 @@ public class LoginActivity extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> {
                     setLoading(false);
-                    showError("Incorrect email or password.");
+                    showError("Incorrect email/username or password.");
+                });
+    }
+
+    private void signInWithUsername(String usernameInput, String password) {
+        String u = usernameInput.trim();
+        if (u.startsWith("@")) u = u.substring(1).trim();
+        if (u.isEmpty()) {
+            setLoading(false);
+            binding.tilEmail.setError("Username is required");
+            return;
+        }
+
+        db.collection("users")
+                .whereEqualTo("username", u)
+                .limit(1)
+                .get()
+                .addOnSuccessListener(qs -> {
+                    if (qs == null || qs.isEmpty() || qs.getDocuments().isEmpty()) {
+                        setLoading(false);
+                        showError("Incorrect email/username or password.");
+                        return;
+                    }
+                    String email = qs.getDocuments().get(0).getString("email");
+                    if (email == null || email.trim().isEmpty()) {
+                        setLoading(false);
+                        showError("Account email missing. Contact an admin.");
+                        return;
+                    }
+                    signInWithEmail(email.trim(), password);
+                })
+                .addOnFailureListener(e -> {
+                    setLoading(false);
+                    showError("Login failed: " + e.getMessage());
                 });
     }
 

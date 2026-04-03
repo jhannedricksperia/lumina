@@ -57,7 +57,7 @@
                         android:layout_height="44dp"
                         android:hint="Search posts…"
                         android:textColor="@color/white"
-                        android:textColorHint="#88FFFFFF"
+                        android:textColorHint="@color/white"
                         android:fontFamily="@font/poppins"
                         android:textSize="13sp"
                         android:imeOptions="actionSearch"

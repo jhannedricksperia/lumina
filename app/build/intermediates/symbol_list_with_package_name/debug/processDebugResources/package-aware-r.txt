@@ -3336,6 +3336,7 @@ id btn_done
 id btn_edit
 id btn_edit_photo
 id btn_export_pdf
+id btn_forgot_password
 id btn_going
 id btn_going_post
 id btn_like
@@ -3359,6 +3360,7 @@ id btn_send_reply
 id btn_send_reset
 id btn_sort
 id btn_toggle_status
+id btn_update
 id btn_view
 id btn_view_activity_log
 id buttonPanel
@@ -3868,8 +3870,10 @@ id thumb
 id til_acronym
 id til_campus
 id til_college
+id til_confirm
 id til_confirm_password
 id til_course
+id til_current
 id til_description
 id til_designation
 id til_email
@@ -3879,6 +3883,7 @@ id til_last_name
 id til_location
 id til_max
 id til_name
+id til_new
 id til_password
 id til_search
 id til_start_date
@@ -4136,6 +4141,7 @@ layout activity_activity_log
 layout activity_admin
 layout activity_announcement_form
 layout activity_campus_form
+layout activity_change_password
 layout activity_college_form
 layout activity_configurations
 layout activity_course_form
@@ -4146,6 +4152,7 @@ layout activity_generic_management
 layout activity_login
 layout activity_post_detail
 layout activity_register
+layout activity_signed_in_forgot_password
 layout activity_splash
 layout activity_staff
 layout activity_staff_form
@@ -4752,6 +4759,7 @@ style CardView
 style CardView_Dark
 style CardView_Light
 style LuminaChip
+style LuminaEditText
 style LuminaField
 style LuminaToolbar
 style MaterialAlertDialog_Material3

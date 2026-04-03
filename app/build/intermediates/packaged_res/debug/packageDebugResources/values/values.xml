@@ -32,10 +32,10 @@
     <color name="maroonDark">#4A0A12</color>
     <color name="maroonDeep">#2D0508</color>
     <color name="surface">#1E1E1E</color>
-    <color name="textHint">#666666</color>
-    <color name="textMuted">#888888</color>
+    <color name="textHint">#99FFFFFF</color>
+    <color name="textMuted">#B0B0B0</color>
     <color name="textPrimary">#FFFFFF</color>
-    <color name="textSecondary">#CCCCCC</color>
+    <color name="textSecondary">#E0E0E0</color>
     <color name="white">#FFFFFF</color>
     <color name="yellow">#F2C94C</color>
     <color name="yellowDark">#D4A017</color>
@@ -60,6 +60,11 @@
         <item name="checkedIconVisible">false</item>
         <item name="android:layout_marginEnd">8dp</item>
     </style>
+    <style name="LuminaEditText" parent="Widget.MaterialComponents.TextInputEditText.OutlinedBox">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textColorHint">@color/textHint</item>
+    </style>
     <style name="LuminaField" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="boxStrokeColor">#33FFFFFF</item>
         <item name="boxStrokeWidth">1dp</item>
@@ -70,6 +75,7 @@
         <item name="boxCornerRadiusBottomStart">12dp</item>
         <item name="boxCornerRadiusBottomEnd">12dp</item>
         <item name="startIconMinSize">24dp</item>
+        <item name="editTextStyle">@style/LuminaEditText</item>
     </style>
     <style name="LuminaToolbar" parent="Widget.MaterialComponents.Toolbar">
         <item name="android:paddingTop">25dp</item>
@@ -94,7 +100,6 @@
         <item name="colorControlActivated">@color/yellow</item>
         <item name="android:textColorHint">@color/textHint</item>
         <item name="toolbarStyle">@style/LuminaToolbar</item>
-        
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.Luminae.MaterialAlertDialog</item>
         <item name="android:alertDialogTheme">@style/ThemeOverlay.Luminae.AppCompatAlertDialog</item>
     </style>
@@ -103,14 +108,20 @@
         <item name="colorAccent">@color/yellow</item>
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:textColorSecondary">@color/white</item>
+        <item name="android:colorBackground">@color/bgBlack</item>
     </style>
     <style name="ThemeOverlay.Luminae.MaterialAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="colorSurface">@color/bgBlack</item>
+        <item name="android:colorBackground">@color/bgBlack</item>
+        <item name="colorOnSurface">@color/white</item>
         <item name="colorPrimary">@color/yellow</item>
         <item name="colorOnPrimary">@color/bgBlack</item>
-        <item name="colorOnSurface">@color/white</item>
         <item name="buttonBarPositiveButtonStyle">@style/Widget.Luminae.AlertDialog.Button.Positive</item>
         <item name="buttonBarNegativeButtonStyle">@style/Widget.Luminae.AlertDialog.Button.Negative</item>
         <item name="buttonBarNeutralButtonStyle">@style/Widget.Luminae.AlertDialog.Button.Negative</item>
+        
+        <item name="editTextStyle">@style/LuminaEditText</item>
+        <item name="textInputStyle">@style/LuminaField</item>
     </style>
     <style name="Widget.Luminae.AlertDialog.Button.Negative" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:textColor">@color/white</item>

@@ -13,11 +13,12 @@
     <color name="card">#2A2A2A</color>
     <color name="fieldBg">#2C2C2C</color>
 
-    <!-- Text -->
+    <!-- Text (tuned for dark backgrounds) -->
     <color name="textPrimary">#FFFFFF</color>
-    <color name="textSecondary">#CCCCCC</color>
-    <color name="textMuted">#888888</color>
-    <color name="textHint">#666666</color>
+    <color name="textSecondary">#E0E0E0</color>
+    <color name="textMuted">#B0B0B0</color>
+    <!-- Hint text: soft white so it stays readable on dark backgrounds -->
+    <color name="textHint">#99FFFFFF</color>
 
     <!-- Aliases used in code -->
     <color name="colorPrimary">@color/maroon</color>

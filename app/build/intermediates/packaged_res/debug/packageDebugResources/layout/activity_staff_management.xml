@@ -32,7 +32,8 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_weight="1"
-            android:hint="Search staff...">
+            android:hint="Search staff..."
+            app:hintTextColor="@color/white">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_search"
@@ -42,7 +43,7 @@
                 android:imeOptions="actionSearch"
                 android:inputType="text"
                 android:textColor="@color/white"
-                android:textColorHint="@color/textHint"
+                android:textColorHint="@color/white"
                 android:textSize="12sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
