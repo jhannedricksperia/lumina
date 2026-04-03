@@ -58,7 +58,9 @@ public class LuminaFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentText(body != null ? body : "")
                 .setAutoCancel(true)
                 .setContentIntent(pi)
-                .setPriority(NotificationCompat.PRIORITY_HIGH);
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                // Ensure the notification vibrates (Android 8+ uses the channel config).
+                .setVibrate(new long[]{0, 400, 200, 400});
 
         NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (nm != null) nm.notify((int) System.currentTimeMillis(), b.build());
@@ -82,7 +84,9 @@ public class LuminaFirebaseMessagingService extends FirebaseMessagingService {
         NotificationChannel ch = new NotificationChannel(
                 CHANNEL_ID,
                 "LUMINA notifications",
-                NotificationManager.IMPORTANCE_DEFAULT);
+                NotificationManager.IMPORTANCE_HIGH);
+        ch.enableVibration(true);
+        ch.setVibrationPattern(new long[]{0, 400, 200, 400});
         NotificationManager nm = getSystemService(NotificationManager.class);
         if (nm != null) nm.createNotificationChannel(ch);
     }

@@ -296,6 +296,12 @@ public class PostDetailActivity extends AppCompatActivity {
         b.btnGoingPost.setEnabled(!full || eventGoingByMe);
     }
 
+    private String getUserEmail() {
+        return auth.getCurrentUser() != null && auth.getCurrentUser().getEmail() != null
+                ? auth.getCurrentUser().getEmail()
+                : "Someone";
+    }
+
     private void toggleEventGoing() {
         String uid = auth.getUid();
         if (uid == null || docId == null) return;
@@ -319,6 +325,15 @@ public class PostDetailActivity extends AppCompatActivity {
                         eventRef.update("participantCount", FieldValue.increment(-1));
                         eventGoingByMe = false;
                         eventParticipantCount = Math.max(0, eventParticipantCount - 1);
+
+                        // Notify the event poster that the RSVP was cancelled
+                        NotificationHelper.sendInApp(
+                                postPosterUid,
+                                getUserEmail() + " cancelled your event",
+                                postTitle,
+                                docId,
+                                postCollection
+                        );
                     } else {
                         db.collection("users").document(uid).get()
                                 .addOnSuccessListener(userDoc -> {
@@ -336,6 +351,15 @@ public class PostDetailActivity extends AppCompatActivity {
                                     eventGoingByMe = true;
                                     eventParticipantCount++;
                                     updateGoingButtonUi();
+
+                                    // Notify the event poster that the user joined
+                                    NotificationHelper.sendInApp(
+                                            postPosterUid,
+                                            getUserEmail() + " joined your event",
+                                            postTitle,
+                                            docId,
+                                            postCollection
+                                    );
                                     if (b.tvParticipantsCount != null) {
                                         b.tvParticipantsCount.setText((eventMaxParticipants > 0)
                                                 ? eventParticipantCount + " / " + eventMaxParticipants + " going"

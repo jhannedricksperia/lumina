@@ -36,18 +36,23 @@ public final class ActivityAdminBinding implements ViewBinding {
   public final LinearLayout navManagement;
 
   @NonNull
+  public final LinearLayout navNotifications;
+
+  @NonNull
   public final LinearLayout navProfile;
 
   private ActivityAdminBinding(@NonNull LinearLayout rootView,
       @NonNull FrameLayout adminFragmentContainer, @NonNull LinearLayout navDashboard,
       @NonNull LinearLayout navFeed, @NonNull ImageView navIconDashboard,
-      @NonNull LinearLayout navManagement, @NonNull LinearLayout navProfile) {
+      @NonNull LinearLayout navManagement, @NonNull LinearLayout navNotifications,
+      @NonNull LinearLayout navProfile) {
     this.rootView = rootView;
     this.adminFragmentContainer = adminFragmentContainer;
     this.navDashboard = navDashboard;
     this.navFeed = navFeed;
     this.navIconDashboard = navIconDashboard;
     this.navManagement = navManagement;
+    this.navNotifications = navNotifications;
     this.navProfile = navProfile;
   }
 
@@ -108,6 +113,12 @@ public final class ActivityAdminBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.nav_notifications;
+      LinearLayout navNotifications = ViewBindings.findChildViewById(rootView, id);
+      if (navNotifications == null) {
+        break missingId;
+      }
+
       id = R.id.nav_profile;
       LinearLayout navProfile = ViewBindings.findChildViewById(rootView, id);
       if (navProfile == null) {
@@ -115,7 +126,7 @@ public final class ActivityAdminBinding implements ViewBinding {
       }
 
       return new ActivityAdminBinding((LinearLayout) rootView, adminFragmentContainer, navDashboard,
-          navFeed, navIconDashboard, navManagement, navProfile);
+          navFeed, navIconDashboard, navManagement, navNotifications, navProfile);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

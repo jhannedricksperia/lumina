@@ -33,6 +33,10 @@ public class AdminActivity extends AppCompatActivity {
             loadFragment(new AdminManagementFragment(), "management");
             setActiveTab(v);
         });
+        binding.navNotifications.setOnClickListener(v -> {
+            loadFragment(new AdminNotificationFragment(), "notifications");
+            setActiveTab(v);
+        });
         binding.navProfile.setOnClickListener(v -> {
             loadFragment(new AdminProfileFragment(), "profile");
             setActiveTab(v);
@@ -50,6 +54,7 @@ public class AdminActivity extends AppCompatActivity {
         binding.navDashboard.setSelected(active == binding.navDashboard);
         binding.navFeed.setSelected(active == binding.navFeed);
         binding.navManagement.setSelected(active == binding.navManagement);
+        binding.navNotifications.setSelected(active == binding.navNotifications);
         binding.navProfile.setSelected(active == binding.navProfile);
     }
 }

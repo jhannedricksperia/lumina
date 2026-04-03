@@ -458,6 +458,11 @@ public class StudentFeedFragment extends Fragment {
                             eventRef.update("participantCount", FieldValue.increment(-1));
                             item.goingByMe = false;
                             item.participantCount = Math.max(0, item.participantCount - 1);
+
+                            // Notify poster that the RSVP was cancelled
+                            sendNotification(item.postedBy,
+                                    getUserEmail() + " cancelled your event",
+                                    item.title, item.docId, "events");
                         } else {
                             // Fetch current user info first
                             db.collection("users").document(uid).get()

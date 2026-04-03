@@ -4178,6 +4178,7 @@ layout dialog_export_report
 layout fragment_admin_dashboard
 layout fragment_admin_feed
 layout fragment_admin_management
+layout fragment_admin_notification
 layout fragment_admin_profile
 layout fragment_staff_dashboard
 layout fragment_staff_notification

@@ -100,7 +100,35 @@
                 android:layout_marginTop="3dp"
                 android:duplicateParentState="true"
                 android:fontFamily="@font/poppins"
-                android:text="Manage"
+                android:text="Management"
+                android:textColor="@color/nav_tab_selector"
+                android:textSize="9sp" />
+        </LinearLayout>
+
+        <!-- Notifications -->
+        <LinearLayout
+            android:id="@+id/nav_notifications"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackgroundBorderless">
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:duplicateParentState="true"
+                android:src="@drawable/notification"
+                app:tint="@color/nav_tab_selector" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:duplicateParentState="true"
+                android:fontFamily="@font/poppins"
+                android:text="Notifications"
                 android:textColor="@color/nav_tab_selector"
                 android:textSize="9sp" />
         </LinearLayout>

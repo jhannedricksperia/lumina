@@ -1,20 +1,20 @@
 -- Merging decision tree log ---
 provider#androidx.core.content.FileProvider
-INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:106:9-114:20
+INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:107:9-115:20
 	android:grantUriPermissions
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:110:13-47
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:111:13-47
 	android:authorities
 		INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:108:13-60
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:109:13-60
 	android:exported
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:109:13-37
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:110:13-37
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:107:13-62
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:108:13-62
 manifest
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:2:1-121:12
-INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:2:1-121:12
-INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:2:1-121:12
-INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:2:1-121:12
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:2:1-122:12
+INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:2:1-122:12
+INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:2:1-122:12
+INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:2:1-122:12
 MERGED from [androidx.databinding:viewbinding:8.12.3] C:\Users\jhann\.gradle\caches\8.13\transforms\863e157ac87340803bbc8c1069523be9\transformed\jetified-viewbinding-8.12.3\AndroidManifest.xml:2:1-7:12
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\jhann\.gradle\caches\8.13\transforms\7876fca21c50c68d63bdc9346f1acc9b\transformed\material-1.11.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\jhann\.gradle\caches\8.13\transforms\406306de9396c93982301dd8dadc2a18\transformed\constraintlayout-2.1.4\AndroidManifest.xml:2:1-11:12
@@ -122,9 +122,13 @@ MERGED from [com.google.firebase:firebase-messaging:23.4.0] C:\Users\jhann\.grad
 MERGED from [com.google.firebase:firebase-messaging:23.4.0] C:\Users\jhann\.gradle\caches\8.13\transforms\c0214b830c8a8155f6be2ff45cf0d4ba\transformed\jetified-firebase-messaging-23.4.0\AndroidManifest.xml:23:5-77
 	android:name
 		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:5:22-74
+uses-permission#android.permission.VIBRATE
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:6:5-66
+	android:name
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:6:22-63
 application
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:7:5-119:19
-INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:7:5-119:19
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:8:5-120:19
+INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:8:5-120:19
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\jhann\.gradle\caches\8.13\transforms\7876fca21c50c68d63bdc9346f1acc9b\transformed\material-1.11.0\AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\jhann\.gradle\caches\8.13\transforms\7876fca21c50c68d63bdc9346f1acc9b\transformed\material-1.11.0\AndroidManifest.xml:22:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\jhann\.gradle\caches\8.13\transforms\406306de9396c93982301dd8dadc2a18\transformed\constraintlayout-2.1.4\AndroidManifest.xml:9:5-20
@@ -182,203 +186,203 @@ MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] C:\Users\jh
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.16.0] C:\Users\jhann\.gradle\caches\8.13\transforms\6088c82275c4cbceba91bc4309fa44b1\transformed\core-1.16.0\AndroidManifest.xml:28:18-86
 	android:label
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:9:9-31
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:10:9-31
 	android:roundIcon
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:11:9-43
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:12:9-43
 	android:icon
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:10:9-38
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:11:9-38
 	android:allowBackup
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:8:9-35
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:9:9-35
 	android:theme
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:12:9-45
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:13:9-45
 	android:usesCleartextTraffic
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:13:9-44
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:14:9-44
 activity#com.example.luminae.activities.SplashActivity
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:14:9-22:20
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:15:9-23:20
 	android:exported
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:16:13-36
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:17:13-36
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:15:13-54
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:16:13-54
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:17:13-21:29
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:18:13-22:29
 action#android.intent.action.MAIN
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:18:17-69
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:19:17-69
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:18:25-66
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:19:25-66
 category#android.intent.category.LAUNCHER
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:20:17-77
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:21:17-77
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:20:27-74
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:21:27-74
 activity#com.example.luminae.activities.LoginActivity
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:23:9-25:40
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:24:9-26:40
 	android:exported
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:25:13-37
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:26:13-37
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:24:13-53
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:25:13-53
 activity#com.example.luminae.activities.ForgotPasswordActivity
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:26:9-28:40
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:27:9-29:40
 	android:exported
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:28:13-37
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:29:13-37
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:27:13-62
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:28:13-62
 activity#com.example.luminae.activities.RegisterActivity
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:29:9-31:40
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:30:9-32:40
 	android:exported
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:31:13-37
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:32:13-37
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:30:13-56
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:31:13-56
 activity#com.example.luminae.activities.AdminActivity
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:32:9-34:40
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:33:9-35:40
 	android:exported
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:34:13-37
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:35:13-37
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:33:13-53
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:34:13-53
 activity#com.example.luminae.activities.CampusManagementActivity
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:35:9-37:40
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:36:9-38:40
 	android:exported
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:37:13-37
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:38:13-37
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:36:13-64
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:37:13-64
 activity#com.example.luminae.activities.CollegeManagementActivity
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:38:9-40:36
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:39:9-41:36
 	android:exported
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:40:9-33
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:41:9-33
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:39:9-61
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:40:9-61
 activity#com.example.luminae.activities.CourseManagementActivity
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:41:9-43:40
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:42:9-44:40
 	android:exported
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:43:13-37
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:44:13-37
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:42:13-64
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:43:13-64
 activity#com.example.luminae.activities.CampusFormActivity
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:44:9-46:40
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:45:9-47:40
 	android:exported
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:46:13-37
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:47:13-37
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:45:13-58
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:46:13-58
 activity#com.example.luminae.activities.CollegeFormActivity
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:47:9-49:40
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:48:9-50:40
 	android:exported
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:49:13-37
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:50:13-37
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:48:13-59
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:49:13-59
 activity#com.example.luminae.activities.CourseFormActivity
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:50:9-52:40
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:51:9-53:40
 	android:exported
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:52:13-37
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:53:13-37
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:51:13-58
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:52:13-58
 activity#com.example.luminae.activities.EventParticipantsActivity
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:53:9-55:40
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:54:9-56:40
 	android:exported
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:55:13-37
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:56:13-37
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:54:13-65
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:55:13-65
 activity#com.example.luminae.activities.StaffFormActivity
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:56:9-58:40
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:57:9-59:40
 	android:exported
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:58:13-37
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:59:13-37
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:57:13-57
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:58:13-57
 activity#com.example.luminae.activities.StaffManagementActivity
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:59:9-61:40
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:60:9-62:40
 	android:exported
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:61:13-37
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:62:13-37
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:60:13-63
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:61:13-63
 activity#com.example.luminae.activities.StudentManagementActivity
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:62:9-64:40
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:63:9-65:40
 	android:exported
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:64:13-37
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:65:13-37
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:63:13-65
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:64:13-65
 activity#com.example.luminae.activities.ActivityLogActivity
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:65:9-67:40
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:66:9-68:40
 	android:exported
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:67:13-37
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:68:13-37
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:66:13-59
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:67:13-59
 activity#com.example.luminae.activities.StudentActivity
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:68:9-70:40
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:69:9-71:40
 	android:exported
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:70:13-37
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:71:13-37
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:69:13-55
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:70:13-55
 activity#com.example.luminae.activities.StaffActivity
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:71:9-73:40
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:72:9-74:40
 	android:exported
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:73:13-37
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:74:13-37
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:72:13-53
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:73:13-53
 activity#com.example.luminae.activities.PostDetailActivity
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:74:9-77:40
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:75:9-78:40
 	android:windowSoftInputMode
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:76:13-55
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:77:13-55
 	android:exported
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:77:13-37
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:78:13-37
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:75:13-58
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:76:13-58
 activity#com.example.luminae.activities.UserProfileActivity
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:78:9-80:40
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:79:9-81:40
 	android:exported
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:80:13-37
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:81:13-37
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:79:13-59
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:80:13-59
 activity#com.example.luminae.activities.StudentFormActivity
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:81:9-83:40
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:82:9-84:40
 	android:exported
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:83:13-37
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:84:13-37
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:82:13-59
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:83:13-59
 activity#com.example.luminae.activities.AnnouncementFormActivity
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:84:9-86:40
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:85:9-87:40
 	android:exported
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:86:13-37
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:87:13-37
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:85:13-64
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:86:13-64
 activity#com.example.luminae.activities.EventFormActivity
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:87:9-89:40
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:88:9-90:40
 	android:exported
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:89:13-37
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:90:13-37
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:88:13-57
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:89:13-57
 activity#com.example.luminae.activities.ConfigurationsActivity
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:90:9-92:40
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:91:9-93:40
 	android:exported
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:92:13-37
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:93:13-37
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:91:13-62
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:92:13-62
 service#com.example.luminae.notifications.LuminaFirebaseMessagingService
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:94:9-100:19
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:95:9-101:19
 	android:exported
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:96:13-37
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:97:13-37
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:95:13-73
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:96:13-73
 intent-filter#action:name:com.google.firebase.MESSAGING_EVENT
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:97:13-99:29
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:98:13-100:29
 action#com.google.firebase.MESSAGING_EVENT
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:98:17-78
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:99:17-78
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:98:25-75
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:99:25-75
 meta-data#com.google.firebase.messaging.default_notification_channel_id
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:102:9-104:43
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:103:9-105:43
 	android:value
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:104:13-40
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:105:13-40
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:103:13-89
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:104:13-89
 meta-data#preloaded_fonts
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:116:9-118:57
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:117:9-119:57
 	android:resource
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:118:13-54
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:119:13-54
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:117:13-43
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:118:13-43
 meta-data#android.support.FILE_PROVIDER_PATHS
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:111:13-113:54
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:112:13-114:54
 	android:resource
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:113:17-51
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:114:17-51
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:112:17-67
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:113:17-67
 uses-sdk
 INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml

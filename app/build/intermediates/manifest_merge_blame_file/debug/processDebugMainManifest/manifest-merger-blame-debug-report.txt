@@ -14,248 +14,250 @@
 12    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 12-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:5:5-77
 12-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:5:22-74
-13    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-13-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\jhann\.gradle\caches\8.13\transforms\a652f4a7f98010b06c406b1716747495\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:26:5-79
-13-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\jhann\.gradle\caches\8.13\transforms\a652f4a7f98010b06c406b1716747495\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:26:22-76
-14    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- Required by older versions of Google Play services to create IID tokens -->
-14-->[com.google.firebase:firebase-messaging:23.4.0] C:\Users\jhann\.gradle\caches\8.13\transforms\c0214b830c8a8155f6be2ff45cf0d4ba\transformed\jetified-firebase-messaging-23.4.0\AndroidManifest.xml:24:5-68
-14-->[com.google.firebase:firebase-messaging:23.4.0] C:\Users\jhann\.gradle\caches\8.13\transforms\c0214b830c8a8155f6be2ff45cf0d4ba\transformed\jetified-firebase-messaging-23.4.0\AndroidManifest.xml:24:22-65
-15    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-15-->[com.google.firebase:firebase-messaging:23.4.0] C:\Users\jhann\.gradle\caches\8.13\transforms\c0214b830c8a8155f6be2ff45cf0d4ba\transformed\jetified-firebase-messaging-23.4.0\AndroidManifest.xml:26:5-82
-15-->[com.google.firebase:firebase-messaging:23.4.0] C:\Users\jhann\.gradle\caches\8.13\transforms\c0214b830c8a8155f6be2ff45cf0d4ba\transformed\jetified-firebase-messaging-23.4.0\AndroidManifest.xml:26:22-79
-16
-17    <permission
-17-->[androidx.core:core:1.16.0] C:\Users\jhann\.gradle\caches\8.13\transforms\6088c82275c4cbceba91bc4309fa44b1\transformed\core-1.16.0\AndroidManifest.xml:22:5-24:47
-18        android:name="com.example.luminae.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
-18-->[androidx.core:core:1.16.0] C:\Users\jhann\.gradle\caches\8.13\transforms\6088c82275c4cbceba91bc4309fa44b1\transformed\core-1.16.0\AndroidManifest.xml:23:9-81
-19        android:protectionLevel="signature" />
-19-->[androidx.core:core:1.16.0] C:\Users\jhann\.gradle\caches\8.13\transforms\6088c82275c4cbceba91bc4309fa44b1\transformed\core-1.16.0\AndroidManifest.xml:24:9-44
-20
-21    <uses-permission android:name="com.example.luminae.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
-21-->[androidx.core:core:1.16.0] C:\Users\jhann\.gradle\caches\8.13\transforms\6088c82275c4cbceba91bc4309fa44b1\transformed\core-1.16.0\AndroidManifest.xml:26:5-97
-21-->[androidx.core:core:1.16.0] C:\Users\jhann\.gradle\caches\8.13\transforms\6088c82275c4cbceba91bc4309fa44b1\transformed\core-1.16.0\AndroidManifest.xml:26:22-94
-22
-23    <application
-23-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:7:5-119:19
-24        android:allowBackup="true"
-24-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:8:9-35
-25        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
-25-->[androidx.core:core:1.16.0] C:\Users\jhann\.gradle\caches\8.13\transforms\6088c82275c4cbceba91bc4309fa44b1\transformed\core-1.16.0\AndroidManifest.xml:28:18-86
-26        android:debuggable="true"
-27        android:extractNativeLibs="false"
-28        android:icon="@drawable/logo"
-28-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:10:9-38
-29        android:label="LUMINA"
-29-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:9:9-31
-30        android:roundIcon="@drawable/logo"
-30-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:11:9-43
-31        android:testOnly="true"
+13    <uses-permission android:name="android.permission.VIBRATE" />
+13-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:6:5-66
+13-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:6:22-63
+14    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+14-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\jhann\.gradle\caches\8.13\transforms\a652f4a7f98010b06c406b1716747495\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:26:5-79
+14-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\jhann\.gradle\caches\8.13\transforms\a652f4a7f98010b06c406b1716747495\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:26:22-76
+15    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- Required by older versions of Google Play services to create IID tokens -->
+15-->[com.google.firebase:firebase-messaging:23.4.0] C:\Users\jhann\.gradle\caches\8.13\transforms\c0214b830c8a8155f6be2ff45cf0d4ba\transformed\jetified-firebase-messaging-23.4.0\AndroidManifest.xml:24:5-68
+15-->[com.google.firebase:firebase-messaging:23.4.0] C:\Users\jhann\.gradle\caches\8.13\transforms\c0214b830c8a8155f6be2ff45cf0d4ba\transformed\jetified-firebase-messaging-23.4.0\AndroidManifest.xml:24:22-65
+16    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+16-->[com.google.firebase:firebase-messaging:23.4.0] C:\Users\jhann\.gradle\caches\8.13\transforms\c0214b830c8a8155f6be2ff45cf0d4ba\transformed\jetified-firebase-messaging-23.4.0\AndroidManifest.xml:26:5-82
+16-->[com.google.firebase:firebase-messaging:23.4.0] C:\Users\jhann\.gradle\caches\8.13\transforms\c0214b830c8a8155f6be2ff45cf0d4ba\transformed\jetified-firebase-messaging-23.4.0\AndroidManifest.xml:26:22-79
+17
+18    <permission
+18-->[androidx.core:core:1.16.0] C:\Users\jhann\.gradle\caches\8.13\transforms\6088c82275c4cbceba91bc4309fa44b1\transformed\core-1.16.0\AndroidManifest.xml:22:5-24:47
+19        android:name="com.example.luminae.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+19-->[androidx.core:core:1.16.0] C:\Users\jhann\.gradle\caches\8.13\transforms\6088c82275c4cbceba91bc4309fa44b1\transformed\core-1.16.0\AndroidManifest.xml:23:9-81
+20        android:protectionLevel="signature" />
+20-->[androidx.core:core:1.16.0] C:\Users\jhann\.gradle\caches\8.13\transforms\6088c82275c4cbceba91bc4309fa44b1\transformed\core-1.16.0\AndroidManifest.xml:24:9-44
+21
+22    <uses-permission android:name="com.example.luminae.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+22-->[androidx.core:core:1.16.0] C:\Users\jhann\.gradle\caches\8.13\transforms\6088c82275c4cbceba91bc4309fa44b1\transformed\core-1.16.0\AndroidManifest.xml:26:5-97
+22-->[androidx.core:core:1.16.0] C:\Users\jhann\.gradle\caches\8.13\transforms\6088c82275c4cbceba91bc4309fa44b1\transformed\core-1.16.0\AndroidManifest.xml:26:22-94
+23
+24    <application
+24-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:8:5-120:19
+25        android:allowBackup="true"
+25-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:9:9-35
+26        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+26-->[androidx.core:core:1.16.0] C:\Users\jhann\.gradle\caches\8.13\transforms\6088c82275c4cbceba91bc4309fa44b1\transformed\core-1.16.0\AndroidManifest.xml:28:18-86
+27        android:debuggable="true"
+28        android:extractNativeLibs="false"
+29        android:icon="@drawable/logo"
+29-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:11:9-38
+30        android:label="LUMINA"
+30-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:10:9-31
+31        android:roundIcon="@drawable/logo"
+31-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:12:9-43
 32        android:theme="@style/Theme.Luminae"
-32-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:12:9-45
+32-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:13:9-45
 33        android:usesCleartextTraffic="true" >
-33-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:13:9-44
+33-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:14:9-44
 34        <activity
-34-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:14:9-22:20
+34-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:15:9-23:20
 35            android:name="com.example.luminae.activities.SplashActivity"
-35-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:15:13-54
+35-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:16:13-54
 36            android:exported="true" >
-36-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:16:13-36
+36-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:17:13-36
 37            <intent-filter>
-37-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:17:13-21:29
+37-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:18:13-22:29
 38                <action android:name="android.intent.action.MAIN" />
-38-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:18:17-69
-38-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:18:25-66
+38-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:19:17-69
+38-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:19:25-66
 39
 40                <category android:name="android.intent.category.LAUNCHER" />
-40-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:20:17-77
-40-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:20:27-74
+40-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:21:17-77
+40-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:21:27-74
 41            </intent-filter>
 42        </activity>
 43        <activity
-43-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:23:9-25:40
+43-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:24:9-26:40
 44            android:name="com.example.luminae.activities.LoginActivity"
-44-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:24:13-53
+44-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:25:13-53
 45            android:exported="false" />
-45-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:25:13-37
+45-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:26:13-37
 46        <activity
-46-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:26:9-28:40
+46-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:27:9-29:40
 47            android:name="com.example.luminae.activities.ForgotPasswordActivity"
-47-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:27:13-62
+47-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:28:13-62
 48            android:exported="false" />
-48-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:28:13-37
+48-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:29:13-37
 49        <activity
-49-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:29:9-31:40
+49-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:30:9-32:40
 50            android:name="com.example.luminae.activities.RegisterActivity"
-50-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:30:13-56
+50-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:31:13-56
 51            android:exported="false" />
-51-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:31:13-37
+51-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:32:13-37
 52        <activity
-52-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:32:9-34:40
+52-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:33:9-35:40
 53            android:name="com.example.luminae.activities.AdminActivity"
-53-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:33:13-53
+53-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:34:13-53
 54            android:exported="false" />
-54-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:34:13-37
+54-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:35:13-37
 55        <activity
-55-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:35:9-37:40
+55-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:36:9-38:40
 56            android:name="com.example.luminae.activities.CampusManagementActivity"
-56-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:36:13-64
+56-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:37:13-64
 57            android:exported="false" />
-57-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:37:13-37
+57-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:38:13-37
 58        <activity
-58-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:38:9-40:36
+58-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:39:9-41:36
 59            android:name="com.example.luminae.activities.CollegeManagementActivity"
-59-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:39:9-61
+59-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:40:9-61
 60            android:exported="false" />
-60-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:40:9-33
+60-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:41:9-33
 61        <activity
-61-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:41:9-43:40
+61-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:42:9-44:40
 62            android:name="com.example.luminae.activities.CourseManagementActivity"
-62-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:42:13-64
+62-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:43:13-64
 63            android:exported="false" />
-63-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:43:13-37
+63-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:44:13-37
 64        <activity
-64-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:44:9-46:40
+64-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:45:9-47:40
 65            android:name="com.example.luminae.activities.CampusFormActivity"
-65-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:45:13-58
+65-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:46:13-58
 66            android:exported="false" />
-66-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:46:13-37
+66-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:47:13-37
 67        <activity
-67-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:47:9-49:40
+67-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:48:9-50:40
 68            android:name="com.example.luminae.activities.CollegeFormActivity"
-68-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:48:13-59
+68-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:49:13-59
 69            android:exported="false" />
-69-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:49:13-37
+69-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:50:13-37
 70        <activity
-70-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:50:9-52:40
+70-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:51:9-53:40
 71            android:name="com.example.luminae.activities.CourseFormActivity"
-71-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:51:13-58
+71-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:52:13-58
 72            android:exported="false" />
-72-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:52:13-37
+72-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:53:13-37
 73        <activity
-73-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:53:9-55:40
+73-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:54:9-56:40
 74            android:name="com.example.luminae.activities.EventParticipantsActivity"
-74-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:54:13-65
+74-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:55:13-65
 75            android:exported="false" />
-75-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:55:13-37
+75-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:56:13-37
 76        <activity
-76-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:56:9-58:40
+76-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:57:9-59:40
 77            android:name="com.example.luminae.activities.StaffFormActivity"
-77-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:57:13-57
+77-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:58:13-57
 78            android:exported="false" />
-78-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:58:13-37
+78-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:59:13-37
 79        <activity
-79-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:59:9-61:40
+79-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:60:9-62:40
 80            android:name="com.example.luminae.activities.StaffManagementActivity"
-80-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:60:13-63
+80-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:61:13-63
 81            android:exported="false" />
-81-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:61:13-37
+81-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:62:13-37
 82        <activity
-82-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:62:9-64:40
+82-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:63:9-65:40
 83            android:name="com.example.luminae.activities.StudentManagementActivity"
-83-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:63:13-65
+83-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:64:13-65
 84            android:exported="false" />
-84-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:64:13-37
+84-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:65:13-37
 85        <activity
-85-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:65:9-67:40
+85-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:66:9-68:40
 86            android:name="com.example.luminae.activities.ActivityLogActivity"
-86-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:66:13-59
+86-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:67:13-59
 87            android:exported="false" />
-87-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:67:13-37
+87-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:68:13-37
 88        <activity
-88-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:68:9-70:40
+88-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:69:9-71:40
 89            android:name="com.example.luminae.activities.StudentActivity"
-89-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:69:13-55
+89-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:70:13-55
 90            android:exported="false" />
-90-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:70:13-37
+90-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:71:13-37
 91        <activity
-91-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:71:9-73:40
+91-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:72:9-74:40
 92            android:name="com.example.luminae.activities.StaffActivity"
-92-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:72:13-53
+92-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:73:13-53
 93            android:exported="false" />
-93-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:73:13-37
+93-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:74:13-37
 94        <activity
-94-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:74:9-77:40
+94-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:75:9-78:40
 95            android:name="com.example.luminae.activities.PostDetailActivity"
-95-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:75:13-58
+95-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:76:13-58
 96            android:exported="false"
-96-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:77:13-37
+96-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:78:13-37
 97            android:windowSoftInputMode="adjustResize" />
-97-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:76:13-55
+97-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:77:13-55
 98        <activity
-98-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:78:9-80:40
+98-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:79:9-81:40
 99            android:name="com.example.luminae.activities.UserProfileActivity"
-99-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:79:13-59
+99-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:80:13-59
 100            android:exported="false" />
-100-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:80:13-37
+100-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:81:13-37
 101        <activity
-101-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:81:9-83:40
+101-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:82:9-84:40
 102            android:name="com.example.luminae.activities.StudentFormActivity"
-102-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:82:13-59
+102-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:83:13-59
 103            android:exported="false" />
-103-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:83:13-37
+103-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:84:13-37
 104        <activity
-104-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:84:9-86:40
+104-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:85:9-87:40
 105            android:name="com.example.luminae.activities.AnnouncementFormActivity"
-105-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:85:13-64
+105-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:86:13-64
 106            android:exported="false" />
-106-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:86:13-37
+106-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:87:13-37
 107        <activity
-107-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:87:9-89:40
+107-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:88:9-90:40
 108            android:name="com.example.luminae.activities.EventFormActivity"
-108-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:88:13-57
+108-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:89:13-57
 109            android:exported="false" />
-109-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:89:13-37
+109-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:90:13-37
 110        <activity
-110-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:90:9-92:40
+110-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:91:9-93:40
 111            android:name="com.example.luminae.activities.ConfigurationsActivity"
-111-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:91:13-62
+111-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:92:13-62
 112            android:exported="false" />
-112-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:92:13-37
+112-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:93:13-37
 113
 114        <service
-114-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:94:9-100:19
+114-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:95:9-101:19
 115            android:name="com.example.luminae.notifications.LuminaFirebaseMessagingService"
-115-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:95:13-73
+115-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:96:13-73
 116            android:exported="false" >
-116-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:96:13-37
+116-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:97:13-37
 117            <intent-filter>
-117-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:97:13-99:29
+117-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:98:13-100:29
 118                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-118-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:98:17-78
-118-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:98:25-75
+118-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:99:17-78
+118-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:99:25-75
 119            </intent-filter>
 120        </service>
 121
 122        <meta-data
-122-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:102:9-104:43
+122-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:103:9-105:43
 123            android:name="com.google.firebase.messaging.default_notification_channel_id"
-123-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:103:13-89
+123-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:104:13-89
 124            android:value="lumina_push" />
-124-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:104:13-40
+124-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:105:13-40
 125
 126        <provider
 127            android:name="androidx.core.content.FileProvider"
-127-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:107:13-62
+127-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:108:13-62
 128            android:authorities="com.example.luminae.provider"
-128-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:108:13-60
+128-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:109:13-60
 129            android:exported="false"
-129-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:109:13-37
+129-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:110:13-37
 130            android:grantUriPermissions="true" >
-130-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:110:13-47
+130-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:111:13-47
 131            <meta-data
-131-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:111:13-113:54
+131-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:112:13-114:54
 132                android:name="android.support.FILE_PROVIDER_PATHS"
-132-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:112:17-67
+132-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:113:17-67
 133                android:resource="@xml/file_paths" />
-133-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:113:17-51
+133-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:114:17-51
 134        </provider>
 135
 136        <meta-data
-136-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:116:9-118:57
+136-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:117:9-119:57
 137            android:name="preloaded_fonts"
-137-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:117:13-43
+137-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:118:13-43
 138            android:resource="@array/preloaded_fonts" />
-138-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:118:13-54
+138-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:119:13-54
 139
 140        <activity
 140-->[com.google.firebase:firebase-auth:22.3.0] C:\Users\jhann\.gradle\caches\8.13\transforms\a652f4a7f98010b06c406b1716747495\transformed\jetified-firebase-auth-22.3.0\AndroidManifest.xml:29:9-46:20
@@ -433,10 +435,10 @@
 232            android:exported="false" >
 232-->[com.google.firebase:firebase-messaging:23.4.0] C:\Users\jhann\.gradle\caches\8.13\transforms\c0214b830c8a8155f6be2ff45cf0d4ba\transformed\jetified-firebase-messaging-23.4.0\AndroidManifest.xml:49:13-37
 233            <intent-filter android:priority="-500" >
-233-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:97:13-99:29
+233-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:98:13-100:29
 234                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-234-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:98:17-78
-234-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:98:25-75
+234-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:99:17-78
+234-->C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:99:25-75
 235            </intent-filter>
 236        </service>
 237
