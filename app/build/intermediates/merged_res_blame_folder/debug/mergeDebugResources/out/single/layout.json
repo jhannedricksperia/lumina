@@ -8,12 +8,12 @@
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-43:\\layout\\item_feed_post.xml"
     },
     {
-        "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-mergeDebugResources-40:\\layout\\fragment_student_profile.xml",
-        "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-43:\\layout\\fragment_student_profile.xml"
-    },
-    {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-mergeDebugResources-40:\\layout\\activity_staff_form.xml",
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-43:\\layout\\activity_staff_form.xml"
+    },
+    {
+        "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-mergeDebugResources-40:\\layout\\fragment_student_profile.xml",
+        "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-43:\\layout\\fragment_student_profile.xml"
     },
     {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-mergeDebugResources-40:\\layout\\activity_change_password.xml",
@@ -72,8 +72,8 @@
         "source": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-main-43:\\layout\\activity_signed_in_forgot_password.xml"
     },
     {
-        "merged": "com.example.luminae.app-mergeDebugResources-40:/layout/activity_login.xml",
-        "source": "com.example.luminae.app-main-43:/layout/activity_login.xml"
+        "merged": "com.example.luminae.app-mergeDebugResources-40:/layout/activity_register.xml",
+        "source": "com.example.luminae.app-main-43:/layout/activity_register.xml"
     },
     {
         "merged": "C:\\Users\\jhann\\.gradle\\daemon\\8.13\\com.example.luminae.app-mergeDebugResources-40:\\layout\\dialog_change_password.xml",

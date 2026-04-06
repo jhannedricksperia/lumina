@@ -95,236 +95,218 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:layout_marginBottom="20dp"
+                    android:layout_marginBottom="16dp"
                     android:fontFamily="@font/poppins"
-                    android:text="Only @ms.bulsu.edu.ph emails accepted"
+                    android:text="Same steps as admin Add Student (no photo upload)"
                     android:textColor="#55FFFFFF"
                     android:textSize="11sp" />
 
-                <!-- First + Last Name -->
-                <LinearLayout
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="14dp">
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/bg_info_banner"
+                    android:fontFamily="@font/poppins"
+                    android:padding="10dp"
+                    android:text="Username is your email prefix (before @). A password will be generated and emailed to you."
+                    android:textColor="#7B4F00"
+                    android:textSize="11sp" />
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/til_first_name"
-                        style="@style/LuminaField"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="8dp"
-                        android:hint="First Name">
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/et_first_name"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:drawableStart="@drawable/person"
-                            android:drawableTint="@color/textMuted"
-                            android:drawablePadding="12dp"
-                            android:paddingStart="12dp"
-                            android:fontFamily="@font/poppins"
-                            android:inputType="textPersonName"
-                            android:textColor="@color/white"
-                            android:textColorHint="@color/textHint" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/til_last_name"
-                        style="@style/LuminaField"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="8dp"
-                        android:hint="Last Name">
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/et_last_name"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:drawableStart="@drawable/person"
-                            android:drawableTint="@color/textMuted"
-                            android:drawablePadding="12dp"
-                            android:paddingStart="12dp"
-                            android:fontFamily="@font/poppins"
-                            android:inputType="textPersonName"
-                            android:textColor="@color/white"
-                            android:textColorHint="@color/textHint" />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                </LinearLayout>
-
-                <!-- Campus Dropdown -->
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_campus"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="14dp"
-                    android:hint="Campus">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/et_campus"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/campus"
-                        android:drawablePadding="12dp"
-                        android:drawableTint="@color/textMuted"
-                        android:fontFamily="@font/poppins"
-                        android:paddingStart="12dp"
-                        android:textColor="@color/white"
-                        android:textColorHint="@color/textHint"
-                        android:inputType="none"
-                        android:focusable="false"
-                        android:focusableInTouchMode="false" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- College Dropdown -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_college"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="14dp"
-                    android:hint="College">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/et_college"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/college"
-                        android:drawablePadding="12dp"
-                        android:drawableTint="@color/textMuted"
-                        android:fontFamily="@font/poppins"
-                        android:paddingStart="12dp"
-                        android:textColor="@color/white"
-                        android:textColorHint="@color/textHint"
-                        android:inputType="none"
-                        android:focusable="false"
-                        android:focusableInTouchMode="false" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- Course Dropdown -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_course"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="14dp"
-                    android:hint="Course">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/et_course"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/course"
-                        android:drawablePadding="12dp"
-                        android:drawableTint="@color/textMuted"
-                        android:fontFamily="@font/poppins"
-                        android:paddingStart="12dp"
-                        android:textColor="@color/white"
-                        android:textColorHint="@color/textHint"
-                        android:inputType="none"
-                        android:focusable="false"
-                        android:focusableInTouchMode="false" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- Username -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_username"
+                    android:id="@+id/til_first_name"
                     style="@style/LuminaField"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="14dp"
-                    android:hint="Username">
+                    android:hint="First Name">
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_username"
+                        android:id="@+id/et_first_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/person"
-                        android:drawableTint="@color/textMuted"
-                        android:drawablePadding="12dp"
-                        android:paddingStart="12dp"
                         android:fontFamily="@font/poppins"
+                        android:inputType="textPersonName"
+                        android:paddingStart="12dp"
                         android:textColor="@color/white"
                         android:textColorHint="@color/textHint" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Email -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_last_name"
+                    style="@style/LuminaField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    android:hint="Last Name">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_last_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins"
+                        android:inputType="textPersonName"
+                        android:paddingStart="12dp"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/textHint" />
+                </com.google.android.material.textfield.TextInputLayout>
+
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/til_email"
                     style="@style/LuminaField"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="14dp"
-                    android:hint="BulSU Email Address">
+                    android:hint="BulSU Email Address"
+                    app:helperText="\@ms.bulsu.edu.ph only"
+                    app:helperTextTextColor="@color/textMuted">
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/et_email"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/email"
-                        android:drawableTint="@color/textMuted"
-                        android:drawablePadding="12dp"
-                        android:paddingStart="12dp"
                         android:fontFamily="@font/poppins"
                         android:inputType="textEmailAddress"
+                        android:paddingStart="12dp"
                         android:textColor="@color/white"
                         android:textColorHint="@color/textHint" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Password -->
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_password"
+                    android:id="@+id/til_campus"
                     style="@style/LuminaField"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="14dp"
-                    android:hint="Password (min. 6 characters)"
-                    app:endIconMode="password_toggle"
-                    app:endIconTint="@color/textMuted">
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_password"
+                    android:hint="Campus"
+                    app:endIconMode="dropdown_menu">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/acv_campus"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/password"
-                        android:drawableTint="@color/textMuted"
-                        android:drawablePadding="12dp"
-                        android:paddingStart="12dp"
+                        android:layout_height="match_parent"
+                        android:focusable="false"
                         android:fontFamily="@font/poppins"
-                        android:inputType="textPassword"
+                        android:inputType="none"
+                        android:paddingStart="12dp"
                         android:textColor="@color/white"
                         android:textColorHint="@color/textHint" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Confirm Password -->
+                <LinearLayout
+                    android:id="@+id/ll_campus_loading"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+                    <ProgressBar
+                        style="?android:attr/progressBarStyleSmall"
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:layout_marginEnd="6dp"
+                        android:indeterminateTint="@color/yellow" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins"
+                        android:text="Loading campuses…"
+                        android:textColor="#55FFFFFF"
+                        android:textSize="10sp" />
+                </LinearLayout>
+
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_confirm_password"
+                    android:id="@+id/til_college"
                     style="@style/LuminaField"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
-                    android:hint="Confirm Password"
-                    app:endIconMode="password_toggle"
-                    app:endIconTint="@color/textMuted">
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_confirm_password"
+                    android:layout_marginTop="14dp"
+                    android:hint="College"
+                    android:enabled="false"
+                    app:endIconMode="dropdown_menu">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/acv_college"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/password"
-                        android:drawableTint="@color/textMuted"
-                        android:drawablePadding="12dp"
-                        android:paddingStart="12dp"
+                        android:layout_height="match_parent"
+                        android:focusable="false"
                         android:fontFamily="@font/poppins"
-                        android:inputType="textPassword"
+                        android:inputType="none"
+                        android:paddingStart="12dp"
                         android:textColor="@color/white"
                         android:textColorHint="@color/textHint" />
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_college_loading"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+                    <ProgressBar
+                        style="?android:attr/progressBarStyleSmall"
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:layout_marginEnd="6dp"
+                        android:indeterminateTint="@color/yellow" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins"
+                        android:text="Loading colleges…"
+                        android:textColor="#55FFFFFF"
+                        android:textSize="10sp" />
+                </LinearLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_course"
+                    style="@style/LuminaField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:hint="Course"
+                    android:enabled="false"
+                    app:endIconMode="dropdown_menu">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/acv_course"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:focusable="false"
+                        android:fontFamily="@font/poppins"
+                        android:inputType="none"
+                        android:paddingStart="12dp"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/textHint" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_course_loading"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+                    <ProgressBar
+                        style="?android:attr/progressBarStyleSmall"
+                        android:layout_width="14dp"
+                        android:layout_height="14dp"
+                        android:layout_marginEnd="6dp"
+                        android:indeterminateTint="@color/yellow" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins"
+                        android:text="Loading courses…"
+                        android:textColor="#55FFFFFF"
+                        android:textSize="10sp" />
+                </LinearLayout>
 
                 <!-- Error -->
                 <TextView
                     android:id="@+id/tv_error"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
                     android:layout_marginBottom="6dp"
                     android:fontFamily="@font/poppins"
                     android:gravity="center"
@@ -486,7 +468,7 @@
                     android:layout_marginTop="2dp"
                     android:layout_marginBottom="20dp"
                     android:fontFamily="@font/poppins"
-                    android:text="Please confirm before submitting"
+                    android:text="Confirm details. Username and password will be emailed."
                     android:textColor="#55FFFFFF"
                     android:textSize="11sp" />
 

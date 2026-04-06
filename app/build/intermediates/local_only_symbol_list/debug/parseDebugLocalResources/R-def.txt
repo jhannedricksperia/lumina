@@ -189,11 +189,8 @@ id dot2
 id dot3
 id dots_post_images
 id et_acronym
-id et_campus
-id et_college
 id et_comment
 id et_confirm_password
-id et_course
 id et_current_password
 id et_description
 id et_designation
@@ -210,7 +207,6 @@ id et_reply
 id et_search
 id et_start_date
 id et_title
-id et_username
 id fab_post
 id id_feed_carousel_doc
 id id_feed_carousel_sig
@@ -282,7 +278,6 @@ id til_acronym
 id til_campus
 id til_college
 id til_confirm
-id til_confirm_password
 id til_course
 id til_current
 id til_description
@@ -299,7 +294,6 @@ id til_password
 id til_search
 id til_start_date
 id til_title
-id til_username
 id toolbar
 id tv_acronym
 id tv_action_badge
