@@ -81,13 +81,13 @@ public class AdminProfileFragment extends Fragment {
                 .addOnSuccessListener(doc -> {
                     if (!isAdded() || b == null) return;
                     if (doc == null || !doc.exists()) return;
-                    String fName    = doc.getString("fName")      != null ? doc.getString("fName")      : "";
-                    String lName    = doc.getString("lName")      != null ? doc.getString("lName")      : "";
+                    String fName    = pickValue(doc.getString("fName"), doc.getString("firstName"), doc.getString("fname"), "");
+                    String lName    = pickValue(doc.getString("lName"), doc.getString("lastName"),  doc.getString("lname"), "");
                     String email    = doc.getString("email")      != null ? doc.getString("email")      : "";
                     String role     = doc.getString("role")       != null ? doc.getString("role")       : "admin";
                     String photoB64 = doc.getString("photoBase64");
 
-                    b.tvFullName.setText(fName + " " + lName);
+                    b.tvFullName.setText((fName + " " + lName).trim());
                     b.tvEmail.setText(email);
                     b.tvRole.setText(role.toUpperCase());
                     b.tvInitials.setText(initials(fName, lName));
@@ -175,6 +175,13 @@ public class AdminProfileFragment extends Fragment {
         String a = f.length() > 0 ? String.valueOf(f.charAt(0)).toUpperCase() : "";
         String b = l.length() > 0 ? String.valueOf(l.charAt(0)).toUpperCase() : "";
         return a + b;
+    }
+
+    private String pickValue(String first, String second, String third, String fallback) {
+        if (first != null && !first.trim().isEmpty()) return first.trim();
+        if (second != null && !second.trim().isEmpty()) return second.trim();
+        if (third != null && !third.trim().isEmpty()) return third.trim();
+        return fallback;
     }
 
     @Override public void onDestroyView() { super.onDestroyView(); b = null; }

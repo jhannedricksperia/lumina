@@ -16,9 +16,24 @@ android {
     }
 
     buildTypes {
+        def mailFrom = (project.findProperty("LUMINAE_MAIL_FROM") ?: "").toString()
+        def mailPass = (project.findProperty("LUMINAE_MAIL_PASS") ?: "").toString()
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // Use the values from gradle.properties (recommended).
+            // If you insist on hardcoding, use:
+            //   buildConfigField "String", "MAIL_FROM", "\"applumina1@gmail.com\""
+            //   buildConfigField "String", "MAIL_PASS", "\"Luminaapp001_\""
+            buildConfigField "String", "MAIL_FROM", "\"${mailFrom}\""
+            buildConfigField "String", "MAIL_PASS", "\"${mailPass}\""
+        }
+
+        debug {
+            // Do NOT hardcode secrets in source. Provide these via gradle.properties or CI.
+            buildConfigField "String", "MAIL_FROM", "\"${mailFrom}\""
+            buildConfigField "String", "MAIL_PASS", "\"${mailPass}\""
         }
     }
     compileOptions {
@@ -27,6 +42,7 @@ android {
     }
     buildFeatures {
         viewBinding true
+        buildConfig true
     }
     packaging {
         resources {

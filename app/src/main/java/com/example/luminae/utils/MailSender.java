@@ -1,6 +1,9 @@
 package com.example.luminae.utils;
 
 import android.os.AsyncTask;
+
+import com.example.luminae.BuildConfig;
+
 import java.util.Properties;
 import javax.mail.*;
 import javax.mail.internet.*;
@@ -14,13 +17,34 @@ import javax.mail.internet.*;
  */
 public class MailSender {
 
-    // ── Configure your sender credentials here ────────────────────────────────
-    // Use a dedicated "app" Gmail account — never the admin's personal account.
-    // In Gmail: Settings → Security → App Passwords → generate one for "Mail".
+    // ── Configure your sender credentials via Gradle properties ───────────────
+    // Do NOT hardcode secrets in source control.
+    //
+    // Add to your user-level `~/.gradle/gradle.properties` OR your project-level
+    // `gradle.properties` (not committed), e.g.:
+    //   LUMINAE_MAIL_FROM=luminae.noreply@gmail.com
+    //   LUMINAE_MAIL_PASS=your_gmail_app_password
+    //
+    // These are injected into BuildConfig as MAIL_FROM / MAIL_PASS by app/build.gradle.
     private static final String SMTP_HOST = "smtp.gmail.com";
     private static final String SMTP_PORT = "587";
-    private static final String FROM_EMAIL = "luminae.noreply@gmail.com"; // your sender Gmail
-    private static final String FROM_PASS  = "xxxx xxxx xxxx xxxx";       // Gmail App Password
+
+    private static String fromEmail() {
+        return BuildConfig.MAIL_FROM != null ? BuildConfig.MAIL_FROM.trim() : "";
+    }
+
+    private static String fromPass() {
+        return BuildConfig.MAIL_PASS != null ? BuildConfig.MAIL_PASS.trim() : "";
+    }
+
+    private static void ensureConfigured() {
+        if (fromEmail().isEmpty() || fromPass().isEmpty()) {
+            throw new IllegalStateException(
+                    "Email sender is not configured. Set LUMINAE_MAIL_FROM and LUMINAE_MAIL_PASS " +
+                            "in gradle.properties (Gmail App Password required)."
+            );
+        }
+    }
 
     public interface Callback {
         void onSuccess();
@@ -41,6 +65,8 @@ public class MailSender {
                                         Callback callback) {
         AsyncTask.execute(() -> {
             try {
+                ensureConfigured();
+
                 Properties props = new Properties();
                 props.put("mail.smtp.auth",            "true");
                 props.put("mail.smtp.starttls.enable", "true");
@@ -50,7 +76,7 @@ public class MailSender {
                 Session session = Session.getInstance(props, new Authenticator() {
                     @Override
                     protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(FROM_EMAIL, FROM_PASS);
+                        return new PasswordAuthentication(fromEmail(), fromPass());
                     }
                 });
 
@@ -59,9 +85,9 @@ public class MailSender {
                         : fullName;
 
                 Message message = new MimeMessage(session);
-                message.setFrom(new InternetAddress(FROM_EMAIL, "Lumina"));
+                message.setFrom(new InternetAddress(fromEmail(), "Lumina"));
                 message.setRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
-                message.setSubject("Welcome to Luminae – Your Account Details");
+                message.setSubject("Welcome to Lumina – Your Account Details");
                 message.setContent(buildHtml(firstName, toEmail, username, password), "text/html; charset=utf-8");
 
                 Transport.send(message);
@@ -85,15 +111,15 @@ public class MailSender {
 
                 // Header
                 + "<tr><td style=\"background:#6B0A0A;padding:32px 40px;text-align:center;\">"
-                + "<h1 style=\"color:#ffffff;margin:0;font-size:26px;font-weight:700;letter-spacing:1px;\">LUMINAE</h1>"
-                + "<p style=\"color:#f0c040;margin:4px 0 0;font-size:12px;letter-spacing:2px;\">LEARNING PORTAL</p>"
+                + "<h1 style=\"color:#ffffff;margin:0;font-size:26px;font-weight:700;letter-spacing:1px;\">LUMINA</h1>"
+                + "<p style=\"color:#f0c040;margin:4px 0 0;font-size:12px;letter-spacing:2px;\">UNIVERSITY ANNOUNCEMENT AND EVENTS AWARENESS APP</p>"
                 + "</td></tr>"
 
                 // Body
                 + "<tr><td style=\"padding:36px 40px;\">"
                 + "<p style=\"font-size:16px;color:#333;margin:0 0 8px;\">Hi <strong>" + firstName + "</strong>,</p>"
                 + "<p style=\"font-size:14px;color:#555;line-height:1.7;margin:0 0 24px;\">"
-                + "Welcome to <strong>Luminae</strong>! Your student account has been created by your administrator. "
+                + "Welcome to <strong>Lumina</strong>! Your student account has been created by your administrator. "
                 + "Use the credentials below to log in.</p>"
 
                 // Credentials box
@@ -121,7 +147,7 @@ public class MailSender {
                 // Footer
                 + "<tr><td style=\"background:#f9f9f9;padding:16px 40px;border-top:1px solid #eee;"
                 + "text-align:center;\">"
-                + "<p style=\"font-size:11px;color:#bbb;margin:0;\">© Luminae · Bulacan State University</p>"
+                + "<p style=\"font-size:11px;color:#bbb;margin:0;\">© Lumina · Bulacan State University</p>"
                 + "</td></tr>"
 
                 + "</table></td></tr></table></body></html>";

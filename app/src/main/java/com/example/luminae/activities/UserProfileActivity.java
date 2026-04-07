@@ -34,8 +34,8 @@ public class UserProfileActivity extends AppCompatActivity {
     private void loadUser(String uid) {
         db.collection("users").document(uid).get().addOnSuccessListener(doc -> {
             if (!doc.exists()) return;
-            String fName    = doc.getString("fName")       != null ? doc.getString("fName")       : "";
-            String lName    = doc.getString("lName")       != null ? doc.getString("lName")       : "";
+            String fName    = pickValue(doc.getString("fName"), doc.getString("firstName"), doc.getString("fname"), "");
+            String lName    = pickValue(doc.getString("lName"), doc.getString("lastName"),  doc.getString("lname"), "");
             String desig    = doc.getString("designation") != null ? doc.getString("designation") : "";
             String role     = doc.getString("role")        != null ? doc.getString("role")        : "";
             String campus   = pickValue(
@@ -56,7 +56,7 @@ public class UserProfileActivity extends AppCompatActivity {
             String photoB64 = doc.getString("photoBase64");
             Timestamp joined = doc.getTimestamp("createdAt");
 
-            b.tvFullName.setText(fName + " " + lName);
+            b.tvFullName.setText((fName + " " + lName).trim());
             String displayDesig = (desig.isEmpty() || "?".equals(desig)) ? role.toUpperCase() : desig;
             b.tvDesignation.setText(displayDesig);
             b.tvInitials.setText(initials(fName, lName));
@@ -90,6 +90,13 @@ public class UserProfileActivity extends AppCompatActivity {
     private String pickValue(String first, String second, String fallback) {
         if (first != null && !first.trim().isEmpty()) return first.trim();
         if (second != null && !second.trim().isEmpty()) return second.trim();
+        return fallback;
+    }
+
+    private String pickValue(String first, String second, String third, String fallback) {
+        if (first != null && !first.trim().isEmpty()) return first.trim();
+        if (second != null && !second.trim().isEmpty()) return second.trim();
+        if (third != null && !third.trim().isEmpty()) return third.trim();
         return fallback;
     }
 }

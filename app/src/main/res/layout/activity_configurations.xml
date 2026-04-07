@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/maroonDark"
+        android:paddingTop="50dp"
         app:navigationIcon="@drawable/back"
         app:navigationIconTint="@color/white"
         app:title="Configurations"
