@@ -117,6 +117,9 @@
         <activity
             android:name="com.example.luminae.activities.ConfigurationsActivity"
             android:exported="false" />
+        <activity
+            android:name="com.example.luminae.activities.AboutUsActivity"
+            android:exported="false" />
 
         <service
             android:name="com.example.luminae.notifications.LuminaFirebaseMessagingService"

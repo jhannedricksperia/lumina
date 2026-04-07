@@ -57,7 +57,7 @@ public class EventFormActivity extends AppCompatActivity {
     private TextInputLayout tilTitle;
     private TextView tvDate, tvTime, tvAudienceLabel, tvError;
     private AutoCompleteTextView acvCampus, acvCollege, acvCourse;
-    private TextInputLayout tilCampus;
+    private TextInputLayout tilCampus, tilCollege, tilCourse;
     private View layoutAudiencePicker;
     private RecyclerView rvPhotoStrip;
     private final ArrayList<String> pendingImages = new ArrayList<>();
@@ -147,6 +147,8 @@ public class EventFormActivity extends AppCompatActivity {
         acvCollege = findViewById(R.id.acv_college);
         acvCourse = findViewById(R.id.acv_course);
         tilCampus = findViewById(R.id.til_campus);
+        tilCollege = findViewById(R.id.til_college);
+        tilCourse = findViewById(R.id.til_course);
         layoutAudiencePicker = findViewById(R.id.layout_audience_picker);
         rvPhotoStrip = findViewById(R.id.rv_photo_strip);
         if (rvPhotoStrip != null) {
@@ -207,16 +209,39 @@ public class EventFormActivity extends AppCompatActivity {
     private void pickDate() {
         Calendar c = Calendar.getInstance();
         new DatePickerDialog(this, (v, y, m, d) -> {
-            pickedDate = String.format(Locale.getDefault(), "%04d-%02d-%02d", y, m + 1, d);
-            tvDate.setText(pickedDate);
+            // Internal storage for eventDate (YYYY-MM-DD)
+            pickedDate = String.format(Locale.US, "%04d-%02d-%02d", y, m + 1, d);
+
+            // Human‑friendly label on the button, e.g. March 21, 2026
+            Calendar chosen = Calendar.getInstance();
+            chosen.set(Calendar.YEAR, y);
+            chosen.set(Calendar.MONTH, m);
+            chosen.set(Calendar.DAY_OF_MONTH, d);
+            String display = new java.text.SimpleDateFormat("MMMM d, yyyy", Locale.getDefault())
+                    .format(chosen.getTime());
+
+            com.google.android.material.button.MaterialButton btn =
+                    findViewById(R.id.btn_pick_date);
+            if (btn != null) btn.setText(display);
         }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH)).show();
     }
 
     private void pickTime() {
         Calendar c = Calendar.getInstance();
         new TimePickerDialog(this, (v, h, min) -> {
-            pickedTime = String.format(Locale.getDefault(), "%02d:%02d", h, min);
-            tvTime.setText(pickedTime);
+            // Internal storage for eventDate (24h time)
+            pickedTime = String.format(Locale.US, "%02d:%02d", h, min);
+
+            // Human‑friendly label on the button, e.g. 3:45 PM
+            Calendar chosen = Calendar.getInstance();
+            chosen.set(Calendar.HOUR_OF_DAY, h);
+            chosen.set(Calendar.MINUTE, min);
+            String display = new java.text.SimpleDateFormat("h:mm a", Locale.getDefault())
+                    .format(chosen.getTime());
+
+            com.google.android.material.button.MaterialButton btn =
+                    findViewById(R.id.btn_pick_time);
+            if (btn != null) btn.setText(display);
         }, c.get(Calendar.HOUR_OF_DAY), c.get(Calendar.MINUTE), false).show();
     }
 
@@ -256,13 +281,14 @@ public class EventFormActivity extends AppCompatActivity {
             return;
         }
         if (!isUniversityWide && !staffCampusId.isEmpty()) {
+            setAudienceScopeUiForAllCampuses(false);
             acvCampus.setText(staffCampusName.isEmpty() ? "Assigned Campus" : staffCampusName, false);
             tilCampus.setEnabled(false);
             acvCampus.setEnabled(false);
             audienceType = "Campus";
             audienceCampusId = staffCampusId;
-            loadCollegesForCampus(staffCampusId, staffCollegeId.isEmpty());
-            if (!staffCollegeId.isEmpty()) loadCoursesForCollege(staffCollegeId, true);
+            loadCollegesForCampus(staffCampusId, true,
+                    staffCollegeId.isEmpty() ? null : staffCollegeId);
             return;
         }
         db.collection("campuses").whereEqualTo("status", "Active").get()
@@ -285,11 +311,13 @@ public class EventFormActivity extends AppCompatActivity {
                 audienceCampusId = "";
                 audienceCollegeId = "";
                 audienceCourseId = "";
-                audienceLabel = "Everyone";
+                audienceLabel = "Everyone (all campuses, colleges, courses)";
                 tvAudienceLabel.setText("Audience: " + audienceLabel);
                 clearCollegeCourse();
+                setAudienceScopeUiForAllCampuses(true);
                 return;
             }
+            setAudienceScopeUiForAllCampuses(false);
             DocumentSnapshot campus = campusDocs.get(pos - 1);
             audienceCampusId = campus.getId();
             audienceType = "Campus";
@@ -297,12 +325,20 @@ public class EventFormActivity extends AppCompatActivity {
             audienceCollegeId = "";
             audienceCourseId = "";
             tvAudienceLabel.setText("Audience: " + audienceLabel);
-            loadCollegesForCampus(audienceCampusId, true);
+            loadCollegesForCampus(audienceCampusId, true, null);
         });
     }
 
-    private void loadCollegesForCampus(String campusId, boolean includeAllOption) {
-        db.collection("colleges").whereEqualTo("campusId", campusId).whereEqualTo("status", "Active")
+    private void setAudienceScopeUiForAllCampuses(boolean allCampusesUniversityWide) {
+        if (tilCollege != null)
+            tilCollege.setVisibility(allCampusesUniversityWide ? View.GONE : View.VISIBLE);
+        if (tilCourse != null)
+            tilCourse.setVisibility(allCampusesUniversityWide ? View.GONE : View.VISIBLE);
+    }
+
+    private void loadCollegesForCampus(String campusId, boolean includeAllOption,
+                                     @Nullable String preSelectCollegeId) {
+        db.collection("colleges").whereEqualTo("campus", campusId).whereEqualTo("status", "Active")
                 .get().addOnSuccessListener(snap -> {
                     collegeDocs.clear();
                     collegeNames.clear();
@@ -331,11 +367,25 @@ public class EventFormActivity extends AppCompatActivity {
                         tvAudienceLabel.setText("Audience: " + audienceLabel);
                         loadCoursesForCollege(audienceCollegeId, true);
                     });
+                    if (preSelectCollegeId != null && !preSelectCollegeId.isEmpty()) {
+                        for (int i = 0; i < collegeDocs.size(); i++) {
+                            if (preSelectCollegeId.equals(collegeDocs.get(i).getId())) {
+                                int row = includeAllOption ? i + 1 : i;
+                                acvCollege.setText(collegeNames.get(row), false);
+                                audienceCollegeId = preSelectCollegeId;
+                                audienceType = "College";
+                                audienceLabel = orEmpty(collegeDocs.get(i).getString("name"));
+                                tvAudienceLabel.setText("Audience: " + audienceLabel);
+                                loadCoursesForCollege(audienceCollegeId, true);
+                                break;
+                            }
+                        }
+                    }
                 });
     }
 
     private void loadCoursesForCollege(String collegeId, boolean includeAllOption) {
-        db.collection("courses").whereEqualTo("collegeId", collegeId).whereEqualTo("status", "Active")
+        db.collection("courses").whereEqualTo("college", collegeId)
                 .get().addOnSuccessListener(snap -> {
                     courseDocs.clear();
                     courseNames.clear();
@@ -412,6 +462,12 @@ public class EventFormActivity extends AppCompatActivity {
             audienceLabel = orEmpty(doc.getString("audienceLabel"));
             if (audienceLabel.isEmpty()) audienceLabel = "Everyone";
             tvAudienceLabel.setText("Audience: " + audienceLabel);
+            if ("All".equals(audienceType)) {
+                setAudienceScopeUiForAllCampuses(true);
+                acvCampus.setText("All Campuses", false);
+            } else {
+                setAudienceScopeUiForAllCampuses(false);
+            }
             setLoading(false);
         }).addOnFailureListener(e -> setLoading(false));
     }

@@ -3323,6 +3323,7 @@ id browser_actions_menu_item_icon
 id browser_actions_menu_item_text
 id browser_actions_menu_items
 id browser_actions_menu_view
+id btn_about_us
 id btn_add
 id btn_add_staff
 id btn_back
@@ -3516,7 +3517,6 @@ id et_title
 id exitUntilCollapsed
 id expand_activities_button
 id expanded_menu
-id fab_post
 id fade
 id fill
 id fill_horizontal
@@ -3589,6 +3589,7 @@ id layout_post_media
 id layout_replies
 id layout_reply_input
 id layout_success
+id lblDeadline
 id left
 id leftToRight
 id legacy
@@ -3900,6 +3901,7 @@ id transition_position
 id transition_scene_layoutid_cache
 id transition_transform
 id triangle
+id tv_about_body
 id tv_acronym
 id tv_action_badge
 id tv_active_users
@@ -4131,6 +4133,7 @@ layout abc_search_dropdown_item_icons_2line
 layout abc_search_view
 layout abc_select_dialog_material
 layout abc_tooltip
+layout activity_about_us
 layout activity_activity_log
 layout activity_admin
 layout activity_announcement_form
@@ -4183,7 +4186,6 @@ layout fragment_admin_notification
 layout fragment_admin_profile
 layout fragment_staff_dashboard
 layout fragment_staff_notification
-layout fragment_staff_post
 layout fragment_staff_profile
 layout fragment_student_events
 layout fragment_student_feed

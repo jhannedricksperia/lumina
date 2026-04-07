@@ -1,20 +1,20 @@
 -- Merging decision tree log ---
 provider#androidx.core.content.FileProvider
-INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:113:9-121:20
+INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:116:9-124:20
 	android:grantUriPermissions
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:117:13-47
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:120:13-47
 	android:authorities
 		INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:115:13-60
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:118:13-60
 	android:exported
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:116:13-37
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:119:13-37
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:114:13-62
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:117:13-62
 manifest
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:2:1-128:12
-INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:2:1-128:12
-INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:2:1-128:12
-INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:2:1-128:12
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:2:1-131:12
+INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:2:1-131:12
+INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:2:1-131:12
+INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:2:1-131:12
 MERGED from [androidx.databinding:viewbinding:8.12.3] C:\Users\jhann\.gradle\caches\8.13\transforms\863e157ac87340803bbc8c1069523be9\transformed\jetified-viewbinding-8.12.3\AndroidManifest.xml:2:1-7:12
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\jhann\.gradle\caches\8.13\transforms\7876fca21c50c68d63bdc9346f1acc9b\transformed\material-1.11.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\jhann\.gradle\caches\8.13\transforms\406306de9396c93982301dd8dadc2a18\transformed\constraintlayout-2.1.4\AndroidManifest.xml:2:1-11:12
@@ -127,8 +127,8 @@ ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManif
 	android:name
 		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:6:22-63
 application
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:8:5-126:19
-INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:8:5-126:19
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:8:5-129:19
+INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:8:5-129:19
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\jhann\.gradle\caches\8.13\transforms\7876fca21c50c68d63bdc9346f1acc9b\transformed\material-1.11.0\AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.material:material:1.11.0] C:\Users\jhann\.gradle\caches\8.13\transforms\7876fca21c50c68d63bdc9346f1acc9b\transformed\material-1.11.0\AndroidManifest.xml:22:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\jhann\.gradle\caches\8.13\transforms\406306de9396c93982301dd8dadc2a18\transformed\constraintlayout-2.1.4\AndroidManifest.xml:9:5-20
@@ -365,36 +365,42 @@ ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManif
 		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:99:13-37
 	android:name
 		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:98:13-62
-service#com.example.luminae.notifications.LuminaFirebaseMessagingService
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:101:9-107:19
+activity#com.example.luminae.activities.AboutUsActivity
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:100:9-102:40
 	android:exported
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:103:13-37
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:102:13-37
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:102:13-73
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:101:13-55
+service#com.example.luminae.notifications.LuminaFirebaseMessagingService
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:104:9-110:19
+	android:exported
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:106:13-37
+	android:name
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:105:13-73
 intent-filter#action:name:com.google.firebase.MESSAGING_EVENT
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:104:13-106:29
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:107:13-109:29
 action#com.google.firebase.MESSAGING_EVENT
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:105:17-78
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:108:17-78
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:105:25-75
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:108:25-75
 meta-data#com.google.firebase.messaging.default_notification_channel_id
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:109:9-111:43
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:112:9-114:43
 	android:value
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:111:13-40
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:114:13-40
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:110:13-89
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:113:13-89
 meta-data#preloaded_fonts
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:123:9-125:57
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:126:9-128:57
 	android:resource
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:125:13-54
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:128:13-54
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:124:13-43
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:127:13-43
 meta-data#android.support.FILE_PROVIDER_PATHS
-ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:118:13-120:54
+ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:121:13-123:54
 	android:resource
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:120:17-51
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:123:17-51
 	android:name
-		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:119:17-67
+		ADDED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml:122:17-67
 uses-sdk
 INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\jhann\AndroidStudioProjects\lumina\app\src\main\AndroidManifest.xml

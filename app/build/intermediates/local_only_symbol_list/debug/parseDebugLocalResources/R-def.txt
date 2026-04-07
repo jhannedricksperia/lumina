@@ -99,6 +99,7 @@ id acv_campus
 id acv_college
 id acv_course
 id admin_fragment_container
+id btn_about_us
 id btn_add
 id btn_add_staff
 id btn_back
@@ -207,7 +208,6 @@ id et_reply
 id et_search
 id et_start_date
 id et_title
-id fab_post
 id id_feed_carousel_doc
 id id_feed_carousel_sig
 id image
@@ -229,6 +229,7 @@ id layout_post_media
 id layout_replies
 id layout_reply_input
 id layout_success
+id lblDeadline
 id ll_campus_loading
 id ll_college_loading
 id ll_course_loading
@@ -295,6 +296,7 @@ id til_search
 id til_start_date
 id til_title
 id toolbar
+id tv_about_body
 id tv_acronym
 id tv_action_badge
 id tv_active_users
@@ -385,6 +387,7 @@ id tv_unread_count
 id tv_unread_dot
 id tv_username
 id vp_post_images
+layout activity_about_us
 layout activity_activity_log
 layout activity_admin
 layout activity_announcement_form
@@ -419,7 +422,6 @@ layout fragment_admin_notification
 layout fragment_admin_profile
 layout fragment_staff_dashboard
 layout fragment_staff_notification
-layout fragment_staff_post
 layout fragment_staff_profile
 layout fragment_student_events
 layout fragment_student_feed

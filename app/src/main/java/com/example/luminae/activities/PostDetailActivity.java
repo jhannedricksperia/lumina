@@ -296,10 +296,20 @@ public class PostDetailActivity extends AppCompatActivity {
         b.btnGoingPost.setEnabled(!full || eventGoingByMe);
     }
 
-    private String getUserEmail() {
-        return auth.getCurrentUser() != null && auth.getCurrentUser().getEmail() != null
-                ? auth.getCurrentUser().getEmail()
-                : "Someone";
+    private String displayNameFromUserDoc(DocumentSnapshot userDoc) {
+        if (userDoc == null) return "Someone";
+        String f = userDoc.getString("fName");
+        String l = userDoc.getString("lName");
+        String full = ((f != null ? f : "") + " " + (l != null ? l : "")).trim();
+        if (!full.isEmpty()) return full;
+        String username = userDoc.getString("username");
+        if (username != null && !username.trim().isEmpty()) return username.trim();
+        String email = userDoc.getString("email");
+        if (email != null && !email.trim().isEmpty()) {
+            int at = email.indexOf('@');
+            return at > 0 ? email.substring(0, at) : email;
+        }
+        return "Someone";
     }
 
     private void toggleEventGoing() {
@@ -327,12 +337,14 @@ public class PostDetailActivity extends AppCompatActivity {
                         eventParticipantCount = Math.max(0, eventParticipantCount - 1);
 
                         // Notify the event poster that the RSVP was cancelled
-                        NotificationHelper.sendInApp(
-                                postPosterUid,
-                                getUserEmail() + " cancelled your event",
-                                postTitle,
-                                docId,
-                                postCollection
+                        db.collection("users").document(uid).get().addOnSuccessListener(userDoc ->
+                                NotificationHelper.sendInApp(
+                                        postPosterUid,
+                                        displayNameFromUserDoc(userDoc) + " cancelled your event",
+                                        postTitle,
+                                        docId,
+                                        postCollection
+                                )
                         );
                     } else {
                         db.collection("users").document(uid).get()
@@ -355,7 +367,7 @@ public class PostDetailActivity extends AppCompatActivity {
                                     // Notify the event poster that the user joined
                                     NotificationHelper.sendInApp(
                                             postPosterUid,
-                                            getUserEmail() + " joined your event",
+                                            displayNameFromUserDoc(userDoc) + " joined your event",
                                             postTitle,
                                             docId,
                                             postCollection

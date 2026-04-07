@@ -67,6 +67,9 @@ public final class ActivityEventFormBinding implements ViewBinding {
   public final LinearLayout layoutAudiencePicker;
 
   @NonNull
+  public final TextView lblDeadline;
+
+  @NonNull
   public final ProgressBar progressBar;
 
   @NonNull
@@ -115,13 +118,14 @@ public final class ActivityEventFormBinding implements ViewBinding {
       @NonNull MaterialButton btnPickTime, @NonNull MaterialButton btnSave,
       @NonNull TextInputEditText etDescription, @NonNull TextInputEditText etLocation,
       @NonNull TextInputEditText etMax, @NonNull TextInputEditText etTitle,
-      @NonNull LinearLayout layoutAudiencePicker, @NonNull ProgressBar progressBar,
-      @NonNull RecyclerView rvPhotoStrip, @NonNull TextInputLayout tilCampus,
-      @NonNull TextInputLayout tilCollege, @NonNull TextInputLayout tilCourse,
-      @NonNull TextInputLayout tilDescription, @NonNull TextInputLayout tilLocation,
-      @NonNull TextInputLayout tilMax, @NonNull TextInputLayout tilTitle,
-      @NonNull MaterialToolbar toolbar, @NonNull TextView tvAudienceLabel,
-      @NonNull TextView tvError, @NonNull TextView tvPickedDate, @NonNull TextView tvPickedTime) {
+      @NonNull LinearLayout layoutAudiencePicker, @NonNull TextView lblDeadline,
+      @NonNull ProgressBar progressBar, @NonNull RecyclerView rvPhotoStrip,
+      @NonNull TextInputLayout tilCampus, @NonNull TextInputLayout tilCollege,
+      @NonNull TextInputLayout tilCourse, @NonNull TextInputLayout tilDescription,
+      @NonNull TextInputLayout tilLocation, @NonNull TextInputLayout tilMax,
+      @NonNull TextInputLayout tilTitle, @NonNull MaterialToolbar toolbar,
+      @NonNull TextView tvAudienceLabel, @NonNull TextView tvError, @NonNull TextView tvPickedDate,
+      @NonNull TextView tvPickedTime) {
     this.rootView = rootView;
     this.acvCampus = acvCampus;
     this.acvCollege = acvCollege;
@@ -136,6 +140,7 @@ public final class ActivityEventFormBinding implements ViewBinding {
     this.etMax = etMax;
     this.etTitle = etTitle;
     this.layoutAudiencePicker = layoutAudiencePicker;
+    this.lblDeadline = lblDeadline;
     this.progressBar = progressBar;
     this.rvPhotoStrip = rvPhotoStrip;
     this.tilCampus = tilCampus;
@@ -257,6 +262,12 @@ public final class ActivityEventFormBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.lblDeadline;
+      TextView lblDeadline = ViewBindings.findChildViewById(rootView, id);
+      if (lblDeadline == null) {
+        break missingId;
+      }
+
       id = R.id.progress_bar;
       ProgressBar progressBar = ViewBindings.findChildViewById(rootView, id);
       if (progressBar == null) {
@@ -343,9 +354,9 @@ public final class ActivityEventFormBinding implements ViewBinding {
 
       return new ActivityEventFormBinding((LinearLayout) rootView, acvCampus, acvCollege, acvCourse,
           btnCancel, btnPickDate, btnPickImage, btnPickTime, btnSave, etDescription, etLocation,
-          etMax, etTitle, layoutAudiencePicker, progressBar, rvPhotoStrip, tilCampus, tilCollege,
-          tilCourse, tilDescription, tilLocation, tilMax, tilTitle, toolbar, tvAudienceLabel,
-          tvError, tvPickedDate, tvPickedTime);
+          etMax, etTitle, layoutAudiencePicker, lblDeadline, progressBar, rvPhotoStrip, tilCampus,
+          tilCollege, tilCourse, tilDescription, tilLocation, tilMax, tilTitle, toolbar,
+          tvAudienceLabel, tvError, tvPickedDate, tvPickedTime);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

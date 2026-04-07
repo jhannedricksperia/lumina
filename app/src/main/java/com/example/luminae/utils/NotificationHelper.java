@@ -17,11 +17,11 @@ import java.util.Map;
  *  2. FCM push notifications → Firestore "fcm_triggers" collection
  *     (a Cloud Function or your backend watches this collection and sends FCM)
  *
- * Audience targeting:
- *   audienceType = "All"     → notify all users
- *   audienceType = "Campus"  → notify users where campus == audienceCampusId
- *   audienceType = "College" → notify users where college == audienceCollegeId
- *   audienceType = "Course"  → notify users where course == audienceCourseId
+ * Audience targeting (all match Firestore users with status "Active"):
+ *   audienceType = "All"     → all roles (students, staff, admin) university-wide
+ *   audienceType = "Campus"  → users where campusId == audienceCampusId
+ *   audienceType = "College" → users where collegeId == audienceCollegeId
+ *   audienceType = "Course"  → users where courseId == audienceCourseId
  */
 public class NotificationHelper {
 
@@ -148,14 +148,17 @@ public class NotificationHelper {
                                             String campusId,
                                             String collegeId,
                                             String courseId) {
-        Query q = db().collection("users").whereEqualTo("role", "student");
-        if ("Campus".equals(audienceType) && campusId != null && !campusId.isEmpty())
-            q = q.whereEqualTo("campusId", campusId);
-        else if ("College".equals(audienceType) && collegeId != null && !collegeId.isEmpty())
-            q = q.whereEqualTo("collegeId", collegeId);
-        else if ("Course".equals(audienceType) && courseId != null && !courseId.isEmpty())
-            q = q.whereEqualTo("courseId", courseId);
-        // "All" → no extra filter, returns every student
+        String type = audienceType != null ? audienceType : "All";
+        Query q = db().collection("users").whereEqualTo("status", "Active");
+        if ("All".equals(type) || type.isEmpty()) {
+            return q;
+        }
+        if ("Campus".equals(type) && campusId != null && !campusId.isEmpty())
+            return q.whereEqualTo("campusId", campusId);
+        if ("College".equals(type) && collegeId != null && !collegeId.isEmpty())
+            return q.whereEqualTo("collegeId", collegeId);
+        if ("Course".equals(type) && courseId != null && !courseId.isEmpty())
+            return q.whereEqualTo("courseId", courseId);
         return q;
     }
 }

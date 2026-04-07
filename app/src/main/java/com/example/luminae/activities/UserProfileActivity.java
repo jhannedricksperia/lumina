@@ -38,12 +38,32 @@ public class UserProfileActivity extends AppCompatActivity {
             String lName    = doc.getString("lName")       != null ? doc.getString("lName")       : "";
             String desig    = doc.getString("designation") != null ? doc.getString("designation") : "";
             String role     = doc.getString("role")        != null ? doc.getString("role")        : "";
+            String campus   = pickValue(
+                    doc.getString("campusLabel"),
+                    doc.getString("campus"),
+                    "—"
+            );
+            String college  = pickValue(
+                    doc.getString("collegeLabel"),
+                    doc.getString("college"),
+                    "—"
+            );
+            String course   = pickValue(
+                    doc.getString("courseLabel"),
+                    doc.getString("course"),
+                    "—"
+            );
             String photoB64 = doc.getString("photoBase64");
             Timestamp joined = doc.getTimestamp("createdAt");
 
             b.tvFullName.setText(fName + " " + lName);
-            b.tvDesignation.setText(desig.isEmpty() ? role.toUpperCase() : desig);
+            String displayDesig = (desig.isEmpty() || "?".equals(desig)) ? role.toUpperCase() : desig;
+            b.tvDesignation.setText(displayDesig);
             b.tvInitials.setText(initials(fName, lName));
+
+            b.tvCampus.setText("Campus: " + campus);
+            b.tvCollege.setText("College: " + college);
+            b.tvCourse.setText("Course: " + course);
 
             if (joined != null) {
                 SimpleDateFormat sdf = new SimpleDateFormat("MMMM d, yyyy", Locale.getDefault());
@@ -65,5 +85,11 @@ public class UserProfileActivity extends AppCompatActivity {
         String a = f.length() > 0 ? String.valueOf(f.charAt(0)).toUpperCase() : "";
         String bv= l.length() > 0 ? String.valueOf(l.charAt(0)).toUpperCase() : "";
         return a + bv;
+    }
+
+    private String pickValue(String first, String second, String fallback) {
+        if (first != null && !first.trim().isEmpty()) return first.trim();
+        if (second != null && !second.trim().isEmpty()) return second.trim();
+        return fallback;
     }
 }

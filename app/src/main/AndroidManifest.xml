@@ -97,6 +97,9 @@
         <activity
             android:name=".activities.ConfigurationsActivity"
             android:exported="false" />
+        <activity
+            android:name=".activities.AboutUsActivity"
+            android:exported="false" />
 
         <service
             android:name=".notifications.LuminaFirebaseMessagingService"

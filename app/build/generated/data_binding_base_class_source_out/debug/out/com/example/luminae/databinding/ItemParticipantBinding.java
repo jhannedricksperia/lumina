@@ -4,6 +4,7 @@ package com.example.luminae.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -20,13 +21,7 @@ public final class ItemParticipantBinding implements ViewBinding {
   private final LinearLayout rootView;
 
   @NonNull
-  public final TextView tvCampus;
-
-  @NonNull
-  public final TextView tvCollege;
-
-  @NonNull
-  public final TextView tvCourse;
+  public final ImageView ivProfilePhoto;
 
   @NonNull
   public final TextView tvDateJoined;
@@ -37,13 +32,10 @@ public final class ItemParticipantBinding implements ViewBinding {
   @NonNull
   public final TextView tvInitials;
 
-  private ItemParticipantBinding(@NonNull LinearLayout rootView, @NonNull TextView tvCampus,
-      @NonNull TextView tvCollege, @NonNull TextView tvCourse, @NonNull TextView tvDateJoined,
-      @NonNull TextView tvFullName, @NonNull TextView tvInitials) {
+  private ItemParticipantBinding(@NonNull LinearLayout rootView, @NonNull ImageView ivProfilePhoto,
+      @NonNull TextView tvDateJoined, @NonNull TextView tvFullName, @NonNull TextView tvInitials) {
     this.rootView = rootView;
-    this.tvCampus = tvCampus;
-    this.tvCollege = tvCollege;
-    this.tvCourse = tvCourse;
+    this.ivProfilePhoto = ivProfilePhoto;
     this.tvDateJoined = tvDateJoined;
     this.tvFullName = tvFullName;
     this.tvInitials = tvInitials;
@@ -76,21 +68,9 @@ public final class ItemParticipantBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
-      id = R.id.tv_campus;
-      TextView tvCampus = ViewBindings.findChildViewById(rootView, id);
-      if (tvCampus == null) {
-        break missingId;
-      }
-
-      id = R.id.tv_college;
-      TextView tvCollege = ViewBindings.findChildViewById(rootView, id);
-      if (tvCollege == null) {
-        break missingId;
-      }
-
-      id = R.id.tv_course;
-      TextView tvCourse = ViewBindings.findChildViewById(rootView, id);
-      if (tvCourse == null) {
+      id = R.id.iv_profile_photo;
+      ImageView ivProfilePhoto = ViewBindings.findChildViewById(rootView, id);
+      if (ivProfilePhoto == null) {
         break missingId;
       }
 
@@ -112,8 +92,8 @@ public final class ItemParticipantBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ItemParticipantBinding((LinearLayout) rootView, tvCampus, tvCollege, tvCourse,
-          tvDateJoined, tvFullName, tvInitials);
+      return new ItemParticipantBinding((LinearLayout) rootView, ivProfilePhoto, tvDateJoined,
+          tvFullName, tvInitials);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

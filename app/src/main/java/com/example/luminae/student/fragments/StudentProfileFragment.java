@@ -14,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.*;
 import androidx.fragment.app.Fragment;
 import com.example.luminae.R;
+import com.example.luminae.activities.AboutUsActivity;
 import com.example.luminae.activities.ActivityLogActivity;
 import com.example.luminae.activities.ChangePasswordActivity;
 import com.example.luminae.activities.ConfigurationsActivity;
@@ -59,6 +60,10 @@ public class StudentProfileFragment extends Fragment {
         });
         b.btnConfigurations.setOnClickListener(v ->
                 startActivity(new Intent(getActivity(), ConfigurationsActivity.class)));
+
+        b.btnAboutUs.setOnClickListener(v ->
+                startActivity(new Intent(getActivity(), AboutUsActivity.class)));
+
         b.btnLogout.setOnClickListener(v -> showLogoutDialog());
 
         return b.getRoot();

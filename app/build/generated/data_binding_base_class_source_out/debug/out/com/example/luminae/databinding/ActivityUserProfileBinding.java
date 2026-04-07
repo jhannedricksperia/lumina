@@ -28,6 +28,15 @@ public final class ActivityUserProfileBinding implements ViewBinding {
   public final MaterialToolbar toolbar;
 
   @NonNull
+  public final TextView tvCampus;
+
+  @NonNull
+  public final TextView tvCollege;
+
+  @NonNull
+  public final TextView tvCourse;
+
+  @NonNull
   public final TextView tvDateJoined;
 
   @NonNull
@@ -41,11 +50,15 @@ public final class ActivityUserProfileBinding implements ViewBinding {
 
   private ActivityUserProfileBinding(@NonNull LinearLayout rootView,
       @NonNull ShapeableImageView ivProfilePhoto, @NonNull MaterialToolbar toolbar,
+      @NonNull TextView tvCampus, @NonNull TextView tvCollege, @NonNull TextView tvCourse,
       @NonNull TextView tvDateJoined, @NonNull TextView tvDesignation, @NonNull TextView tvFullName,
       @NonNull TextView tvInitials) {
     this.rootView = rootView;
     this.ivProfilePhoto = ivProfilePhoto;
     this.toolbar = toolbar;
+    this.tvCampus = tvCampus;
+    this.tvCollege = tvCollege;
+    this.tvCourse = tvCourse;
     this.tvDateJoined = tvDateJoined;
     this.tvDesignation = tvDesignation;
     this.tvFullName = tvFullName;
@@ -91,6 +104,24 @@ public final class ActivityUserProfileBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.tv_campus;
+      TextView tvCampus = ViewBindings.findChildViewById(rootView, id);
+      if (tvCampus == null) {
+        break missingId;
+      }
+
+      id = R.id.tv_college;
+      TextView tvCollege = ViewBindings.findChildViewById(rootView, id);
+      if (tvCollege == null) {
+        break missingId;
+      }
+
+      id = R.id.tv_course;
+      TextView tvCourse = ViewBindings.findChildViewById(rootView, id);
+      if (tvCourse == null) {
+        break missingId;
+      }
+
       id = R.id.tv_date_joined;
       TextView tvDateJoined = ViewBindings.findChildViewById(rootView, id);
       if (tvDateJoined == null) {
@@ -116,7 +147,7 @@ public final class ActivityUserProfileBinding implements ViewBinding {
       }
 
       return new ActivityUserProfileBinding((LinearLayout) rootView, ivProfilePhoto, toolbar,
-          tvDateJoined, tvDesignation, tvFullName, tvInitials);
+          tvCampus, tvCollege, tvCourse, tvDateJoined, tvDesignation, tvFullName, tvInitials);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

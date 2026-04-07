@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -30,17 +31,15 @@ public class EventParticipantsActivity extends AppCompatActivity {
         setContentView(b.getRoot());
         db = FirebaseFirestore.getInstance();
 
-        String eventId    = getIntent().getStringExtra("eventId");
-        String eventTitle = getIntent().getStringExtra("eventTitle");
-
         setSupportActionBar(b.toolbar);
-        b.toolbar.setTitle(eventTitle != null ? eventTitle : "Participants");
+        b.toolbar.setTitle("Event Participants");
         b.toolbar.setNavigationOnClickListener(v -> finish());
 
         adapter = new ParticipantAdapter();
         b.recyclerParticipants.setLayoutManager(new LinearLayoutManager(this));
         b.recyclerParticipants.setAdapter(adapter);
 
+        String eventId = getIntent().getStringExtra("eventId");
         if (eventId != null) loadParticipants(eventId);
     }
 
@@ -60,15 +59,14 @@ public class EventParticipantsActivity extends AppCompatActivity {
     private class ParticipantAdapter extends RecyclerView.Adapter<ParticipantAdapter.VH> {
 
         class VH extends RecyclerView.ViewHolder {
-            TextView tvInitials, tvFullName, tvCampus, tvCollege, tvCourse, tvDate;
+            ImageView ivProfilePhoto;
+            TextView  tvInitials, tvFullName, tvDate;
             VH(View v) {
                 super(v);
-                tvInitials = v.findViewById(R.id.tv_initials);
-                tvFullName = v.findViewById(R.id.tv_full_name);
-                tvCampus   = v.findViewById(R.id.tv_campus);
-                tvCollege  = v.findViewById(R.id.tv_college);
-                tvCourse   = v.findViewById(R.id.tv_course);
-                tvDate     = v.findViewById(R.id.tv_date_joined);
+                ivProfilePhoto = v.findViewById(R.id.iv_profile_photo);
+                tvInitials     = v.findViewById(R.id.tv_initials);
+                tvFullName     = v.findViewById(R.id.tv_full_name);
+                tvDate         = v.findViewById(R.id.tv_date_joined);
             }
         }
 
@@ -81,21 +79,18 @@ public class EventParticipantsActivity extends AppCompatActivity {
             DocumentSnapshot doc = participants.get(pos);
             SimpleDateFormat sdf = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
 
-            String fName  = doc.getString("fName")  != null ? doc.getString("fName")  : "";
-            String lName  = doc.getString("lName")   != null ? doc.getString("lName")  : "";
-            String campus = doc.getString("campus")  != null ? doc.getString("campus") : "—";
-            String college= doc.getString("college") != null ? doc.getString("college"): "—";
-            String course = doc.getString("course")  != null ? doc.getString("course") : "—";
             Timestamp joined = doc.getTimestamp("joinedAt");
-
-            h.tvFullName.setText(fName + " " + lName);
-            h.tvCampus.setText(campus);
-            h.tvCollege.setText(college);
-            h.tvCourse.setText(course);
-            h.tvDate.setText(joined != null ? sdf.format(joined.toDate()) : "—");
-            h.tvInitials.setText(initials(fName, lName));
-
             String uid = doc.getString("uid") != null ? doc.getString("uid") : "";
+
+            h.tvFullName.setText("");
+            h.tvDate.setText(joined != null ? sdf.format(joined.toDate()) : "—");
+            h.tvInitials.setText("");
+            h.ivProfilePhoto.setImageDrawable(null);
+            h.ivProfilePhoto.setVisibility(View.GONE);
+
+            if (!uid.isEmpty()) {
+                bindUserInfo(h, uid);
+            }
             View.OnClickListener openProfile = v -> {
                 if (uid.isEmpty()) return;
                 Intent i = new Intent(EventParticipantsActivity.this, UserProfileActivity.class);
@@ -107,6 +102,32 @@ public class EventParticipantsActivity extends AppCompatActivity {
         }
 
         @Override public int getItemCount() { return participants.size(); }
+    }
+
+    private void bindUserInfo(ParticipantAdapter.VH h, String uid) {
+        db.collection("users").document(uid).get().addOnSuccessListener(doc -> {
+            String fName  = doc.getString("fName") != null ? doc.getString("fName") : "";
+            String lName  = doc.getString("lName") != null ? doc.getString("lName") : "";
+
+            h.tvFullName.setText((fName + " " + lName).trim());
+            h.tvInitials.setText(initials(fName, lName));
+
+            ImageView iv = h.ivProfilePhoto;
+            TextView initialsView = h.tvInitials;
+
+            String b64 = doc.getString("photoBase64");
+            if (b64 == null || b64.isEmpty()) return;
+            try {
+                byte[] bytes = android.util.Base64.decode(b64, android.util.Base64.DEFAULT);
+                android.graphics.Bitmap bmp =
+                        android.graphics.BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                if (bmp != null) {
+                    iv.setImageBitmap(bmp);
+                    iv.setVisibility(View.VISIBLE);
+                    if (initialsView != null) initialsView.setVisibility(View.GONE);
+                }
+            } catch (Exception ignored) { }
+        });
     }
 
     private String initials(String f, String l) {

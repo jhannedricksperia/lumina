@@ -22,6 +22,9 @@ public final class FragmentStaffProfileBinding implements ViewBinding {
   private final LinearLayout rootView;
 
   @NonNull
+  public final LinearLayout btnAboutUs;
+
+  @NonNull
   public final LinearLayout btnChangePassword;
 
   @NonNull
@@ -58,13 +61,14 @@ public final class FragmentStaffProfileBinding implements ViewBinding {
   public final TextView tvRole;
 
   private FragmentStaffProfileBinding(@NonNull LinearLayout rootView,
-      @NonNull LinearLayout btnChangePassword, @NonNull LinearLayout btnConfigurations,
-      @NonNull TextView btnEditPhoto, @NonNull LinearLayout btnLogout,
-      @NonNull LinearLayout btnViewActivityLog, @NonNull ShapeableImageView ivProfilePhoto,
-      @NonNull ProgressBar progressPhoto, @NonNull TextView tvDesignation,
-      @NonNull TextView tvEmail, @NonNull TextView tvFullName, @NonNull TextView tvInitials,
-      @NonNull TextView tvRole) {
+      @NonNull LinearLayout btnAboutUs, @NonNull LinearLayout btnChangePassword,
+      @NonNull LinearLayout btnConfigurations, @NonNull TextView btnEditPhoto,
+      @NonNull LinearLayout btnLogout, @NonNull LinearLayout btnViewActivityLog,
+      @NonNull ShapeableImageView ivProfilePhoto, @NonNull ProgressBar progressPhoto,
+      @NonNull TextView tvDesignation, @NonNull TextView tvEmail, @NonNull TextView tvFullName,
+      @NonNull TextView tvInitials, @NonNull TextView tvRole) {
     this.rootView = rootView;
+    this.btnAboutUs = btnAboutUs;
     this.btnChangePassword = btnChangePassword;
     this.btnConfigurations = btnConfigurations;
     this.btnEditPhoto = btnEditPhoto;
@@ -106,6 +110,12 @@ public final class FragmentStaffProfileBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
+      id = R.id.btn_about_us;
+      LinearLayout btnAboutUs = ViewBindings.findChildViewById(rootView, id);
+      if (btnAboutUs == null) {
+        break missingId;
+      }
+
       id = R.id.btn_change_password;
       LinearLayout btnChangePassword = ViewBindings.findChildViewById(rootView, id);
       if (btnChangePassword == null) {
@@ -178,7 +188,7 @@ public final class FragmentStaffProfileBinding implements ViewBinding {
         break missingId;
       }
 
-      return new FragmentStaffProfileBinding((LinearLayout) rootView, btnChangePassword,
+      return new FragmentStaffProfileBinding((LinearLayout) rootView, btnAboutUs, btnChangePassword,
           btnConfigurations, btnEditPhoto, btnLogout, btnViewActivityLog, ivProfilePhoto,
           progressPhoto, tvDesignation, tvEmail, tvFullName, tvInitials, tvRole);
     }

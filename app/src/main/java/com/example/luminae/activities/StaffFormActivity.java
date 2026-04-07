@@ -10,6 +10,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.luminae.databinding.ActivityStaffFormBinding;
+import com.example.luminae.utils.MailSender;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
@@ -409,29 +410,33 @@ public class StaffFormActivity extends AppCompatActivity {
 
         setLoading(true);
         String adminUid = FirebaseAuth.getInstance().getUid();
+        String username = usernameFromEmail(email);
 
         if (existingDocId == null) {
-            String tempPassword = "BulSU@" + System.currentTimeMillis();
+            String tempPassword = generatePassword(8);
             FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, tempPassword)
                     .addOnSuccessListener(authResult -> {
                         String newUid = authResult.getUser().getUid();
-                        saveToFirestore(newUid, fName, lName, email, adminUid, true);
+                        saveToFirestore(newUid, fName, lName, email, username, adminUid, true, tempPassword);
                     })
                     .addOnFailureListener(e -> {
                         setLoading(false);
                         showError(e.getMessage());
                     });
         } else {
-            saveToFirestore(existingDocId, fName, lName, email, adminUid, false);
+            saveToFirestore(existingDocId, fName, lName, email, username, adminUid, false, null);
         }
     }
 
     private void saveToFirestore(String docId,
                                  String fName, String lName,
-                                 String email, String adminUid, boolean isNew) {
+                                 String email, String username,
+                                 String adminUid, boolean isNew,
+                                 String generatedPassword) {
         Map<String, Object> data = new HashMap<>();
         data.put("fName",        fName);
         data.put("lName",        lName);
+        data.put("username",     username);
         data.put("designation", b.etDesignation.getText().toString().trim());
         data.put("campusId",     selectedCampusId);
         data.put("campusLabel",  selectedCampusName);
@@ -455,11 +460,37 @@ public class StaffFormActivity extends AppCompatActivity {
         db.collection("users").document(docId)
                 .set(data, SetOptions.merge())
                 .addOnSuccessListener(v -> {
-                    setLoading(false);
-                    Toast.makeText(this,
-                            isNew ? "Staff added successfully!" : "Staff updated successfully!",
-                            Toast.LENGTH_SHORT).show();
-                    finish();
+                    if (isNew && generatedPassword != null) {
+                        String fullName = (fName + " " + lName).trim();
+                        MailSender.sendWelcomeEmail(email, fullName, username, generatedPassword,
+                                new MailSender.Callback() {
+                                    @Override
+                                    public void onSuccess() {
+                                        runOnUiThread(() -> {
+                                            setLoading(false);
+                                            Toast.makeText(StaffFormActivity.this,
+                                                    "Staff added. Credentials sent to " + email,
+                                                    Toast.LENGTH_LONG).show();
+                                            finish();
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onFailure(Exception e) {
+                                        runOnUiThread(() -> {
+                                            setLoading(false);
+                                            Toast.makeText(StaffFormActivity.this,
+                                                    "Staff added, but email failed: " + e.getMessage(),
+                                                    Toast.LENGTH_LONG).show();
+                                            finish();
+                                        });
+                                    }
+                                });
+                    } else {
+                        setLoading(false);
+                        Toast.makeText(this, "Staff updated successfully!", Toast.LENGTH_SHORT).show();
+                        finish();
+                    }
                 })
                 .addOnFailureListener(e -> {
                     setLoading(false);
@@ -476,6 +507,19 @@ public class StaffFormActivity extends AppCompatActivity {
         String acronym = doc.getString("acronym");
         if (name == null) name = "(unnamed)";
         return (acronym != null && !acronym.isEmpty()) ? name + " (" + acronym + ")" : name;
+    }
+
+    private String usernameFromEmail(String email) {
+        int at = email.indexOf('@');
+        return at > 0 ? email.substring(0, at) : email;
+    }
+
+    private String generatePassword(int length) {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        Random rng = new Random();
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) sb.append(chars.charAt(rng.nextInt(chars.length())));
+        return sb.toString();
     }
 
     private void setAdapter(AutoCompleteTextView acv, List<String> items) {

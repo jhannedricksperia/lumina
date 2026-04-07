@@ -262,11 +262,13 @@ public class AnnouncementFormActivity extends AppCompatActivity {
                 audienceCampusId = "";
                 audienceCollegeId = "";
                 audienceCourseId = "";
-                audienceLabel = "Everyone";
+                audienceLabel = "Everyone (all campuses, colleges, courses)";
                 tvAudienceLabel.setText("Audience: " + audienceLabel);
                 clearCollegeCourse();
+                setAudienceScopeUiForAllCampuses(true);
                 return;
             }
+            setAudienceScopeUiForAllCampuses(false);
             DocumentSnapshot campus = campusDocs.get(pos - 1);
             audienceCampusId = campus.getId();
             audienceType = "Campus";
@@ -274,12 +276,21 @@ public class AnnouncementFormActivity extends AppCompatActivity {
             audienceCourseId = "";
             audienceLabel = orEmpty(campus.getString("name"));
             tvAudienceLabel.setText("Audience: " + audienceLabel);
-            loadCollegesForCampus(audienceCampusId, true);
+            loadCollegesForCampus(audienceCampusId, true, null);
         });
+    }
+
+    /** When true, campus = "All Campuses" — college/course pickers are hidden (whole-university reach). */
+    private void setAudienceScopeUiForAllCampuses(boolean allCampusesUniversWide) {
+        if (tilCollege != null)
+            tilCollege.setVisibility(allCampusesUniversWide ? View.GONE : View.VISIBLE);
+        if (tilCourse != null)
+            tilCourse.setVisibility(allCampusesUniversWide ? View.GONE : View.VISIBLE);
     }
 
     private void loadCampusBoundOptions(String campusId, String fixedCollegeId) {
         if (!campusId.isEmpty()) {
+            setAudienceScopeUiForAllCampuses(false);
             audienceCampusId = campusId;
             audienceType = "Campus";
             audienceLabel = "Campus";
@@ -287,16 +298,15 @@ public class AnnouncementFormActivity extends AppCompatActivity {
             acvCampus.setText(staffCampusName.isEmpty() ? "Assigned Campus" : staffCampusName, false);
             tilCampus.setEnabled(false);
             acvCampus.setEnabled(false);
-            loadCollegesForCampus(campusId, fixedCollegeId.isEmpty());
-            if (!fixedCollegeId.isEmpty()) {
-                loadCoursesForCollege(fixedCollegeId, true);
-            }
+            loadCollegesForCampus(campusId, true,
+                    fixedCollegeId.isEmpty() ? null : fixedCollegeId);
         }
     }
 
-    private void loadCollegesForCampus(String campusId, boolean includeAllOption) {
+    private void loadCollegesForCampus(String campusId, boolean includeAllOption,
+                                       @Nullable String preSelectCollegeId) {
         db.collection("colleges")
-                .whereEqualTo("campusId", campusId)
+                .whereEqualTo("campus", campusId)
                 .whereEqualTo("status", "Active")
                 .get()
                 .addOnSuccessListener(snap -> {
@@ -328,13 +338,26 @@ public class AnnouncementFormActivity extends AppCompatActivity {
                         tvAudienceLabel.setText("Audience: " + audienceLabel);
                         loadCoursesForCollege(audienceCollegeId, true);
                     });
+                    if (preSelectCollegeId != null && !preSelectCollegeId.isEmpty()) {
+                        for (int i = 0; i < collegeDocs.size(); i++) {
+                            if (preSelectCollegeId.equals(collegeDocs.get(i).getId())) {
+                                int row = includeAllOption ? i + 1 : i;
+                                acvCollege.setText(collegeNames.get(row), false);
+                                audienceCollegeId = preSelectCollegeId;
+                                audienceType = "College";
+                                audienceLabel = orEmpty(collegeDocs.get(i).getString("name"));
+                                tvAudienceLabel.setText("Audience: " + audienceLabel);
+                                loadCoursesForCollege(audienceCollegeId, true);
+                                break;
+                            }
+                        }
+                    }
                 });
     }
 
     private void loadCoursesForCollege(String collegeId, boolean includeAllOption) {
         db.collection("courses")
-                .whereEqualTo("collegeId", collegeId)
-                .whereEqualTo("status", "Active")
+                .whereEqualTo("college", collegeId)
                 .get()
                 .addOnSuccessListener(snap -> {
                     courseDocs.clear();
@@ -401,6 +424,12 @@ public class AnnouncementFormActivity extends AppCompatActivity {
             audienceLabel = orEmpty(doc.getString("audienceLabel"));
             if (audienceLabel.isEmpty()) audienceLabel = "Everyone";
             tvAudienceLabel.setText("Audience: " + audienceLabel);
+            if ("All".equals(audienceType)) {
+                setAudienceScopeUiForAllCampuses(true);
+                acvCampus.setText("All Campuses", false);
+            } else {
+                setAudienceScopeUiForAllCampuses(false);
+            }
             setLoading(false);
         }).addOnFailureListener(e -> setLoading(false));
     }

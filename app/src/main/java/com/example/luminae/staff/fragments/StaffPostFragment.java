@@ -2,521 +2,476 @@ package com.example.luminae.staff.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.*;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.*;
-import androidx.annotation.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.*;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
+
 import com.example.luminae.R;
 import com.example.luminae.activities.AnnouncementFormActivity;
 import com.example.luminae.activities.EventFormActivity;
 import com.example.luminae.activities.EventParticipantsActivity;
 import com.example.luminae.activities.PostDetailActivity;
+import com.example.luminae.databinding.FragmentAdminFeedBinding;
+import com.example.luminae.utils.ActivityLogger;
 import com.example.luminae.utils.EventDisplayUtils;
-import com.example.luminae.activities.UserProfileActivity;
-import com.example.luminae.admin.fragments.ActivityLogger;
 import com.example.luminae.utils.FullscreenImageGallery;
 import com.example.luminae.utils.LikeIconHelper;
-import com.example.luminae.utils.NotificationHelper;
 import com.example.luminae.utils.PostImageCarouselBinder;
 import com.example.luminae.utils.PostImageList;
-import com.example.luminae.databinding.FragmentStaffPostBinding;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.*;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+/**
+ * Staff feed — same UI and behavior as {@link com.example.luminae.admin.fragments.AdminFeedFragment}
+ * (tabs, filters, list layouts). Post options (edit/archive/delete) only for own posts.
+ */
 public class StaffPostFragment extends Fragment {
 
-    private FragmentStaffPostBinding b;
+    private static final int TAB_ANNOUNCEMENTS = 0;
+    private static final int TAB_EVENTS = 1;
+
+    private FragmentAdminFeedBinding b;
     private FirebaseFirestore db;
     private FirebaseAuth auth;
+
+    private final List<DocumentSnapshot> all = new ArrayList<>();
+    private final List<DocumentSnapshot> filtered = new ArrayList<>();
+
     private FeedAdapter adapter;
-    private List<FeedItem> allItems = new ArrayList<>(), filtered = new ArrayList<>();
-    private String currentType  = "All";
-    private String currentOrder = "desc";
-    private String staffUid         = "";
-    private String staffName        = "";
-    private String staffDesignation = "";
-    private boolean staffInfoLoaded = false;
-    private String staffPhotoBase64   = "";
+    private int activeTab = TAB_ANNOUNCEMENTS;
+    private String filterPeriod = "all";
+    private String filterStatus = "all";
+    private boolean sortDescending = true;
 
-    @Nullable @Override
+    interface NameCallback {
+        void onResult(String name);
+    }
+
+    @Nullable
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle saved) {
-        b        = FragmentStaffPostBinding.inflate(inflater, container, false);
-        db       = FirebaseFirestore.getInstance();
-        auth     = FirebaseAuth.getInstance();
-        staffUid = auth.getUid() != null ? auth.getUid() : "";
+        b = FragmentAdminFeedBinding.inflate(inflater, container, false);
+        db = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
 
-        loadStaffInfo();
-        setupFilters();
-        setupSearch();
-        loadFeed();
-
-        b.fabPost.setOnClickListener(v -> {
-            if (!staffInfoLoaded) {
-                Toast.makeText(getContext(), "Loading profile, please wait…", Toast.LENGTH_SHORT).show();
-                return;
+        b.tabLayout.addTab(b.tabLayout.newTab().setText("Announcements"));
+        b.tabLayout.addTab(b.tabLayout.newTab().setText("Events"));
+        b.tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                activeTab = tab.getPosition();
+                reloadCollection();
             }
-            Class<?> target = "Event".equals(currentType) ? EventFormActivity.class : AnnouncementFormActivity.class;
-            Intent i = new Intent(getActivity(), target);
-            i.putExtra("collection", "Event".equals(currentType) ? "events" : "announcements");
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
+
+        adapter = new FeedAdapter();
+        b.recyclerFeed.setLayoutManager(new LinearLayoutManager(getContext()));
+        b.recyclerFeed.setAdapter(adapter);
+
+        b.chipGroupFilter.setOnCheckedStateChangeListener((g, ids) -> {
+            if (b.chipToday.isChecked()) filterPeriod = "today";
+            else if (b.chipWeek.isChecked()) filterPeriod = "week";
+            else if (b.chipMonth.isChecked()) filterPeriod = "month";
+            else filterPeriod = "all";
+            if (b.chipActive.isChecked()) filterStatus = "active";
+            else if (b.chipArchived.isChecked()) filterStatus = "archived";
+            else filterStatus = "all";
+            applyFilter();
+        });
+
+        b.btnSort.setOnClickListener(v -> {
+            sortDescending = !sortDescending;
+            b.btnSort.setText(sortDescending ? "↓ Newest" : "↑ Oldest");
+            applyFilter();
+        });
+
+        b.btnAdd.setOnClickListener(v -> {
+            Intent i = new Intent(getActivity(),
+                    activeTab == TAB_ANNOUNCEMENTS ? AnnouncementFormActivity.class : EventFormActivity.class);
+            i.putExtra("collection", activeTab == TAB_ANNOUNCEMENTS ? "announcements" : "events");
             startActivity(i);
         });
 
+        reloadCollection();
         return b.getRoot();
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // Staff info
-    // ─────────────────────────────────────────────────────────────────────────
-    private void loadStaffInfo() {
-        if (staffUid.isEmpty()) return;
-        db.collection("users").document(staffUid).get().addOnSuccessListener(doc -> {
-            if (doc == null || b == null) return;
-            String fName = doc.getString("fName") != null ? doc.getString("fName") : "";
-            String lName = doc.getString("lName") != null ? doc.getString("lName") : "";
-            staffName        = (fName + " " + lName).trim();
-            staffDesignation = doc.getString("designation") != null ? doc.getString("designation") : "Staff";
-            if (staffName.isEmpty())
-                staffName = doc.getString("email") != null ? doc.getString("email") : "Staff";
-            // Cache the photo so feed cards load without extra reads
-            String rawPhoto = doc.getString("photoBase64");
-            staffPhotoBase64 = rawPhoto != null ? rawPhoto : "";
-            staffInfoLoaded = true;
-        });
-    }
+    private ListenerRegistration activeListener = null;
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // Feed filters
-    // ─────────────────────────────────────────────────────────────────────────
-    private void setupFilters() {
-        b.chipAll.setOnClickListener(v          -> { currentType  = "All";          applyFilter(); });
-        b.chipAnnouncement.setOnClickListener(v -> { currentType  = "Announcement"; applyFilter(); });
-        b.chipEvent.setOnClickListener(v        -> { currentType  = "Event";        applyFilter(); });
-        b.chipDesc.setOnClickListener(v         -> { currentOrder = "desc";         applyFilter(); });
-        b.chipAsc.setOnClickListener(v          -> { currentOrder = "asc";          applyFilter(); });
-    }
+    private void reloadCollection() {
+        if (activeListener != null) {
+            activeListener.remove();
+            activeListener = null;
+        }
+        all.clear();
+        filtered.clear();
+        if (adapter != null) adapter.notifyDataSetChanged();
 
-    private void setupSearch() {
-        b.etSearch.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int a, int bc, int c) {}
-            @Override public void afterTextChanged(Editable s) {}
-            @Override public void onTextChanged(CharSequence s, int a, int bc, int c) { applyFilter(); }
-        });
-        b.btnSearch.setOnClickListener(v -> {
-            hideKeyboard();
+        String collection = activeTab == TAB_ANNOUNCEMENTS ? "announcements" : "events";
+        activeListener = db.collection(collection).addSnapshotListener((snap, e) -> {
+            if (snap == null || b == null) return;
+            all.clear();
+            all.addAll(snap.getDocuments());
             applyFilter();
         });
-        b.etSearch.setOnEditorActionListener((tv, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                hideKeyboard();
-                applyFilter();
-                return true;
-            }
-            return false;
-        });
-    }
-
-    private void hideKeyboard() {
-        if (getContext() == null || b == null) return;
-        InputMethodManager imm = (InputMethodManager) getContext()
-                .getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
-        if (imm != null) imm.hideSoftInputFromWindow(b.etSearch.getWindowToken(), 0);
-    }
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // Feed loading
-    // ─────────────────────────────────────────────────────────────────────────
-    private void loadFeed() {
-        b.progressFeed.setVisibility(View.VISIBLE);
-        final int[] done = {0};
-
-        db.collection("announcements").orderBy("createdAt", Query.Direction.DESCENDING)
-                .addSnapshotListener((snap, e) -> {
-                    if (snap == null) return;
-                    for (int j = allItems.size() - 1; j >= 0; j--)
-                        if ("Announcement".equals(allItems.get(j).type)) allItems.remove(j);
-                    for (DocumentSnapshot doc : snap.getDocuments())
-                        allItems.add(docToItem(doc, "Announcement"));
-                    if (++done[0] >= 2) { b.progressFeed.setVisibility(View.GONE); applyFilter(); }
-                });
-
-        db.collection("events").orderBy("createdAt", Query.Direction.DESCENDING)
-                .addSnapshotListener((snap, e) -> {
-                    if (snap == null) return;
-                    for (int j = allItems.size() - 1; j >= 0; j--)
-                        if ("Event".equals(allItems.get(j).type)) allItems.remove(j);
-                    for (DocumentSnapshot doc : snap.getDocuments()) {
-                        FeedItem f = docToItem(doc, "Event");
-                        f.location         = EventDisplayUtils.formatLocation(doc);
-                        f.eventDate        = EventDisplayUtils.formatEventDate(doc);
-                        Long max = doc.getLong("maxParticipants");
-                        f.maxParticipants  = max != null ? max : 0;
-                        f.participantCount = EventDisplayUtils.countGoing(doc);
-                        allItems.add(f);
-                    }
-                    if (++done[0] >= 2) { b.progressFeed.setVisibility(View.GONE); applyFilter(); }
-                });
-    }
-
-    private static String coalesce(String... parts) {
-        if (parts == null) return "";
-        for (String p : parts) {
-            if (p != null && !p.trim().isEmpty()) return p.trim();
-        }
-        return "";
-    }
-
-    private FeedItem docToItem(DocumentSnapshot doc, String type) {
-        FeedItem f     = new FeedItem();
-        f.docId        = doc.getId();
-        f.type         = type;
-        f.title        = doc.getString("title")        != null ? doc.getString("title")        : "";
-        f.description  = doc.getString("description")  != null ? doc.getString("description")  : "";
-        f.postedBy     = coalesce(doc.getString("postedBy"), doc.getString("createdById"));
-        f.postedByName = coalesce(doc.getString("postedByName"), doc.getString("createdByName"),
-                doc.getString("createdBy"));
-        f.audienceLabel= doc.getString("audienceLabel")!= null ? doc.getString("audienceLabel"): "Everyone";
-        f.postedByPhoto = doc.getString("postedByPhoto");
-        f.imagesBase64 = new ArrayList<>(PostImageList.fromDocument(doc));
-        f.imageBase64  = f.imagesBase64.isEmpty() ? null : f.imagesBase64.get(0);
-        Timestamp ts   = doc.getTimestamp("createdAt");
-        f.createdAt    = ts != null ? ts.toDate() : new Date(0);
-        Long l = doc.getLong("likeCount");
-        Long c = doc.getLong("commentCount");
-        f.likeCount    = l != null ? l.intValue() : 0;
-        f.commentCount = c != null ? c.intValue() : 0;
-        f.isMyPost     = staffUid.equals(f.postedBy);
-        return f;
     }
 
     private void applyFilter() {
+        if (b == null) return;
+
+        Calendar from = Calendar.getInstance();
+        switch (filterPeriod) {
+            case "today":
+                from.set(Calendar.HOUR_OF_DAY, 0);
+                from.set(Calendar.MINUTE, 0);
+                from.set(Calendar.SECOND, 0);
+                from.set(Calendar.MILLISECOND, 0);
+                break;
+            case "week":
+                from.add(Calendar.DAY_OF_YEAR, -7);
+                break;
+            case "month":
+                from.add(Calendar.MONTH, -1);
+                break;
+            default:
+                from.set(2000, 0, 1);
+        }
+        Date fromDate = from.getTime();
+
         filtered.clear();
-        String q = b.etSearch.getText() != null
-                ? b.etSearch.getText().toString().trim().toLowerCase() : "";
-        for (FeedItem item : allItems) {
-            if (!(currentType.equals("All") || currentType.equals(item.type))) continue;
-            boolean matchSearch = q.isEmpty()
-                    || item.title.toLowerCase().contains(q)
-                    || item.description.toLowerCase().contains(q);
-            if (matchSearch) filtered.add(item);
+        for (DocumentSnapshot doc : all) {
+            if (!"all".equals(filterStatus)) {
+                String docStatus = doc.getString("status");
+                if (docStatus == null) docStatus = "Active";
+                boolean isActive = "Active".equalsIgnoreCase(docStatus);
+                if ("active".equals(filterStatus) && !isActive) continue;
+                if ("archived".equals(filterStatus) && isActive) continue;
+            }
+
+            if (!"all".equals(filterPeriod)) {
+                Timestamp ts = doc.getTimestamp("createdAt");
+                if (ts == null || ts.toDate().before(fromDate)) continue;
+            }
+
+            filtered.add(doc);
         }
-        filtered.sort((a, c) -> {
-            if (a.createdAt == null || c.createdAt == null) return 0;
-            return "desc".equals(currentOrder)
-                    ? c.createdAt.compareTo(a.createdAt)
-                    : a.createdAt.compareTo(c.createdAt);
+
+        filtered.sort((a, z) -> {
+            Timestamp ta = a.getTimestamp("createdAt");
+            Timestamp tz = z.getTimestamp("createdAt");
+            if (ta == null && tz == null) return 0;
+            if (ta == null) return 1;
+            if (tz == null) return -1;
+            return sortDescending
+                    ? tz.toDate().compareTo(ta.toDate())
+                    : ta.toDate().compareTo(tz.toDate());
         });
-        if (adapter == null) {
-            adapter = new FeedAdapter();
-            b.recyclerFeed.setLayoutManager(new LinearLayoutManager(requireContext()));
-            b.recyclerFeed.setAdapter(adapter);
-        } else {
-            adapter.notifyDataSetChanged();
+
+        String label = activeTab == TAB_ANNOUNCEMENTS ? "announcement(s)" : "event(s)";
+        b.tvCount.setText(filtered.size() + " " + label);
+        adapter.notifyDataSetChanged();
+    }
+
+    private void getActorFullName(NameCallback cb) {
+        String uid = FirebaseAuth.getInstance().getUid();
+        if (uid == null) {
+            cb.onResult("Unknown");
+            return;
         }
+        db.collection("users").document(uid).get()
+                .addOnSuccessListener(doc -> {
+                    String f = doc.getString("fName") != null ? doc.getString("fName") : "";
+                    String l = doc.getString("lName") != null ? doc.getString("lName") : "";
+                    String full = (f + " " + l).trim();
+                    cb.onResult(full.isEmpty() ? "Unknown" : full);
+                })
+                .addOnFailureListener(e -> cb.onResult("Unknown"));
     }
 
-    // Creation and editing are now handled by dedicated form activities.
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // Data model
-    // ─────────────────────────────────────────────────────────────────────────
-    static class FeedItem {
-        String  docId, type, title, description, postedBy, postedByName, postedByPhoto;
-        String  location, eventDate, audienceLabel, imageBase64;
-        ArrayList<String> imagesBase64 = new ArrayList<>();
-        long    maxParticipants, participantCount;
-        Date    createdAt;
-        int     likeCount, commentCount;
-        boolean isMyPost;
-        boolean likedByMe = false;
+    private boolean isMyPost(DocumentSnapshot doc) {
+        String uid = auth.getUid();
+        if (uid == null) return false;
+        if (uid.equals(doc.getString("postedBy"))) return true;
+        if (uid.equals(doc.getString("createdById"))) return true;
+        return false;
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // RecyclerView adapter
-    // ─────────────────────────────────────────────────────────────────────────
     private class FeedAdapter extends RecyclerView.Adapter<FeedAdapter.VH> {
 
         class VH extends RecyclerView.ViewHolder {
-            TextView  tvTypeBadge, tvPosterName, tvTime, tvTitle, tvDescription;
-            TextView  tvLikeCount, tvCommentCount, tvGoingInfo, tvMyPostBadge, tvAudience;
-            TextView  tvLocation, tvEventDate, tvFeedGoingCount;
-            ImageView ivLike, ivComment;
-            ImageView ivPosterPhoto, btnMore;
-            View      layoutPostMedia;
+            TextView tvCreatedBy, tvDateCreated, tvTitle, tvDesc, tvLikeCount;
+            ImageView ivLike;
+            View btnLikeRow;
+            View layoutPostMedia;
             ViewPager2 vpPostImages;
             LinearLayout dotsPostImages;
-            View      cardRoot, btnLike, btnComment, layoutEventInfo, rowFeedGoing;
-            String    boundCarouselDocId;
-            String    boundCarouselSig;
+            ImageView btnMore;
+            TextView tvWhere, tvEventDate, tvGoingCount, tvGoingInfo;
+            View layoutEventInfo;
+            View rowGoing;
+            String boundCarouselDocId;
+            String boundCarouselSig;
 
             VH(View v) {
                 super(v);
-                cardRoot       = v.findViewById(R.id.card_root);
-                tvTypeBadge    = v.findViewById(R.id.tv_type_badge);
-                ivPosterPhoto  = v.findViewById(R.id.iv_poster_photo);
+                tvCreatedBy = v.findViewById(R.id.tv_poster_name) != null
+                        ? v.findViewById(R.id.tv_poster_name)
+                        : v.findViewById(R.id.tv_posted_by);
+                tvDateCreated = v.findViewById(R.id.tv_time) != null
+                        ? v.findViewById(R.id.tv_time)
+                        : v.findViewById(R.id.tv_created_date);
+                tvTitle = v.findViewById(R.id.tv_title);
+                tvDesc = v.findViewById(R.id.tv_description);
+                tvLikeCount = v.findViewById(R.id.tv_like_count);
+                ivLike = v.findViewById(R.id.iv_like);
+                btnLikeRow = v.findViewById(R.id.btn_like);
                 layoutPostMedia = v.findViewById(R.id.layout_post_media);
-                vpPostImages   = v.findViewById(R.id.vp_post_images);
+                vpPostImages = v.findViewById(R.id.vp_post_images);
                 dotsPostImages = v.findViewById(R.id.dots_post_images);
-                btnMore        = v.findViewById(R.id.btn_more);
-                tvPosterName   = v.findViewById(R.id.tv_poster_name);
-                tvTime         = v.findViewById(R.id.tv_time);
-                tvTitle        = v.findViewById(R.id.tv_title);
-                tvDescription  = v.findViewById(R.id.tv_description);
-                tvLikeCount    = v.findViewById(R.id.tv_like_count);
-                ivLike         = v.findViewById(R.id.iv_like);
-                ivComment      = v.findViewById(R.id.iv_comment);
-                btnLike        = v.findViewById(R.id.btn_like);
-                tvCommentCount = v.findViewById(R.id.tv_comment_count);
-                btnComment     = v.findViewById(R.id.btn_comment);
-                tvGoingInfo    = v.findViewById(R.id.tv_going_info);
-                tvMyPostBadge  = v.findViewById(R.id.tv_my_post_badge);
-                tvAudience     = v.findViewById(R.id.tv_audience);
+                btnMore = v.findViewById(R.id.btn_more);
+                tvWhere = v.findViewById(R.id.tv_location);
+                tvEventDate = v.findViewById(R.id.tv_event_date);
+                tvGoingCount = v.findViewById(R.id.tv_going_count);
+                if (tvGoingCount == null) tvGoingCount = v.findViewById(R.id.tv_participants);
+                tvGoingInfo = v.findViewById(R.id.tv_going_info);
                 layoutEventInfo = v.findViewById(R.id.layout_event_info);
-                tvLocation     = v.findViewById(R.id.tv_location);
-                tvEventDate    = v.findViewById(R.id.tv_event_date);
-                rowFeedGoing   = v.findViewById(R.id.row_feed_going);
-                tvFeedGoingCount = v.findViewById(R.id.tv_feed_going_count);
+                rowGoing = v.findViewById(R.id.row_going);
             }
         }
 
-        @Override public VH onCreateViewHolder(ViewGroup p, int t) {
-            return new VH(LayoutInflater.from(p.getContext())
-                    .inflate(R.layout.item_feed_post, p, false));
+        @Override
+        public int getItemViewType(int position) {
+            return activeTab;
         }
 
-        @Override public void onBindViewHolder(VH h, int pos) {
-            FeedItem item = filtered.get(pos);
-            SimpleDateFormat sdf = new SimpleDateFormat("MMM d  •  h:mm a", Locale.getDefault());
+        @NonNull
+        @Override
+        public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            int layout = viewType == TAB_ANNOUNCEMENTS
+                    ? R.layout.item_feed_post
+                    : R.layout.item_event_post;
+            return new VH(LayoutInflater.from(parent.getContext())
+                    .inflate(layout, parent, false));
+        }
 
-            h.tvTypeBadge.setText(item.type);
-            h.tvTypeBadge.setBackgroundResource(
-                    "Announcement".equals(item.type) ? R.drawable.badge_announcement : R.drawable.badge_event);
-            h.tvPosterName.setText(item.postedByName);
-            loadProfilePhoto(h.ivPosterPhoto, item.postedByPhoto, item.postedBy);
-            h.tvTime.setText(item.createdAt != null ? sdf.format(item.createdAt) : "");
-            h.tvTitle.setText(item.title);
-            h.tvDescription.setText(item.description);
-            bindPostImages(item, h);
-            if (h.ivComment != null) LikeIconHelper.setCommentTint(h.ivComment);
+        @Override
+        public void onBindViewHolder(@NonNull VH h, int pos) {
+            DocumentSnapshot doc = filtered.get(pos);
+            SimpleDateFormat sdf = new SimpleDateFormat("MMM d, yyyy", Locale.getDefault());
 
-            // ── Like: check Firestore on bind so likedByMe is always accurate ──
-            String uid  = auth.getUid();
-            String col  = "Announcement".equals(item.type) ? "announcements" : "events";
-            DocumentReference postRef = db.collection(col).document(item.docId);
-            DocumentReference likeRef = uid != null
-                    ? postRef.collection("likes").document(uid) : null;
+            String title = doc.getString("title") != null ? doc.getString("title") : "—";
+            String desc = doc.getString("description") != null ? doc.getString("description") : "—";
+            String by = doc.getString("createdBy") != null ? doc.getString("createdBy") : "—";
+            Timestamp ts = doc.getTimestamp("createdAt");
 
-            if (likeRef != null) {
-                likeRef.get().addOnSuccessListener(likeDoc -> {
-                    item.likedByMe = likeDoc.exists();
-                    updateLikeUI(h, item);
-                });
+            long hearts = 0;
+            if (doc.getLong("likeCount") != null) hearts = doc.getLong("likeCount");
+            else if (doc.getLong("hearts") != null) hearts = doc.getLong("hearts");
+
+            if (h.tvTitle != null) h.tvTitle.setText(title);
+            if (h.tvDesc != null) h.tvDesc.setText(desc);
+            if (h.tvCreatedBy != null) h.tvCreatedBy.setText(by);
+            if (h.tvDateCreated != null)
+                h.tvDateCreated.setText(ts != null ? sdf.format(ts.toDate()) : "—");
+
+            if (h.layoutPostMedia != null && h.vpPostImages != null) {
+                List<String> imgs = PostImageList.fromDocument(doc);
+                if (imgs.isEmpty()) {
+                    h.layoutPostMedia.setVisibility(View.GONE);
+                    h.boundCarouselDocId = null;
+                    h.boundCarouselSig = null;
+                } else {
+                    h.layoutPostMedia.setVisibility(View.VISIBLE);
+                    String sig = doc.getId() + ":" + PostImageList.signature(imgs);
+                    if (!java.util.Objects.equals(doc.getId(), h.boundCarouselDocId)
+                            || !java.util.Objects.equals(sig, h.boundCarouselSig)) {
+                        h.boundCarouselDocId = doc.getId();
+                        h.boundCarouselSig = sig;
+                        android.content.Context ctx = requireContext();
+                        PostImageCarouselBinder.bind(h.vpPostImages, h.dotsPostImages, imgs, ctx,
+                                pageIdx -> FullscreenImageGallery.show(ctx, imgs, pageIdx));
+                    }
+                }
             }
-            updateLikeUI(h, item);   // immediate render with cached value
 
-            if (h.btnLike != null) {
-                h.btnLike.setOnClickListener(v -> {
+            if (activeTab == TAB_ANNOUNCEMENTS) {
+                View evInfo = h.itemView.findViewById(R.id.layout_event_info);
+                if (evInfo != null) evInfo.setVisibility(View.GONE);
+                View goingRow = h.itemView.findViewById(R.id.layout_going_row);
+                if (goingRow != null) goingRow.setVisibility(View.GONE);
+            }
+
+            if (activeTab == TAB_EVENTS) {
+                if (h.layoutEventInfo != null) h.layoutEventInfo.setVisibility(View.VISIBLE);
+                long going = EventDisplayUtils.countGoing(doc);
+                String loc = EventDisplayUtils.formatLocation(doc);
+                if (h.tvWhere != null)
+                    h.tvWhere.setText(loc.isEmpty() ? "—" : loc);
+                if (h.tvEventDate != null)
+                    h.tvEventDate.setText(EventDisplayUtils.formatEventDate(doc));
+                if (h.tvGoingCount != null) h.tvGoingCount.setText(going + " going");
+                if (h.tvGoingInfo != null) {
+                    h.tvGoingInfo.setVisibility(View.VISIBLE);
+                    h.tvGoingInfo.setText(going + " going");
+                }
+                if (h.rowGoing != null) {
+                    h.rowGoing.setOnClickListener(ev -> {
+                        Intent pi = new Intent(getActivity(), EventParticipantsActivity.class);
+                        pi.putExtra("eventId", doc.getId());
+                        pi.putExtra("eventTitle", title);
+                        startActivity(pi);
+                    });
+                }
+            }
+
+            if (h.tvLikeCount != null && h.btnLikeRow != null) {
+                String col = activeTab == TAB_ANNOUNCEMENTS ? "announcements" : "events";
+                DocumentReference postRef = db.collection(col).document(doc.getId());
+                String uid = auth.getUid();
+                DocumentReference likeRef = uid != null
+                        ? postRef.collection("likes").document(uid) : null;
+
+                final long[] likeCount = {hearts};
+                final boolean[] likedByMe = {false};
+
+                Runnable refreshLikeUi = () -> {
+                    h.tvLikeCount.setText(String.valueOf(likeCount[0]));
+                    LikeIconHelper.setHeartTint(h.ivLike, likedByMe[0]);
+                };
+                refreshLikeUi.run();
+
+                if (likeRef != null) {
+                    likeRef.get().addOnSuccessListener(likeDoc -> {
+                        likedByMe[0] = likeDoc.exists();
+                        refreshLikeUi.run();
+                    });
+                }
+
+                h.btnLikeRow.setOnClickListener(v -> {
                     if (uid == null || likeRef == null) return;
-                    // Always read current state from Firestore to prevent double-like
                     likeRef.get().addOnSuccessListener(likeDoc -> {
                         if (likeDoc.exists()) {
-                            // Unlike
                             likeRef.delete();
                             postRef.update("likeCount", FieldValue.increment(-1));
-                            item.likedByMe = false;
-                            item.likeCount = Math.max(0, item.likeCount - 1);
+                            likedByMe[0] = false;
+                            likeCount[0] = Math.max(0, likeCount[0] - 1);
                         } else {
-                            // Like
                             Map<String, Object> likeData = new HashMap<>();
-                            likeData.put("uid",     uid);
+                            likeData.put("uid", uid);
                             likeData.put("likedAt", Timestamp.now());
                             likeRef.set(likeData);
                             postRef.update("likeCount", FieldValue.increment(1));
-                            item.likedByMe = true;
-                            item.likeCount++;
-                            // Audit log
-                            ActivityLogger.log(
-                                    "Announcement".equals(item.type)
-                                            ? ActivityLogger.MODULE_ANNOUNCEMENT
-                                            : ActivityLogger.MODULE_EVENT,
-                                    "Liked", item.title);
-                            // Notify poster
-                            NotificationHelper.notifyLike(
-                                    item.postedBy, staffName, item.title,
-                                    item.docId,
-                                    "Announcement".equals(item.type) ? "announcements" : "events");
+                            likedByMe[0] = true;
+                            likeCount[0]++;
                         }
-                        updateLikeUI(h, item);
+                        refreshLikeUi.run();
                     });
                 });
             }
 
-            // Comment count
-            if (h.tvCommentCount != null) h.tvCommentCount.setText(String.valueOf(item.commentCount));
-
-            // Event details + going row (icons in layout_event_info)
-            if ("Event".equals(item.type)) {
-                if (h.layoutEventInfo != null) h.layoutEventInfo.setVisibility(View.VISIBLE);
-                if (h.tvLocation != null)
-                    h.tvLocation.setText(item.location.isEmpty() ? "—" : item.location);
-                if (h.tvEventDate != null) h.tvEventDate.setText(item.eventDate);
-                String going = item.maxParticipants > 0
-                        ? item.participantCount + " / " + item.maxParticipants + " going"
-                        : item.participantCount + " going";
-                if (h.tvFeedGoingCount != null) h.tvFeedGoingCount.setText(going);
-                if (h.rowFeedGoing != null) {
-                    h.rowFeedGoing.setOnClickListener(v -> {
-                        Intent gi = new Intent(getActivity(), EventParticipantsActivity.class);
-                        gi.putExtra("eventId", item.docId);
-                        gi.putExtra("eventTitle", item.title);
-                        startActivity(gi);
-                    });
-                }
-                if (h.tvGoingInfo != null) h.tvGoingInfo.setVisibility(View.GONE);
-            } else {
-                if (h.layoutEventInfo != null) h.layoutEventInfo.setVisibility(View.GONE);
-                if (h.tvGoingInfo != null) h.tvGoingInfo.setVisibility(View.GONE);
-            }
-
-            // Audience label
-            if (h.tvAudience != null) {
-                String label = item.audienceLabel != null && !item.audienceLabel.isEmpty()
-                        ? item.audienceLabel : "Everyone";
-                h.tvAudience.setText("Audience: " + label);
-            }
-
-            // My post badge + more button
-            if (h.tvMyPostBadge != null) h.tvMyPostBadge.setVisibility(item.isMyPost ? View.VISIBLE : View.GONE);
-            if (h.btnMore       != null) h.btnMore.setVisibility(item.isMyPost ? View.VISIBLE : View.GONE);
-
-            // Poster photo + name → open UserProfileActivity
-            View.OnClickListener openProfile = v -> openUserProfile(item.postedBy);
-            if (h.ivPosterPhoto != null) h.ivPosterPhoto.setOnClickListener(openProfile);
-            if (h.tvPosterName  != null) h.tvPosterName.setOnClickListener(openProfile);
-
-            // Comment button → open PostDetailActivity (same as card click)
-            if (h.btnComment != null) {
-                h.btnComment.setOnClickListener(v -> openDetail(item));
-            }
-
-            // Card click → detail
-            h.cardRoot.setOnClickListener(v -> openDetail(item));
-            h.cardRoot.setOnLongClickListener(v -> {
-                if (item.isMyPost) showPostOptions(item);
-                return item.isMyPost;
+            h.itemView.setOnClickListener(v -> {
+                Intent intent = new Intent(getActivity(), PostDetailActivity.class);
+                intent.putExtra("docId", doc.getId());
+                intent.putExtra("type", activeTab == TAB_ANNOUNCEMENTS ? "Announcement" : "Event");
+                startActivity(intent);
             });
-
-            if (h.btnMore != null) h.btnMore.setOnClickListener(v -> showPostOptions(item));
-        }
-
-        private void showPostOptions(FeedItem item) {
-            String[] items = {"Edit", "Archive", "Delete"};
-            new MaterialAlertDialogBuilder(requireContext())
-                    .setTitle("Post Options")
-                    .setItems(items, (dialog, which) -> {
-                        if (which == 0) {
-                            Intent i = new Intent(getActivity(),
-                                    "Announcement".equals(item.type) ? AnnouncementFormActivity.class : EventFormActivity.class);
-                            i.putExtra("doc_id", item.docId);
-                            i.putExtra("collection", "Announcement".equals(item.type) ? "announcements" : "events");
-                            startActivity(i);
-                        } else if (which == 1) {
-                            String col = "Announcement".equals(item.type) ? "announcements" : "events";
-                            DocumentReference ref = db.collection(col).document(item.docId);
-                            ref.get().addOnSuccessListener(doc -> {
-                                String currentStatus = doc.getString("status");
-                                boolean isArchived = "Archive".equalsIgnoreCase(currentStatus)
-                                        || "Archived".equalsIgnoreCase(currentStatus);
-                                ref.update("status", isArchived ? "Active" : "Archive");
-                            });
-                        } else {
-                            String col = "Announcement".equals(item.type) ? "announcements" : "events";
-                            db.collection(col).document(item.docId).delete();
-                            ActivityLogger.log(
-                                    "Announcement".equals(item.type)
-                                            ? ActivityLogger.MODULE_ANNOUNCEMENT
-                                            : ActivityLogger.MODULE_EVENT,
-                                    ActivityLogger.ACTION_DELETE, item.title);
-                        }
-                    })
-                    .show();
-        }
-
-        private void openDetail(FeedItem item) {
-            Intent i = new Intent(getActivity(), PostDetailActivity.class);
-            i.putExtra("docId", item.docId);
-            i.putExtra("type",  item.type);
-            startActivity(i);
-        }
-
-        private void openUserProfile(String uid) {
-            if (uid == null || uid.isEmpty()) return;
-            Intent i = new Intent(getActivity(), UserProfileActivity.class);
-            i.putExtra("uid", uid);
-            startActivity(i);
-        }
-
-        private void loadProfilePhoto(android.widget.ImageView iv, String photoBase64, String uid) {
-            // First try the cached field on the post document (fast, no extra read)
-            if (photoBase64 != null && !photoBase64.isEmpty()) {
-                try {
-                    byte[] bytes = android.util.Base64.decode(photoBase64, android.util.Base64.DEFAULT);
-                    android.graphics.Bitmap bmp = android.graphics.BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                    if (bmp != null) { iv.setImageBitmap(bmp); return; }
-                } catch (Exception ignored) {}
+            boolean mine = isMyPost(doc);
+            if (h.btnMore != null) {
+                h.btnMore.setVisibility(mine ? View.VISIBLE : View.GONE);
+                h.btnMore.setOnClickListener(v -> showPostOptions(doc, title));
             }
-            // Fallback: fetch from users collection
-            if (uid == null || uid.isEmpty()) return;
-            db.collection("users").document(uid).get().addOnSuccessListener(doc -> {
-                String b64 = doc.getString("photoBase64");
-                if (b64 != null && !b64.isEmpty()) {
-                    try {
-                        byte[] bytes = android.util.Base64.decode(b64, android.util.Base64.DEFAULT);
-                        android.graphics.Bitmap bmp = android.graphics.BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                        if (bmp != null) iv.setImageBitmap(bmp);
-                    } catch (Exception ignored) {}
-                }
+            h.itemView.setOnLongClickListener(v -> {
+                if (mine) showPostOptions(doc, title);
+                return mine;
             });
         }
 
-        private void updateLikeUI(VH h, FeedItem item) {
-            if (h.tvLikeCount != null) h.tvLikeCount.setText(String.valueOf(item.likeCount));
-            LikeIconHelper.setHeartTint(h.ivLike, item.likedByMe);
+        @Override
+        public int getItemCount() {
+            return filtered.size();
         }
-
-        private void bindPostImages(FeedItem item, VH h) {
-            if (h.layoutPostMedia == null || h.vpPostImages == null) return;
-            List<String> imgs = item.imagesBase64;
-            if (imgs == null || imgs.isEmpty()) {
-                h.layoutPostMedia.setVisibility(View.GONE);
-                h.boundCarouselDocId = null;
-                h.boundCarouselSig = null;
-                return;
-            }
-            h.layoutPostMedia.setVisibility(View.VISIBLE);
-            String sig = item.docId + ":" + PostImageList.signature(imgs);
-            if (java.util.Objects.equals(item.docId, h.boundCarouselDocId)
-                    && java.util.Objects.equals(sig, h.boundCarouselSig)) {
-                return;
-            }
-            h.boundCarouselDocId = item.docId;
-            h.boundCarouselSig = sig;
-            android.content.Context ctx = requireContext();
-            PostImageCarouselBinder.bind(h.vpPostImages, h.dotsPostImages, imgs, ctx,
-                    pageIdx -> FullscreenImageGallery.show(ctx, imgs, pageIdx));
-        }
-
-        @Override public int getItemCount() { return filtered.size(); }
     }
 
-    @Override public void onDestroyView() { super.onDestroyView(); b = null; }
+    private void showPostOptions(DocumentSnapshot doc, String title) {
+        String[] items = {"Edit", "Archive", "Delete"};
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Post Options")
+                .setItems(items, (dialog, which) -> {
+                    if (which == 0) {
+                        Intent i = new Intent(getActivity(),
+                                activeTab == TAB_ANNOUNCEMENTS ? AnnouncementFormActivity.class : EventFormActivity.class);
+                        i.putExtra("doc_id", doc.getId());
+                        i.putExtra("collection", activeTab == TAB_ANNOUNCEMENTS ? "announcements" : "events");
+                        startActivity(i);
+                    } else if (which == 1) {
+                        String currentStatus = doc.getString("status");
+                        boolean isArchived = "Archive".equalsIgnoreCase(currentStatus)
+                                || "Archived".equalsIgnoreCase(currentStatus);
+                        String newStatus = isArchived ? "Active" : "Archive";
+                        doc.getReference().update("status", newStatus);
+                    } else {
+                        new MaterialAlertDialogBuilder(requireContext())
+                                .setTitle("Delete")
+                                .setMessage("Delete \"" + title + "\"? This cannot be undone.")
+                                .setPositiveButton("Delete", (d, w) ->
+                                        getActorFullName(fullName ->
+                                                doc.getReference().delete()
+                                                        .addOnSuccessListener(unused -> {
+                                                            if (activeTab == TAB_ANNOUNCEMENTS)
+                                                                ActivityLogger.logAnnouncement(
+                                                                        ActivityLogger.ACTION_DELETE, title, fullName);
+                                                            else
+                                                                ActivityLogger.logEvent(
+                                                                        ActivityLogger.ACTION_DELETE, title, fullName);
+                                                        })))
+                                .setNegativeButton("Cancel", null)
+                                .show();
+                    }
+                })
+                .show();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (activeListener != null) {
+            activeListener.remove();
+            activeListener = null;
+        }
+        b = null;
+    }
 }

@@ -460,9 +460,10 @@ public class StudentFeedFragment extends Fragment {
                             item.participantCount = Math.max(0, item.participantCount - 1);
 
                             // Notify poster that the RSVP was cancelled
-                            sendNotification(item.postedBy,
-                                    getUserEmail() + " cancelled your event",
-                                    item.title, item.docId, "events");
+                            db.collection("users").document(uid).get()
+                                    .addOnSuccessListener(userDoc -> sendNotification(item.postedBy,
+                                            displayNameFromUserDoc(userDoc) + " cancelled your event",
+                                            item.title, item.docId, "events"));
                         } else {
                             // Fetch current user info first
                             db.collection("users").document(uid).get()
@@ -484,7 +485,7 @@ public class StudentFeedFragment extends Fragment {
 
                                         // Notify poster
                                         sendNotification(item.postedBy,
-                                                getUserEmail() + " joined your event",
+                                                displayNameFromUserDoc(userDoc) + " joined your event",
                                                 item.title, item.docId, "events");
                                     });
                             return;
@@ -575,6 +576,22 @@ public class StudentFeedFragment extends Fragment {
             notif.put("timestamp",     Timestamp.now());
             notif.put("read",          false);
             db.collection("notifications").add(notif);
+        }
+
+        private String displayNameFromUserDoc(DocumentSnapshot userDoc) {
+            if (userDoc == null) return "Someone";
+            String f = userDoc.getString("fName");
+            String l = userDoc.getString("lName");
+            String full = ((f != null ? f : "") + " " + (l != null ? l : "")).trim();
+            if (!full.isEmpty()) return full;
+            String username = userDoc.getString("username");
+            if (username != null && !username.trim().isEmpty()) return username.trim();
+            String email = userDoc.getString("email");
+            if (email != null && !email.trim().isEmpty()) {
+                int at = email.indexOf('@');
+                return at > 0 ? email.substring(0, at) : email;
+            }
+            return "Someone";
         }
 
         private String getUserEmail() {
