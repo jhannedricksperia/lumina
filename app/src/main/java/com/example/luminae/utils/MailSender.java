@@ -119,7 +119,7 @@ public class MailSender {
                 + "<tr><td style=\"padding:36px 40px;\">"
                 + "<p style=\"font-size:16px;color:#333;margin:0 0 8px;\">Hi <strong>" + firstName + "</strong>,</p>"
                 + "<p style=\"font-size:14px;color:#555;line-height:1.7;margin:0 0 24px;\">"
-                + "Welcome to <strong>Lumina</strong>! Your student account has been created by your administrator. "
+                + "Welcome to <strong>Lumina</strong>! Your student account has been created successfully. "
                 + "Use the credentials below to log in.</p>"
 
                 // Credentials box

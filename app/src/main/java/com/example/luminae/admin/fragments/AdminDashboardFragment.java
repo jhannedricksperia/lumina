@@ -188,11 +188,23 @@ public class AdminDashboardFragment extends Fragment {
             if (b == null) return;  // guard — THIS was the crash line
             Map<String, Integer> campusMap = new LinkedHashMap<>();
             for (DocumentSnapshot doc : snap.getDocuments()) {
-                String campus = doc.getString("campus");
-                if (campus != null && !campus.isEmpty())
+                String campus = firstNonEmpty(
+                        doc.getString("campusLabel"),
+                        doc.getString("campus"),
+                        doc.getString("campusName"),
+                        doc.getString("collegeLabel"),
+                        doc.getString("courseLabel"),
+                        doc.getString("campusId")
+                );
+                if (!campus.isEmpty()) {
                     campusMap.put(campus, campusMap.getOrDefault(campus, 0) + 1);
+                }
             }
-            if (campusMap.isEmpty()) return;
+            if (campusMap.isEmpty()) {
+                b.chartUsersCampus.clear();
+                b.chartUsersCampus.invalidate();
+                return;
+            }
 
             List<BarEntry> entries = new ArrayList<>();
             List<String>   labels  = new ArrayList<>(campusMap.keySet());
@@ -210,6 +222,13 @@ public class AdminDashboardFragment extends Fragment {
             b.chartUsersCampus.setData(data);
             styleBarChart(labels);
         });
+    }
+
+    private String firstNonEmpty(String... values) {
+        for (String v : values) {
+            if (v != null && !v.trim().isEmpty()) return v.trim();
+        }
+        return "";
     }
 
     private void styleBarChart(List<String> labels) {

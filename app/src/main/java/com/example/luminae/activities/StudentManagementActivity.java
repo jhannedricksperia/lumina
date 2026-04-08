@@ -101,9 +101,28 @@ public class StudentManagementActivity extends AppCompatActivity {
                 .whereEqualTo("role", "student")
                 .orderBy("fName")
                 .addSnapshotListener((snap, e) -> {
+                    if (e != null) {
+                        // Common failure here is a missing composite index.
+                        // Fall back to a simpler query so the list still loads.
+                        loadStudentsFallback();
+                        return;
+                    }
                     if (snap == null) return;
                     allStudents = snap.getDocuments();
                     applyFilter();
+                });
+    }
+
+    private void loadStudentsFallback() {
+        db.collection("users")
+                .whereEqualTo("role", "student")
+                .get()
+                .addOnSuccessListener(snap -> {
+                    allStudents = snap.getDocuments();
+                    applyFilter();
+                })
+                .addOnFailureListener(err -> {
+                    b.tvCount.setText("Failed to load students");
                 });
     }
 

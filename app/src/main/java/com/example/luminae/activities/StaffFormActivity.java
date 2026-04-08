@@ -149,7 +149,9 @@ public class StaffFormActivity extends AppCompatActivity {
                     collegeNames.clear();
 
                     if (qs == null || qs.isEmpty()) {
-                        b.tilCollege.setError("No colleges found for this campus");
+                        // College is optional for staff.
+                        b.tilCollege.setError(null);
+                        setDropdownEnabled(b.tilCollege, b.acvCollege, false);
                         return;
                     }
 
@@ -195,7 +197,9 @@ public class StaffFormActivity extends AppCompatActivity {
                     courseNames.clear();
 
                     if (qs == null || qs.isEmpty()) {
-                        b.tilCourse.setError("No courses found for this college");
+                        // Course is optional for staff.
+                        b.tilCourse.setError(null);
+                        setDropdownEnabled(b.tilCourse, b.acvCourse, false);
                         return;
                     }
 

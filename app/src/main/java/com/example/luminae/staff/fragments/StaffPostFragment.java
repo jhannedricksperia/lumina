@@ -1,7 +1,9 @@
 package com.example.luminae.staff.fragments;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -234,7 +236,9 @@ public class StaffPostFragment extends Fragment {
 
         class VH extends RecyclerView.ViewHolder {
             TextView tvCreatedBy, tvDateCreated, tvTitle, tvDesc, tvLikeCount;
+            TextView tvPosterDesig;
             ImageView ivLike;
+            ImageView ivPosterPhoto;
             View btnLikeRow;
             View layoutPostMedia;
             ViewPager2 vpPostImages;
@@ -258,6 +262,8 @@ public class StaffPostFragment extends Fragment {
                 tvDesc = v.findViewById(R.id.tv_description);
                 tvLikeCount = v.findViewById(R.id.tv_like_count);
                 ivLike = v.findViewById(R.id.iv_like);
+                ivPosterPhoto = v.findViewById(R.id.iv_poster_photo);
+                tvPosterDesig = v.findViewById(R.id.tv_poster_designation);
                 btnLikeRow = v.findViewById(R.id.btn_like);
                 layoutPostMedia = v.findViewById(R.id.layout_post_media);
                 vpPostImages = v.findViewById(R.id.vp_post_images);
@@ -295,7 +301,12 @@ public class StaffPostFragment extends Fragment {
 
             String title = doc.getString("title") != null ? doc.getString("title") : "—";
             String desc = doc.getString("description") != null ? doc.getString("description") : "—";
-            String by = doc.getString("createdBy") != null ? doc.getString("createdBy") : "—";
+            String by = firstNonEmpty(
+                    doc.getString("postedByName"),
+                    doc.getString("createdByName"),
+                    doc.getString("createdBy"),
+                    "—"
+            );
             Timestamp ts = doc.getTimestamp("createdAt");
 
             long hearts = 0;
@@ -305,8 +316,13 @@ public class StaffPostFragment extends Fragment {
             if (h.tvTitle != null) h.tvTitle.setText(title);
             if (h.tvDesc != null) h.tvDesc.setText(desc);
             if (h.tvCreatedBy != null) h.tvCreatedBy.setText(by);
+            if (h.tvPosterDesig != null) {
+                String desig = doc.getString("postedByDesignation");
+                h.tvPosterDesig.setText(desig != null ? desig : "");
+            }
             if (h.tvDateCreated != null)
                 h.tvDateCreated.setText(ts != null ? sdf.format(ts.toDate()) : "—");
+            bindPosterPhoto(h, doc);
 
             if (h.layoutPostMedia != null && h.vpPostImages != null) {
                 List<String> imgs = PostImageList.fromDocument(doc);
@@ -424,6 +440,52 @@ public class StaffPostFragment extends Fragment {
         public int getItemCount() {
             return filtered.size();
         }
+    }
+
+    private void bindPosterPhoto(FeedAdapter.VH h, DocumentSnapshot doc) {
+        if (h == null || h.ivPosterPhoto == null || doc == null) return;
+
+        String postedByPhoto = doc.getString("postedByPhoto");
+        if (postedByPhoto != null && !postedByPhoto.trim().isEmpty()) {
+            try {
+                byte[] bytes = Base64.decode(postedByPhoto, Base64.DEFAULT);
+                h.ivPosterPhoto.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+                h.ivPosterPhoto.setVisibility(View.VISIBLE);
+                return;
+            } catch (Exception ignored) {
+                // Fall through to user lookup.
+            }
+        }
+
+        String authorUid = firstNonEmpty(doc.getString("postedBy"), doc.getString("createdById"), "");
+        if (authorUid.isEmpty()) {
+            h.ivPosterPhoto.setImageResource(R.drawable.profile_pic);
+            return;
+        }
+
+        db.collection("users").document(authorUid).get().addOnSuccessListener(userDoc -> {
+            if (!isAdded() || b == null) return;
+            String b64 = userDoc.getString("photoBase64");
+            if (b64 == null || b64.trim().isEmpty()) {
+                h.ivPosterPhoto.setImageResource(R.drawable.profile_pic);
+                return;
+            }
+            try {
+                byte[] bytes = Base64.decode(b64, Base64.DEFAULT);
+                h.ivPosterPhoto.setImageBitmap(BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+                h.ivPosterPhoto.setVisibility(View.VISIBLE);
+            } catch (Exception ignored) {
+                h.ivPosterPhoto.setImageResource(R.drawable.profile_pic);
+            }
+        });
+    }
+
+    private String firstNonEmpty(String... values) {
+        if (values == null) return "";
+        for (String v : values) {
+            if (v != null && !v.trim().isEmpty()) return v.trim();
+        }
+        return "";
     }
 
     private void showPostOptions(DocumentSnapshot doc, String title) {
