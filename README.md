@@ -213,7 +213,7 @@ Access and available screens vary by role (**Student, Staff, Admin**).
 ## 9. Support
 
 📧 Email: `applumina1@gmail.com`  
-📍 Office: Lumina Office, City of Malolos, Bulacan, Philippines  
+📍 Office: City of Malolos, Bulacan, Philippines  
 🕒 Hours: 8:00 AM – 5:00 PM  
 
 ---
